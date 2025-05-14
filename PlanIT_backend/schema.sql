@@ -6,9 +6,9 @@ CREATE TYPE txn_subtype AS ENUM (
   'saving_to_spending',
   'spending_to_saving'
 );
-CREATE TYPE freq_type AS ENUM ('one-time','daily','weekly','monthly','yearly');
+CREATE TYPE freq_type AS ENUM ('hourly','daily','weekly','monthly','yearly');
 
--- 2) Users: immutable identity & credentials
+-- 2) Users: immutable identity & credentials 
 CREATE TABLE users (
   user_id        SERIAL        PRIMARY KEY,
   username       VARCHAR(50)   UNIQUE NOT NULL,
@@ -24,9 +24,10 @@ CREATE TABLE accounts (
   user_id          INT           NOT NULL REFERENCES users(user_id),
   account_name     VARCHAR(50)   NOT NULL DEFAULT 'default',
   total_balance    NUMERIC(12,2) NOT NULL DEFAULT 0.00,
-  spending_balance NUMERIC(12,2) NOT NULL DEFAULT 0.00, -- need to differentiate spending committment and actual spending
+  spending_balance NUMERIC(12,2) NOT NULL DEFAULT 0.00, 
   saving_balance   NUMERIC(12,2) NOT NULL DEFAULT 0.00,
   updated_at       TIMESTAMP     NOT NULL DEFAULT now(),
+  actual_spending  NUMERIC(12,2) NOT NULL DEFAULT 0.00
   UNIQUE(user_id, account_name)
 );
 

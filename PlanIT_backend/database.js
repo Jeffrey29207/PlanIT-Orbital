@@ -219,7 +219,7 @@ export async function undoOneTimeSpend(transactionId, accountId, description = '
       `SELECT amount, category, cancelled
          FROM transactions
         WHERE tx_id = $1
-          AND account_id     = $2
+          AND account_id = $2
         LIMIT 1;`,
       [transactionId, accountId]
     );
@@ -280,11 +280,25 @@ export async function undoOneTimeSpend(transactionId, accountId, description = '
 }
 
 
-// Recurring transfer from savings to spendings (extension)
-export async function setRecurringTransfer(user) {}
-
-// Set one-time spendings
-export async function setOneTimeSpending(user) {}
-
 // Set recurring spendings
-export async function setRecurringSpending(user) {}
+export async function setRecurringSpending(accountId, amount, category, frequency, interval, next_run_at) {
+  const client = await pool.connect();
+  if (amount < 0) {
+    throw new Error("Amount spent must be non-negative!");
+  }
+
+  try {
+    await client.query(
+      `INSERT INTO recurring transactions
+         (account_id, tx_type, subtype, amount, category, frequency, interval, next_run_at)
+       VALUES ($1, 'spend', 'modify_spending', $2, $3, $4, $5, $6);`,
+      [accountId, amount, category, frequency, interval, next_run_at]
+    );
+  } catch (err) {
+    throw err;
+  }
+}
+
+
+// Recurring transfer from savings to spendings (extension)
+export async function refreshRecurringSpending(user) {}

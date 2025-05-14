@@ -108,6 +108,19 @@ app.post("/accounts/:id/undoOneTimeSpend", async (req, res, next) => {
       next(err);
     }
   });
+
+  // undo one-time transaction
+app.post("/accounts/:id/recurringSpend", async (req, res, next) => {
+    try {
+      const accountId = Number(req.params.id);
+      const {amount, category, frequency, interval, next_run_at} = req.body;
+  
+      const updated = await undoOneTimeSpend(accountId, amount, category, frequency, interval, next_run_at);
+      res.json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
   
 // middleware for error handling
 // throws an error produced by the function

@@ -225,9 +225,6 @@ This css file styles the main page of the website.
     .menuContainer .list-group-item {
         background-color: transparent;
         border: none;
-    }
-
-    .menuContainer a {
         text-decoration: none;
         color: white;
         font-size: 15px;

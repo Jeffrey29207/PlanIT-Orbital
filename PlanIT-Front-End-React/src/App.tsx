@@ -1,4 +1,4 @@
-import ListOfLinks from "./components/ListOfLinks";
+import ListOf from "./components/ListOf";
 import mainDashboardBlocks from "./components/MainDashboard";
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
             <p className="tier">Private Client</p>
           </div>
         </div>
-        <div className="menuContainer">{ListOfLinks({ links })}</div>
+        <div className="menuContainer">{ListOf({ links })}</div>
       </div>
       <div className="dashboard">{mainDashboardBlocks()}</div>
     </>

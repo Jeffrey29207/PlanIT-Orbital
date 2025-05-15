@@ -219,11 +219,16 @@ This css file styles the main page of the website.
         display: flex;
         height: 30vh;
         flex-direction: column;
-        justify-content: space-around
+        justify-content: flex-start
     }
 
     .menuContainer .list-group-item {
         background-color: transparent;
+        display: flex;
+        align-items: center;
+        height: 70px;
+        width: 180px;
+        border-radius: 0%;
         border: none;
         text-decoration: none;
         color: white;

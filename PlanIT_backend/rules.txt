@@ -1,0 +1,4 @@
+To amend typos, clients should be able to modify savings and spendings totals 
+However, modifications made to savings account with recurring transfers will have restrictions
+#1. savings amount cannot be below the recurring transfer amount for the following month
+#2. it is assumed that the savings account is 

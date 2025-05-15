@@ -234,6 +234,7 @@ This css file styles the main page of the website.
         color: white;
         font-size: 15px;
         font-family: Arial, Helvetica, sans-serif;
+        cursor: pointer;
     }
 
     .menuContainer .click {

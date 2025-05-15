@@ -349,11 +349,24 @@ This css file styles the main page of the website.
         border: none;
     }
 
-    .menuContainer a {
+    .menuContainer .list-group-item {
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        height: 70px;
+        width: 180px;
+        border-radius: 0%;
+        border: none;
         text-decoration: none;
         color: white;
         font-size: 15px;
         font-family: Arial, Helvetica, sans-serif;
+        cursor: pointer;
+    }
+
+    .menuContainer .click {
+        background-color: rgb(245, 243, 243, 0.2);
+
     }
 
     /* Setting the dashboard */

@@ -100,6 +100,10 @@ This css file styles the main page of the website.
     grid-area: spendingDashboard;
 }
 
+.spendingGraph {
+    grid-area: spendingGraph;
+}
+
 .transactionGraph {
     grid-area: transactionGraph;
 }
@@ -136,7 +140,9 @@ This css file styles the main page of the website.
         'overallDashboard'
         'overallGraph'
         'overallGraph'
-        'spendingDashboard' 
+        'spendingDashboard'
+        'spendingGraph'
+        'spendingGraph' 
         'transactionGraph'
         'transactionGraph'
         'savingDashboard'
@@ -214,19 +220,27 @@ This css file styles the main page of the website.
         display: flex;
         height: 30vh;
         flex-direction: column;
-        justify-content: space-around
+        justify-content: flex-start
     }
 
     .menuContainer .list-group-item {
         background-color: transparent;
+        display: flex;
+        align-items: center;
+        height: 70px;
+        width: 180px;
+        border-radius: 0%;
         border: none;
-    }
-
-    .menuContainer a {
         text-decoration: none;
         color: white;
         font-size: 15px;
         font-family: Arial, Helvetica, sans-serif;
+        cursor: pointer;
+    }
+
+    .menuContainer .click {
+        background-color: rgb(245, 243, 243, 0.2);
+
     }
 
     /* Setting the dashboard */
@@ -247,8 +261,8 @@ This css file styles the main page of the website.
         grid-template-areas:
         'spendingDashboard spendingDashboard transactionHistory transactionHistory'
         'spendingDashboard spendingDashboard transactionHistory transactionHistory'
-        'transactionGraph transactionGraph transactionGraph transactionGraph'
-        'transactionGraph transactionGraph transactionGraph transactionGraph'
+        'spendingGraph spendingGraph transactionGraph transactionGraph'
+        'spendingGraph spendingGraph transactionGraph transactionGraph'
         'savingDashboard savingDashboard savingGraph savingGraph'
         'savingDashboard savingDashboard savingGraph savingGraph'
         'overallDashboard overallDashboard overallGraph overallGraph' 
@@ -361,8 +375,8 @@ This css file styles the main page of the website.
         'spendingDashboard spendingDashboard savingDashboard savingDashboard overallDashboard overallDashboard'
         'transactionHistory transactionHistory savingGraph savingGraph overallGraph overallGraph'
         'transactionHistory transactionHistory savingGraph savingGraph overallGraph overallGraph'
-        'transactionHistory transactionHistory transactionGraph transactionGraph transactionGraph transactionGraph'
-        'transactionHistory transactionHistory transactionGraph transactionGraph transactionGraph transactionGraph';
+        'transactionHistory transactionHistory spendingGraph spendingGraph transactionGraph transactionGraph'
+        'transactionHistory transactionHistory spendingGraph spendingGraph transactionGraph transactionGraph';
     }
 
     .mainDashboardBlocks {

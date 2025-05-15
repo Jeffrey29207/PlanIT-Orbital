@@ -1,4 +1,5 @@
-import ListOfLinks from "./components/ListOfLinks";
+import ListOf from "./components/ListOf";
+import mainDashboardBlocks from "./components/MainDashboardBlocks";
 
 function App() {
   const links = [
@@ -7,6 +8,10 @@ function App() {
     { name: "SPENDING", url: "index.html" },
     { name: "SETTINGS", url: "index.html" },
   ];
+
+  const onSelectItem = (name: string) => {
+    console.log(`Selected item: ${name}`);
+  };
 
   return (
     <>
@@ -18,17 +23,9 @@ function App() {
             <p className="tier">Private Client</p>
           </div>
         </div>
-        <div className="menuContainer">{ListOfLinks({ links })}</div>
+        <div className="menuContainer">{ListOf({ links, onSelectItem })}</div>
       </div>
-      <div className="dashboard">
-        <div className="mainDashboardBlocks overallDashboard"></div>
-        <div className="mainDashboardBlocks overallGraph"></div>
-        <div className="mainDashboardBlocks spendingDashboard"></div>
-        <div className="mainDashboardBlocks transactionGraph"></div>
-        <div className="mainDashboardBlocks savingDashboard"></div>
-        <div className="mainDashboardBlocks savingGraph"></div>
-        <div className="mainDashboardBlocks transactionHistory"></div>
-      </div>
+      <div className="dashboard">{mainDashboardBlocks()}</div>
     </>
   );
 }

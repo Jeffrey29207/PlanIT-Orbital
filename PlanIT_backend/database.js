@@ -280,25 +280,75 @@ export async function undoOneTimeSpend(transactionId, accountId, description = '
 }
 
 
+/// Recurring transactions /// 
+
 // Set recurring spendings
 export async function setRecurringSpending(accountId, amount, category, frequency, interval, next_run_at) {
-  const client = await pool.connect();
+
   if (amount < 0) {
     throw new Error("Amount spent must be non-negative!");
   }
 
-  try {
-    await client.query(
-      `INSERT INTO recurring transactions
-         (account_id, tx_type, subtype, amount, category, frequency, interval, next_run_at)
-       VALUES ($1, 'spend', 'modify_spending', $2, $3, $4, $5, $6);`,
-      [accountId, amount, category, frequency, interval, next_run_at]
-    );
-  } catch (err) {
-    throw err;
-  }
+  const result = await pool.query(
+    `INSERT INTO recurring_transactions
+        (account_id, tx_type, subtype, amount, category, frequency, interval, next_run_at)
+      VALUES ($1, 'spend', 'modify_spending', $2, $3, $4, $5, $6)
+      RETURNING *;`,
+    [accountId, amount, category, frequency, interval, next_run_at]
+  );
+  // return the first row of all the rows of the updated table
+  return result.rows[0];
 }
 
 
-// Recurring transfer from savings to spendings (extension)
-export async function refreshRecurringSpending(user) {}
+// Evoke recurrence 
+// intermediate function, for developer access only
+/**
+ * Finds all recurring spendings that are due.
+ * then increases each one's next_run_at forward by interval×frequency.
+ *
+ * @returns {Promise<Array<{recur_id:number,account_id:number,amount:string,category:string}>>}
+ */
+export async function refreshRecurringSpending() {
+  const client = await pool.connect();
+  
+  try {
+    // find and save all rows where the recurring transaction is due
+    await client.query("BEGIN");
+    const {rows: transactionsDue } = await client.query(`
+      SELECT recur_id, account_id, amount, category
+      FROM recurring_transactions
+      WHERE is_active AND next_run_at <= now(); 
+      `);
+    // if no recurring transaction are due, return an empty array
+    if (transactionsDue.length === 0) {
+      await client.query('COMMIT');
+      return [];
+    }
+
+    await client.query(`
+      UPDATE recurring_transactions
+         SET next_run_at = CASE frequency
+           WHEN 'min'   THEN next_run_at + (interval || ' minutes')::interval
+           WHEN 'hour'  THEN next_run_at + (interval || ' hours')::interval
+           WHEN 'day'   THEN next_run_at + (interval || ' days')::interval
+           WHEN 'week'  THEN next_run_at + (interval || ' weeks')::interval
+           WHEN 'month' THEN next_run_at + (interval || ' months')::interval
+         END
+       WHERE is_active AND next_run_at <= now();
+    `);
+  
+    await client.query('COMMIT');
+
+    return transactionsDue;
+  
+  } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+  } finally {
+    client.release();
+  }
+}
+
+// insert new transactions incurred from scheduler refreshing the recurring transactions table
+export async function recordRecurringSpending() {}

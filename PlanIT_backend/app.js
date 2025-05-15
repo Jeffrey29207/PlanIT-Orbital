@@ -4,7 +4,8 @@ import 'dotenv/config';
 import { testUsers, testUserAccounts, createUser, 
     createUserAccount, setSavings, 
     transferSavingsToSpending, transferSpendingToSavings,
-    recordOneTimeSpend, undoOneTimeSpend} from './database.js';
+    recordOneTimeSpend, undoOneTimeSpend,
+  setRecurringSpending, refreshRecurringSpending} from './database.js';
 
 const app = express()
 
@@ -109,14 +110,24 @@ app.post("/accounts/:id/undoOneTimeSpend", async (req, res, next) => {
     }
   });
 
-  // undo one-time transaction
+// set recurring transaction
+// input amount, spending category, freq, interval(next repeat = next_run_at + interval x freq), next_run_at
 app.post("/accounts/:id/recurringSpend", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);
       const {amount, category, frequency, interval, next_run_at} = req.body;
   
-      const updated = await undoOneTimeSpend(accountId, amount, category, frequency, interval, next_run_at);
+      const updated = await setRecurringSpending(accountId, amount, category, frequency, interval, next_run_at);
       res.json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+app.post("/accounts/refreshRecurSpend", async (req, res, next) => {
+    try {
+      const updated = await refreshRecurringSpending();
+      res.send(updated);
     } catch (err) {
       next(err);
     }

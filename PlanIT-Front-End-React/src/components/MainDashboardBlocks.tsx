@@ -1,4 +1,6 @@
-function mainDashboardBlocks() {
+import NumericDashboard from "./NumericDashboard";
+
+function MainDashboardBlocks() {
   return (
     <>
       <div className="mainDashboardBlocks overallDashboard numericDashboard"></div>
@@ -13,4 +15,4 @@ function mainDashboardBlocks() {
   );
 }
 
-export default mainDashboardBlocks;
+export default MainDashboardBlocks;

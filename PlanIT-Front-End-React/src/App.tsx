@@ -1,5 +1,5 @@
 import ListOf from "./components/ListOf";
-import mainDashboardBlocks from "./components/MainDashboardBlocks";
+import MainDashboardBlocks from "./components/MainDashboardBlocks";
 
 function App() {
   const links = [
@@ -23,9 +23,13 @@ function App() {
             <p className="tier">Private Client</p>
           </div>
         </div>
-        <div className="menuContainer">{ListOf({ links, onSelectItem })}</div>
+        <div className="menuContainer">
+          <ListOf links={links} onSelectItem={onSelectItem} />
+        </div>
       </div>
-      <div className="dashboard">{mainDashboardBlocks()}</div>
+      <div className="dashboard">
+        <MainDashboardBlocks />
+      </div>
     </>
   );
 }

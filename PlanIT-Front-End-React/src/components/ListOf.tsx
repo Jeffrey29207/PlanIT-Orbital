@@ -9,7 +9,7 @@ interface Props {
 }
 
 function ListOf({ links, onSelectItem }: Props) {
-  const [selectedItem, setSelectedItem] = useState(-1);
+  const [selectedItem, setSelectedItem] = useState(0);
 
   return (
     <ul className="list-group">

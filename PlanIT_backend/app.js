@@ -5,7 +5,7 @@ import { testUsers, testUserAccounts, createUser,
     createUserAccount, setSavings, 
     transferSavingsToSpending, transferSpendingToSavings,
     recordOneTimeSpend, undoOneTimeSpend,
-  setRecurringSpending, refreshRecurringSpending} from './database.js';
+  setRecurringSpending, refreshRecurringSpending, scheduleRecurringSpend} from './database.js';
 
 const app = express()
 
@@ -132,6 +132,15 @@ app.post("/accounts/refreshRecurSpend", async (req, res, next) => {
       next(err);
     }
   });
+
+app.post("/accounts/scheduleRecurSpend", async (req, res, next) => {
+    try {
+      const updated = await scheduleRecurringSpend();
+      res.send(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
   
 // middleware for error handling
 // throws an error produced by the function
@@ -140,7 +149,7 @@ app.use((err, req, res, next) => {
     res.status(500).json({error: err.message,});
   })
 
-  
+
 app.listen(8080, () => {
     console.log('Server is running on port 8080')
 })

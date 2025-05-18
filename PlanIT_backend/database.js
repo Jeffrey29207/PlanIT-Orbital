@@ -71,7 +71,7 @@ export async function createUserAccount(userId) {
 
 
 
-// Query logic for Savings Account
+/* Savings */ 
 // Modify Saving balance
 export async function setSavings(newAmount, account_id) {
   const result = await pool.query(
@@ -158,7 +158,7 @@ export async function transferSpendingToSavings(accountId, amount) {
   return rows[0];
 }
 
-/// Spending ///
+/* One time Spending */ 
 
 //make a one-time transaction
 //BEGIN/COMMIT - query executes only if all the SQL statements work
@@ -192,7 +192,7 @@ export async function recordOneTimeSpend(accountId, amount, category, descriptio
     );
 
     if (upd.rowCount === 0) {
-      throw new Error("Insufficient budget to spend that amount");
+      throw new Error(`Insufficient spending balance to transact $${amount}`);
     }
 
     await client.query("COMMIT");
@@ -280,15 +280,17 @@ export async function undoOneTimeSpend(transactionId, accountId, description = '
 }
 
 
-/// Recurring transactions /// 
+/* Recurring Spending */ 
 
 // Set recurring spendings
 export async function setRecurringSpending(accountId, amount, category, frequency, interval, next_run_at) {
 
+  // if input amount is negative, throw error
   if (amount < 0) {
     throw new Error("Amount spent must be non-negative!");
   }
 
+  // else, insert new row in recurring transactions table
   const result = await pool.query(
     `INSERT INTO recurring_transactions
         (account_id, tx_type, subtype, amount, category, frequency, interval, next_run_at)
@@ -296,7 +298,8 @@ export async function setRecurringSpending(accountId, amount, category, frequenc
       RETURNING *;`,
     [accountId, amount, category, frequency, interval, next_run_at]
   );
-  // return the first row of all the rows of the updated table
+
+  // return the updated row
   return result.rows[0];
 }
 
@@ -316,7 +319,7 @@ export async function refreshRecurringSpending() {
     // find and save all rows where the recurring transaction is due
     await client.query("BEGIN");
     const {rows: transactionsDue } = await client.query(`
-      SELECT recur_id, account_id, amount, category
+      SELECT recur_id, account_id, amount, category, next_run_at
       FROM recurring_transactions
       WHERE is_active AND next_run_at <= now(); 
       `);
@@ -350,5 +353,131 @@ export async function refreshRecurringSpending() {
   }
 }
 
-// insert new transactions incurred from scheduler refreshing the recurring transactions table
-export async function recordRecurringSpending() {}
+// insert new transactions from refreshRecurringSpending function
+/* if insufficent amount for transaction -> does not update, continue to update the rest of the transactions */
+/* Tiebreaker to be done: make a priority list of recurring transactions, such that for recurrences with the same amount, the spending scheduler will priortise a transaction
+current logic is to execute transaction with the lowest recur id*/
+
+export async function recordRecurringSpend(recurringArray) {
+  if (recurringArray.length === 0) {
+    return { message: "no recurring transactions are due", successful: [], errors: [] };
+  }
+
+  // 1. parallelise the transaction execution for every element in recurring array
+  const work = recurringArray.map(({ recur_id, account_id, amount, category }) =>
+    recordOneTimeSpend(
+      account_id,
+      parseFloat(amount),
+      category,
+      'recurring spending'
+    )
+    .then(result => ({ status: 'fulfilled', recur_id, result }))
+    .catch(err => ({
+      status: 'rejected',
+      recur_id,
+      account_id,
+      amount,
+      category,
+      error: err.message || String(err),
+    }))
+  );
+
+  // 2. Await completion
+  const results = await Promise.all(work);
+
+  // 3. Separate successes & errors
+  const successfulCount = results.filter(r => r.status === 'fulfilled').length;
+  const errors = results
+    .filter(r => r.status === 'rejected')
+    .map(r => ({
+      recur_id: r.recur_id,
+      account_id: r.account_id,
+      amount: r.amount,
+      category: r.category,
+      error: r.error,
+      timestamp: new Date().toISOString(),
+    }));
+
+  // 4. pull back the last N successful transactions
+  const { rows } = await pool.query(
+    `SELECT *
+       FROM transactions
+      ORDER BY tx_id DESC
+      LIMIT $1`,
+    [successfulCount]
+  );
+
+  return {
+    successful: rows,
+    errors,
+  };
+}
+
+
+// export async function recordRecurringSpend(recurringArray) {
+  
+//   // if no recurring transaction is refreshed, terminate function
+//   if (recurringArray.length == 0) {
+//     return "no recurring transactions are due";
+//   }
+
+//   // Else, execute each recurring spending sequentially
+//   const errors = [];
+
+//   // run each spend and collect any errors
+//   for (const { recur_id, account_id, amount, category } of recurringArray) {
+//     try {
+//       await recordOneTimeSpend(
+//         account_id,
+//         parseFloat(amount),
+//         category,
+//         'recurring spending'
+//       );
+//     } catch (err) {
+//       // accumulate a structured error object
+//       errors.push({
+//         recur_id,
+//         account_id,
+//         amount,
+//         category,
+//         error: err.message || String(err),
+//         timestamp: new Date().toISOString(),
+//       });
+//       // continue with the next item
+//       continue;
+//     }
+//   }
+
+//   // pull back the last N successful transactions
+//   const { rows } = await pool.query(
+//     `SELECT *
+//        FROM transactions
+//       ORDER BY tx_id DESC
+//       LIMIT $1`,
+//     [recurringArray.length - errors.length]
+//   );
+
+//   // Build a single JSON response
+//   return {
+//     successful: rows,
+//     errors,
+//   };
+// }
+
+// mocker scheduler for testing
+export async function scheduleRecurringSpend() {
+  const recurringArray = await refreshRecurringSpending();
+  const updatedTransactions = await recordRecurringSpend(recurringArray);
+  console.log("Spending Scheduler has ran");
+  return updatedTransactions;
+}
+
+// undo a selected recurring spending
+// only removes the recurring transactions from recurring_transaction table
+// does not undo transactions that are already executed by the spending scheduler
+export async function undoRecurringSpend(recur_id, accountId, description = 'cancellation') {
+}
+
+// pauses recurring transaction
+export async function pauseRecurringSpend(recur_id, accountId, description = 'pause recurring transaction]') {
+}

@@ -6,7 +6,8 @@ CREATE TYPE txn_subtype AS ENUM (
   'saving_to_spending',
   'spending_to_saving'
 );
-CREATE TYPE freq_type AS ENUM ('hourly','daily','weekly','monthly','yearly');
+
+CREATE TYPE freq_type AS ENUM ('min', 'hour','day','week','month');
 
 -- 2) Users: immutable identity & credentials 
 CREATE TABLE users (
@@ -41,7 +42,8 @@ CREATE TABLE transactions (
   category     VARCHAR(50),
   description  TEXT,
   frequency    freq_type      NOT NULL DEFAULT 'one-time',
-  created_at   TIMESTAMP      NOT NULL DEFAULT now()
+  created_at   TIMESTAMP      NOT NULL DEFAULT now(),
+  cancelled    BOOLEAN        NOT NULL DEFAULT false
 );
 
 -- 5) Recurring instructions: drives automated inserts
@@ -52,7 +54,7 @@ CREATE TABLE recurring_transactions (
   subtype      txn_subtype    NOT NULL,
   amount       NUMERIC(12,2)  NOT NULL,
   category     VARCHAR(50),
-  frequency    freq_type      NOT NULL DEFAULT 'monthly',
+  frequency    freq_type      NOT NULL DEFAULT 'month',
   interval     INT            NOT NULL DEFAULT 1,      -- e.g. every N units
   next_run_at  TIMESTAMP      NOT NULL,
   end_date     DATE,                             -- NULL = never end

@@ -4,7 +4,7 @@ This css file styles the main background of the website.
 
 
 /* Setting main backrgound colour */
-#root{
+.afterLogin{
     background: linear-gradient(to bottom right, rgb(0, 0, 12), rgb(0, 52, 0));
     display: flex;
     justify-content: center;

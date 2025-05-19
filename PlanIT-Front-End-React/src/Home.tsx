@@ -3,7 +3,7 @@ import Menu from "./components/Menu/Menu";
 import "./MainStyle.css";
 import "bootstrap/dist/css/bootstrap.css";
 
-function App() {
+function Home() {
   return (
     <>
       <Menu />
@@ -12,4 +12,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;

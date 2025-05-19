@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.css";
 
 function Home() {
   return (
-    <div className="afterLogin">
+    <div id="homePage">
       <Menu />
       <HomeDashboard />
     </div>

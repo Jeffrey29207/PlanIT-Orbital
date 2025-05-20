@@ -1,18 +1,4 @@
-/*
-This css file styles the main page of the website.
-*/
-
-
-/* Setting main backrgound colour */
-#root{
-    background: linear-gradient(to bottom right, rgb(0, 0, 12), rgb(0, 52, 0));
-    display: flex;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
-}
-
-/* Setting side bar */
+/* Setting side bar menu*/
 .menu {
     background: linear-gradient(to bottom right, rgb(0, 0, 12), rgb(0, 30, 0));
     height: 70px;
@@ -78,87 +64,19 @@ This css file styles the main page of the website.
 
 .menuContainer .list-group-item {
     background-color: transparent;
+    display: flex;
+    align-items: center;
+    height: 70px;
+    width: 180px;
+    border-radius: 0%;
     border: none;
-}
-
-.menuContainer a {
     text-decoration: none;
     color: white;
+    font-size: 15px;
     font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
 }
 
-/* Setting the dashboard */
-.overallDashboard {
-    grid-area: overallDashboard;
-}
-
-.overallGraph {
-    grid-area: overallGraph;
-}
-
-.spendingDashboard {
-    grid-area: spendingDashboard;
-}
-
-.spendingGraph {
-    grid-area: spendingGraph;
-}
-
-.transactionGraph {
-    grid-area: transactionGraph;
-}
-
-.savingDashboard {
-    grid-area: savingDashboard;
-}
-
-.savingGraph {
-    grid-area: savingGraph;
-}
-
-.transactionHistory {
-    grid-area: transactionHistory;
-    display: none;
-}
-
-.dashboard {
-    background-color: transparent;
-    min-height: calc(100vh - 70px);
-    height: auto;
-    width: 100vw;
-    margin-left: 0px;
-    margin-top: 70px;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    padding-right: 1.5rem;
-    padding-left: 1.5rem;
-    display: grid;
-    gap: 1.5rem;
-    grid-auto-columns: 1fr;
-    grid-auto-rows: minmax(150px, auto);
-    grid-template-areas: 
-        'overallDashboard'
-        'overallGraph'
-        'overallGraph'
-        'spendingDashboard'
-        'spendingGraph'
-        'spendingGraph' 
-        'transactionGraph'
-        'transactionGraph'
-        'savingDashboard'
-        'savingGraph' 
-        'savingGraph';
-    overflow-y: auto;  /* Enable vertical scrolling */
-    -webkit-overflow-scrolling: touch;  /* Smooth scrolling on iOS */
-
-}
-
-.mainDashboardBlocks {
-    border-radius: 1rem;
-    background-color: rgba(250, 254, 255, 0.2);
-}
-
-/* Setting things for tablet screens */
 @media screen and (min-width: 900px) {
     /* Setting side bar for tablet*/
     .menu {
@@ -242,46 +160,11 @@ This css file styles the main page of the website.
         background-color: rgb(245, 243, 243, 0.2);
 
     }
-
-    /* Setting the dashboard */
-    .dashboard {
-        background-color: transparent;
-        height: 100vh;
-        width: calc(100vw - 180px);
-        margin-left: calc(180px + 1.5rem);
-        margin-top: 0px;
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
-        padding-right: 1.5rem;
-        padding-left: 0rem;
-        display: grid;
-        gap: 1.5rem;
-        grid-auto-columns: 1fr;
-        grid-auto-rows: minmax(100px, auto);
-        grid-template-areas:
-        'spendingDashboard spendingDashboard transactionHistory transactionHistory'
-        'spendingDashboard spendingDashboard transactionHistory transactionHistory'
-        'spendingGraph spendingGraph transactionGraph transactionGraph'
-        'spendingGraph spendingGraph transactionGraph transactionGraph'
-        'savingDashboard savingDashboard savingGraph savingGraph'
-        'savingDashboard savingDashboard savingGraph savingGraph'
-        'overallDashboard overallDashboard overallGraph overallGraph' 
-        'overallDashboard overallDashboard overallGraph overallGraph';
-    }
-
-    .mainDashboardBlocks {
-        border-radius: 1rem;
-        background-color: rgba(250, 254, 255, 0.2);
-    }
-
-    .transactionHistory {
-        display: block;
-    }
 }
 
 /* Setting things for desktop and larger screens */
 @media screen and (min-width: 1200px) {
-    /* Setting side bar for tablet*/
+    /* Setting side bar for desktop and larger screens*/
     .menu {
         background: linear-gradient(to bottom, rgb(0, 0, 12), rgb(0, 30, 0));
         height: 100vh;
@@ -368,38 +251,4 @@ This css file styles the main page of the website.
         background-color: rgb(245, 243, 243, 0.2);
 
     }
-
-    /* Setting the dashboard */
-    .dashboard {
-        background-color: transparent;
-        height: 100vh;
-        width: calc(100vw - 180px);
-        margin-left: calc(180px + 1.5rem);
-        margin-top: 0px;
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
-        padding-right: 1.5rem;
-        padding-left: 0rem;
-        display: grid;
-        gap: 1.5rem;
-        grid-auto-columns: 1fr;
-        grid-auto-rows: minmax(100px, auto);
-        grid-template-areas:
-        'spendingDashboard spendingDashboard savingDashboard savingDashboard overallDashboard overallDashboard'
-        'transactionHistory transactionHistory savingGraph savingGraph overallGraph overallGraph'
-        'transactionHistory transactionHistory savingGraph savingGraph overallGraph overallGraph'
-        'transactionHistory transactionHistory spendingGraph spendingGraph transactionGraph transactionGraph'
-        'transactionHistory transactionHistory spendingGraph spendingGraph transactionGraph transactionGraph';
-    }
-
-    .mainDashboardBlocks {
-        border-radius: 1rem;
-        background-color: rgba(250, 254, 255, 0.2);
-    }
-
-    .transactionHistory {
-        display: block;
-    }
 }
-
-

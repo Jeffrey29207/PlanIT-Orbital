@@ -1,0 +1,65 @@
+#landingPage {
+    background: linear-gradient(to bottom right, rgb(0, 0, 12), rgb(0, 52, 0));
+    height: 100vh;
+    width: 100vw;
+}
+
+.landingPageMenuContainer {
+    background: linear-gradient(to bottom right, rgb(0, 0, 12), rgb(0, 30, 0));
+    height: 70px;
+    width: 100vw;
+    flex-grow: 0;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.landingPageImageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.landingPagePlanITImage {
+    width: auto;
+    height: 100px;
+    margin-left: 20px;
+    object-fit: contain;
+}
+
+.landingPageButtonContainer {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 70px;
+    width: 150px;
+    margin-right: 20px;
+}
+
+.landingPageButton {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 75px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.landingPageContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 70px);
+    width: 100vw;
+}
+
+.landingPageContent h1 {
+    color: white
+}

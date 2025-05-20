@@ -1,8 +1,8 @@
-import NumericDashboard from "./NumericDashboard";
+import "./HomeDashboardStyle.css";
 
-function MainDashboardBlocks() {
+function HomeDashboard() {
   return (
-    <>
+    <div className="dashboard">
       <div className="mainDashboardBlocks overallDashboard numericDashboard"></div>
       <div className="mainDashboardBlocks overallGraph pieChart"></div>
       <div className="mainDashboardBlocks spendingDashboard numericDashboard"></div>
@@ -11,8 +11,8 @@ function MainDashboardBlocks() {
       <div className="mainDashboardBlocks transactionHistory history"></div>
       <div className="mainDashboardBlocks savingDashboard numericDashboard"></div>
       <div className="mainDashboardBlocks savingGraph pieChart"></div>
-    </>
+    </div>
   );
 }
 
-export default MainDashboardBlocks;
+export default HomeDashboard;

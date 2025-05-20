@@ -360,7 +360,9 @@ current logic is to execute transaction with the lowest recur id*/
 
 export async function recordRecurringSpend(recurringArray) {
   if (recurringArray.length === 0) {
-    return { message: "no recurring transactions are due", successful: [], errors: [] };
+    return { isMutated: false, 
+      message: "no recurring transactions are due", 
+      successful: [], errors: [] };
   }
 
   // 1. parallelise the transaction execution for every element in recurring array
@@ -408,6 +410,7 @@ export async function recordRecurringSpend(recurringArray) {
   );
 
   return {
+    isMutated: true,
     successful: rows,
     errors,
   };
@@ -472,10 +475,37 @@ export async function scheduleRecurringSpend() {
   return updatedTransactions;
 }
 
-// undo a selected recurring spending
+// deletes a selected recurring transaction
 // only removes the recurring transactions from recurring_transaction table
 // does not undo transactions that are already executed by the spending scheduler
-export async function undoRecurringSpend(recur_id, accountId, description = 'cancellation') {
+export async function deleteRecurringSpend(recurId, accountId, amount, category, description = 'deleted recurring transaction') {
+  const client = await pool.connect();
+  // check if recur id exists
+
+  // updates the transaction table & logs deletion
+  try {
+    client.query(`BEGIN`);
+    await client.query(
+      `INSERT INTO transactions
+        (account_id, tx_type, subtype, amount, category, description)
+      VALUES ($1, 'spend', 'modify_spending', $2, $3, $4)`,
+      [accountId, amount, category, description]
+    );
+    // deletes the selected recurring transaction
+    await client.query(
+      `
+      DELETE FROM recurring_transactions
+      WHERE recur_id = recurId;
+      `);
+
+
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    throw err;
+  } finally {
+    client.release();
+  }
 }
 
 // pauses recurring transaction

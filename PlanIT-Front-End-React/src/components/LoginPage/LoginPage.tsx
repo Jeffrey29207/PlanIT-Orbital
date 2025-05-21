@@ -34,12 +34,12 @@ function LoginPage() {
     }
   };
   return (
-    <div className="loginPage">
-      <div className="loginBox">
-        <h2>Create an account</h2>
-        <span className="currentUserMessage">Welcome back!</span>
+    <div id="loginPage">
+      <div id="loginBox">
+        <h2 className="currentUserMessage">Welcome back!</h2>
+        <span className="currentUserMessage">Let's plan together!</span>
         {message && <p className="loginMessage">{message}</p>}
-        <form onSubmit={handleSubmit}>
+        <form className="loginForm" onSubmit={handleSubmit}>
           <input
             type="email"
             placeholder="Email"

@@ -26,6 +26,10 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.registrationMessage {
+    color: rgb(121, 2, 2);
+}
+
 .registrationForm {
     overflow-y: auto;
     display: flex;
@@ -41,6 +45,7 @@
     border-radius: 5px;
     border: 1px solid #ccc;
 }
+
 .registrationForm button {
     margin: 10px;
     padding: 10px;

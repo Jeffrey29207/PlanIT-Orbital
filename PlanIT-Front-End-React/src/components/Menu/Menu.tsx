@@ -1,5 +1,8 @@
 import ListOf from "../ListOf";
 import "./MenuStyle.css";
+import logout from "../../assets/logout.ico";
+import supabase from "../../helper/config";
+import { useNavigate } from "react-router-dom";
 
 function Menu() {
   const links = [
@@ -13,6 +16,19 @@ function Menu() {
     console.log(`Selected item: ${name}`);
   };
 
+  const navigate = useNavigate();
+
+  const handleClickIcon = async () => {
+    console.log("Clicked");
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error("Error signing out:", error.message);
+      return;
+    }
+    navigate("/");
+  };
+
   return (
     <div className="menu">
       <div className="profileContainer">
@@ -24,6 +40,9 @@ function Menu() {
       </div>
       <div className="menuContainer">
         <ListOf links={links} onSelectItem={onSelectItem} />
+      </div>
+      <div className="menuIcon" onClick={handleClickIcon}>
+        <img src={logout} alt="menu" />
       </div>
     </div>
   );

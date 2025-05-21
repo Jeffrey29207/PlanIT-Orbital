@@ -56,14 +56,14 @@ function RegistrationPage() {
   };
 
   return (
-    <div className="registrationPage">
-      <div className="registrationBox">
-        <h2>Create an account</h2>
+    <div id="registrationPage">
+      <div id="registrationBox">
+        <h2 className="newUserMessage">Create an account</h2>
         <span className="newUserMessage">
           Kickstart your financial health journey!
         </span>
         {message && <p className="registrationMessage">{message}</p>}
-        <form onSubmit={handleSubmit}>
+        <form className="registrationForm" onSubmit={handleSubmit}>
           <input
             type="email"
             placeholder="Email"

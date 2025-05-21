@@ -67,6 +67,7 @@
 .mainDashboardBlocks {
     border-radius: 1rem;
     background-color: rgba(250, 254, 255, 0.2);
+    padding: 10px;
 }
 
 /* Setting things for tablet screens */
@@ -100,6 +101,7 @@
     .mainDashboardBlocks {
         border-radius: 1rem;
         background-color: rgba(250, 254, 255, 0.2);
+        box-sizing: border-box;
     }
 
     .transactionHistory {

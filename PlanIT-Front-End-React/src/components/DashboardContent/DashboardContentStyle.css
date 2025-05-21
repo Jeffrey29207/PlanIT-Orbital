@@ -1,0 +1,19 @@
+.dashboardTitle {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px
+}
+
+.valueContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: calc(100% - 50px);
+}
+
+.value {
+    color: rgb(206, 230, 201);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 50px;
+    margin-left: 10px;   
+}

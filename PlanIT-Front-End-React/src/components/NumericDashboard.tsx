@@ -1,3 +1,5 @@
+import DashboardContent from "./DashboardContent/DashboardContent";
+
 interface props {
   title: string;
   value: number;
@@ -6,10 +8,7 @@ interface props {
 function NumericDashboard({ title, value }: props) {
   return (
     <>
-      <p className="numericDashboardTitle">{title}</p>
-      <div className="numericValueContainer">
-        <div className="numericValue">{"SGD " + value}</div>
-      </div>
+      <DashboardContent title={title} value={"SGD " + value} />
     </>
   );
 }

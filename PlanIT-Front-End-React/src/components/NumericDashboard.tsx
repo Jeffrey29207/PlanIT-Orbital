@@ -6,8 +6,10 @@ interface props {
 function NumericDashboard({ title, value }: props) {
   return (
     <>
-      <div className={title}>{title}</div>
-      <div className={title + "Value"}>{value}</div>
+      <p className="numericDashboardTitle">{title}</p>
+      <div className="numericValueContainer">
+        <div className="numericValue">{"SGD " + value}</div>
+      </div>
     </>
   );
 }

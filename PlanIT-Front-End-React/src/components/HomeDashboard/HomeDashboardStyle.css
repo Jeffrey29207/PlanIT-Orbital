@@ -67,6 +67,27 @@
 .mainDashboardBlocks {
     border-radius: 1rem;
     background-color: rgba(250, 254, 255, 0.2);
+    padding: 10px;
+}
+
+.numericDashboardTitle {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px
+}
+
+.numericValueContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: calc(100% - 50px);
+}
+
+.numericValue {
+    color: rgb(206, 230, 201);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 50px;
+    margin-left: 10px;   
 }
 
 /* Setting things for tablet screens */
@@ -100,6 +121,7 @@
     .mainDashboardBlocks {
         border-radius: 1rem;
         background-color: rgba(250, 254, 255, 0.2);
+        box-sizing: border-box;
     }
 
     .transactionHistory {

@@ -124,6 +124,8 @@ app.post("/accounts/:id/recurringSpend", async (req, res, next) => {
     }
   });
 
+// renews the next_run_at for transactions due
+// returns the due transactions
 app.post("/accounts/refreshRecurSpend", async (req, res, next) => {
     try {
       const updated = await refreshRecurringSpending();
@@ -133,6 +135,8 @@ app.post("/accounts/refreshRecurSpend", async (req, res, next) => {
     }
   });
 
+// test schedule api call
+// USE THIS to test the schedule refresher
 app.post("/accounts/scheduleRecurSpend", async (req, res, next) => {
     try {
       const updated = await scheduleRecurringSpend();
@@ -142,6 +146,8 @@ app.post("/accounts/scheduleRecurSpend", async (req, res, next) => {
     }
   });
 
+// delete any recurring transactions based only on recurId
+// can be changed to include account_id
 app.post("/accounts/deleteRecurringSpend", async (req, res, next) => {
     try {
       const {recurId} = req.body;

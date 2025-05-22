@@ -29,7 +29,6 @@
 
 .transactionHistory {
     grid-area: transactionHistory;
-    display: none;
 }
 
 .dashboard {
@@ -56,6 +55,8 @@
         'spendingGraph' 
         'transactionGraph'
         'transactionGraph'
+        'transactionHistory'
+        'transactionHistory'
         'savingDashboard'
         'savingGraph' 
         'savingGraph';
@@ -86,7 +87,7 @@
         display: grid;
         gap: 1.5rem;
         grid-auto-columns: 1fr;
-        grid-auto-rows: minmax(100px, auto);
+        grid-auto-rows: minmax(120px, auto);
         grid-template-areas:
         'spendingDashboard spendingDashboard transactionHistory transactionHistory'
         'spendingDashboard spendingDashboard transactionHistory transactionHistory'
@@ -125,7 +126,7 @@
         display: grid;
         gap: 1.5rem;
         grid-auto-columns: 1fr;
-        grid-auto-rows: minmax(100px, auto);
+        grid-auto-rows: minmax(120px, auto);
         grid-template-areas:
         'spendingDashboard spendingDashboard savingDashboard savingDashboard overallDashboard overallDashboard'
         'transactionHistory transactionHistory savingGraph savingGraph overallGraph overallGraph'

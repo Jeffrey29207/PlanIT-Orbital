@@ -40,6 +40,7 @@ function DoughnutChart({ title, labels, data, colors }: props) {
       },
     },
   };
+
   return (
     <>
       <DashboardContent

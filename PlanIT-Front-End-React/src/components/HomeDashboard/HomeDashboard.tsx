@@ -1,6 +1,7 @@
 import "./HomeDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
+import LineChart from "../LineChart";
 
 function HomeDashboard() {
   const overallDonut = (
@@ -30,6 +31,28 @@ function HomeDashboard() {
     />
   );
 
+  const transactionGraph = (
+    <LineChart
+      title="Transaction graph"
+      labels={[
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ]}
+      data={[100, 200, 300, 400, 500, 600, 300, 300, 450, 700, 800, 900]}
+      colors={["#00B432"]}
+    />
+  );
+
   return (
     <div className="dashboard">
       <div className="mainDashboardBlocks overallDashboard numericDashboard">
@@ -44,7 +67,9 @@ function HomeDashboard() {
       <div className="mainDashboardBlocks spendingGraph pieChart">
         {spendingDonut}
       </div>
-      <div className="mainDashboardBlocks transactionGraph lineChart"></div>
+      <div className="mainDashboardBlocks transactionGraph lineChart">
+        {transactionGraph}
+      </div>
       <div className="mainDashboardBlocks transactionHistory history"></div>
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
         <NumericDashboard title="Saving account" value={900000} />

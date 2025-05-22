@@ -478,28 +478,45 @@ export async function scheduleRecurringSpend() {
 // deletes a selected recurring transaction
 // only removes the recurring transactions from recurring_transaction table
 // does not undo transactions that are already executed by the spending scheduler
-export async function deleteRecurringSpend(recurId, accountId, amount, category, description = 'deleted recurring transaction') {
+export async function deleteRecurringSpend(recurId, description = "deleted recurring transaction") {
   const client = await pool.connect();
   // check if recur id exists
 
-  // updates the transaction table & logs deletion
   try {
-    client.query(`BEGIN`);
+    await client.query("BEGIN");
+    // check if recur id exists
+    const {rows} = await client.query(`
+      SELECT account_id, amount, category
+      FROM recurring_transactions
+      WHERE recur_id = $1`,
+    [recurId]
+    );
+    // if no recurring transaction found, throw not found error
+    if (rows.length === 0) {
+      throw new Error("recurring transaction does not exist");
+    }
+
+    // extract transaction details from row in recurring_transactions table
+    const { account_id, amount, category } = rows[0];
+
+    // updates the transaction table & logs the deletion
     await client.query(
       `INSERT INTO transactions
         (account_id, tx_type, subtype, amount, category, description)
-      VALUES ($1, 'spend', 'modify_spending', $2, $3, $4)`,
-      [accountId, amount, category, description]
+      VALUES ($1, 'spend', 'modify_spending', $2, $3, $4);`,
+      [account_id, amount, category, description]
     );
-    // deletes the selected recurring transaction
+
+    // using recur_id, deletes recurring transaction from the recurring_transactions table
     await client.query(
-      `
-      DELETE FROM recurring_transactions
-      WHERE recur_id = recurId;
-      `);
+      `DELETE FROM recurring_transactions
+      WHERE recur_id = $1`, 
+      [recurId]
+    );
 
 
     await client.query("COMMIT");
+    return { recurId, account_id, amount, category };
   } catch (err) {
     await client.query("ROLLBACK");
     throw err;

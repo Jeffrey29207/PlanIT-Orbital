@@ -5,7 +5,7 @@ import { testUsers, testUserAccounts, createUser,
     createUserAccount, setSavings, 
     transferSavingsToSpending, transferSpendingToSavings,
     recordOneTimeSpend, undoOneTimeSpend,
-  setRecurringSpending, refreshRecurringSpending, scheduleRecurringSpend} from './database.js';
+  setRecurringSpending, refreshRecurringSpending, scheduleRecurringSpend, deleteRecurringSpend} from './database.js';
 
 const app = express()
 
@@ -124,6 +124,8 @@ app.post("/accounts/:id/recurringSpend", async (req, res, next) => {
     }
   });
 
+// renews the next_run_at for transactions due
+// returns the due transactions
 app.post("/accounts/refreshRecurSpend", async (req, res, next) => {
     try {
       const updated = await refreshRecurringSpending();
@@ -133,10 +135,24 @@ app.post("/accounts/refreshRecurSpend", async (req, res, next) => {
     }
   });
 
+// test schedule api call
+// USE THIS to test the schedule refresher
 app.post("/accounts/scheduleRecurSpend", async (req, res, next) => {
     try {
       const updated = await scheduleRecurringSpend();
       res.send(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+// delete any recurring transactions based only on recurId
+// can be changed to include account_id
+app.post("/accounts/deleteRecurringSpend", async (req, res, next) => {
+    try {
+      const {recurId} = req.body;
+      const updated = await deleteRecurringSpend(recurId);
+      res.json(updated);
     } catch (err) {
       next(err);
     }

@@ -29,7 +29,6 @@
 
 .transactionHistory {
     grid-area: transactionHistory;
-    display: none;
 }
 
 .dashboard {
@@ -56,6 +55,8 @@
         'spendingGraph' 
         'transactionGraph'
         'transactionGraph'
+        'transactionHistory'
+        'transactionHistory'
         'savingDashboard'
         'savingGraph' 
         'savingGraph';

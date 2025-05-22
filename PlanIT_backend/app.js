@@ -1,8 +1,12 @@
 // app.js
+/* what is the full url for an API call? Answer:  http://localhost:8080 plus the endpoint url argument in each function call
+e.g: http://localhost:8080/testUsers */
+
+
 import express from 'express'
 import 'dotenv/config';
 import { testUsers, testUserAccounts, createUser, 
-    createUserAccount, setSavings, 
+    createUserAccount, setSavings, getTotalBalance,
     transferSavingsToSpending, transferSpendingToSavings,
     recordOneTimeSpend, undoOneTimeSpend,
   setRecurringSpending, refreshRecurringSpending, scheduleRecurringSpend, deleteRecurringSpend} from './database.js';
@@ -38,6 +42,18 @@ app.post("/data/addUserAccount", async (req, res) => {
     const userAccount = await createUserAccount(userId)
     res.status(201).send(userAccount)
 })
+
+//return total balance of a user using userId as key
+//return format: {"total_balance": "0.00"}
+app.get("/accounts/:id/getTotalBalance", async (req, res) => {
+    try {
+      const accountId = Number(req.params.id);
+      const updated = await getTotalBalance(accountId);
+      res.status(200).json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 ///Savings///
 

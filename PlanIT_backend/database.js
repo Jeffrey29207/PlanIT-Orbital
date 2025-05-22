@@ -3,17 +3,26 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 dotenv.config();
 
+// Port Specifications (for local postgresql server, no longer used)
+// Create Pool
+// const pool = new Pool({
+//   host:     process.env.PGHOST,
+//   port:     Number(process.env.PGPORT),
+//   database: process.env.PGDATABASE,
+//   user:     process.env.PGUSER,
+//   password: process.env.PGPASSWORD,
+//   ssl:      process.env.PGSSLMODE === 'require' ? { rejectUnauthorized: false } : false,
+//   connectionTimeoutMillis: Number(process.env.PGCONNECT_TIMEOUT) * 1000,
+// });
+
 // Port Specifications
 // Create Pool
 const pool = new Pool({
-  host:     process.env.PGHOST,
-  port:     Number(process.env.PGPORT),
-  database: process.env.PGDATABASE,
-  user:     process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  ssl:      process.env.PGSSLMODE === 'require' ? { rejectUnauthorized: false } : false,
-  connectionTimeoutMillis: Number(process.env.PGCONNECT_TIMEOUT) * 1000,
+  connectionString: 'postgresql://postgres.tawzugumouawtstryldu:J_1129l12345@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres',
+  ssl: { rejectUnauthorized: false },
+  connectionTimeoutMillis: 10000,
 });
+
 
 // test query function for user table
 // display first 5 rows of user table
@@ -69,6 +78,14 @@ export async function createUserAccount(userId) {
   return result.rows[0];
 }
 
+// access account total balance
+export async function getTotalBalance(accountId) {
+  const res = await pool.query(`
+    SELECT total_balance FROM accounts WHERE account_id = $1;
+    `, [accountId]
+  );
+  return res.rows[0] || null;
+}
 
 
 /* Savings */ 

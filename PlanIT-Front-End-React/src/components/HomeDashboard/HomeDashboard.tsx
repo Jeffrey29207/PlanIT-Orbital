@@ -54,6 +54,27 @@ function HomeDashboard() {
     />
   );
 
+  const history = [
+    {
+      id: 1,
+      date: "2023-01-01",
+      type: "Recurring",
+      amount: "$1000",
+    },
+    {
+      id: 2,
+      date: "2023-02-01",
+      type: "Recurring",
+      amount: "$500",
+    },
+    {
+      id: 3,
+      date: "2023-03-01",
+      type: "Irregular",
+      amount: "$200",
+    },
+  ];
+
   return (
     <div className="dashboard">
       <div className="mainDashboardBlocks overallDashboard numericDashboard">
@@ -72,7 +93,7 @@ function HomeDashboard() {
         {transactionGraph}
       </div>
       <div className="mainDashboardBlocks transactionHistory history">
-        <Table />
+        <Table data={history} />
       </div>
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
         <NumericDashboard title="Saving account" value={900000} />

@@ -1,9 +1,12 @@
 #table {
-    width: auto;
-    height: 100%;
+    min-width: 340px;
 }
 
 #table * {
     color: rgb(241, 240, 240);
     text-align: center;
+}
+
+.history .chartContainer {
+    align-items: first baseline;
 }

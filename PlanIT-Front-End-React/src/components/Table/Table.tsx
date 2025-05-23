@@ -1,30 +1,37 @@
 import DashboardContent from "../DashboardContent/DashboardContent";
 import "./TableStyle.css";
+import TableData from "./TableData";
 
-function Table() {
+interface props {
+  data: {
+    id: number;
+    date: string;
+    type: string;
+    amount: string;
+  }[];
+}
+
+function Table({ data }: props) {
   const dummy = (
     <table id="table">
       <thead className="tableHeader">
         <tr>
           <th>ID</th>
+          <th>Date</th>
           <th>Type</th>
           <th>Amount</th>
-          <th>Date</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>Deposit</td>
-          <td>$1000</td>
-          <td>2023-10-01</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Withdrawal</td>
-          <td>$500</td>
-          <td>2023-10-02</td>
-        </tr>
+        {data.map((item) => (
+          <TableData
+            key={item.id}
+            id={item.id}
+            date={item.date}
+            type={item.type}
+            amount={item.amount}
+          />
+        ))}
       </tbody>
     </table>
   );

@@ -28,7 +28,8 @@
 
 .chart {
     height: 80%;
-    position: relative;
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 .chart canvas {

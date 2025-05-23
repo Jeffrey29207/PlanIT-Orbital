@@ -1,0 +1,9 @@
+#table {
+    width: auto;
+    height: 100%;
+}
+
+#table * {
+    color: rgb(241, 240, 240);
+    text-align: center;
+}

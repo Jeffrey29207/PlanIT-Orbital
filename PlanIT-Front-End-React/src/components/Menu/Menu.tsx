@@ -18,7 +18,9 @@ function Menu() {
 
   const navigate = useNavigate();
 
+  // Function to handle logout
   const handleClickIcon = async () => {
+    // Supabase function to log out a user
     console.log("Clicked");
     const { error } = await supabase.auth.signOut();
 

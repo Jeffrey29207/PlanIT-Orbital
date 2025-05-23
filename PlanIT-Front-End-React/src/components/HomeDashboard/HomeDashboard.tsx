@@ -2,6 +2,7 @@ import "./HomeDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
 import LineChart from "../LineChart";
+import Table from "../Table/Table";
 
 function HomeDashboard() {
   const overallDonut = (
@@ -70,7 +71,9 @@ function HomeDashboard() {
       <div className="mainDashboardBlocks transactionGraph lineChart">
         {transactionGraph}
       </div>
-      <div className="mainDashboardBlocks transactionHistory history"></div>
+      <div className="mainDashboardBlocks transactionHistory history">
+        <Table />
+      </div>
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
         <NumericDashboard title="Saving account" value={900000} />
       </div>

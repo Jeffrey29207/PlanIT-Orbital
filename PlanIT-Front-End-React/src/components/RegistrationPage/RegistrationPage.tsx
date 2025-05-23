@@ -13,11 +13,14 @@ function RegistrationPage() {
 
   const navigate = useNavigate();
 
+  // Function to handle form submission for registration
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent auto refresh of the page
 
-    setMessage("");
+    setMessage(""); // Clear previous message
+
     if (password !== confirmPassword) {
+      // Front end check for password match
       setMessage("Passwords do not match");
       setPassword("");
       setConfirmPassword("");
@@ -25,10 +28,12 @@ function RegistrationPage() {
     }
 
     const { data, error } = await supabase.auth.signUp({
+      // Supabase function to register a new user
       email: email,
       password: password,
       options: {
         data: {
+          // Set the display name as a concatenation of first and last name
           firstName: firstName,
           lastName: lastName,
         },
@@ -36,6 +41,7 @@ function RegistrationPage() {
     });
 
     if (error) {
+      // If there is an error, set the message to the error message and clear the form
       setMessage(error.message);
       setEmail("");
       setPassword("");
@@ -45,13 +51,14 @@ function RegistrationPage() {
       return;
     }
     if (data) {
+      // If registration is successful, set the message to success and clear the form
       setMessage("Registration successful!");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
       setFirstName("");
       setLastName("");
-      navigate("/login");
+      navigate("/login"); // Redirect to login page
     }
   };
 

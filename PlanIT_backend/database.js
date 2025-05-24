@@ -15,7 +15,7 @@ dotenv.config();
 //   connectionTimeoutMillis: Number(process.env.PGCONNECT_TIMEOUT) * 1000,
 // });
 
-// Port Specifications
+// Port Specifications (connect to supabase)
 // Create Pool
 const pool = new Pool({
   connectionString: 'postgresql://postgres.tawzugumouawtstryldu:J_1129l12345@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres',
@@ -39,13 +39,13 @@ export async function testUserAccounts() {
 }
 
 // insert new user
-export async function createUser(username, password_hash, email) {
+export async function createUser(user_id, username, password_hash, email) {
   // RETURNING * to get the inserted row
   const result = await pool.query(
-    `INSERT INTO users (username, password_hash, email)
-     VALUES ($1, $2, $3)
+    `INSERT INTO users (user_id, username, password_hash, email)
+     VALUES ($1, $2, $3, $4)
      RETURNING *;`,
-    [username, password_hash, email]
+    [user_id, username, password_hash, email]
   );
 
   // result.rows is an array of returned rows; we only inserted one
@@ -87,6 +87,32 @@ export async function getTotalBalance(accountId) {
   return res.rows[0] || null;
 }
 
+// access account spending balance
+export async function getSpendingBalance(accountId) {
+  const res = await pool.query(`
+    SELECT spending_balance FROM accounts WHERE account_id = $1;
+    `, [accountId]
+  );
+  return res.rows[0] || null;
+}
+
+// access account saving balance
+export async function getSavingBalance(accountId) {
+  const res = await pool.query(`
+    SELECT saving_balance FROM accounts WHERE account_id = $1;
+    `, [accountId]
+  );
+  return res.rows[0] || null;
+}
+
+// access amount spent in the account
+export async function getActualSpending(accountId) {
+  const res = await pool.query(`
+    SELECT actual_spending FROM accounts WHERE account_id = $1;
+    `, [accountId]
+  );
+  return res.rows[0] || null;
+}
 
 /* Savings */ 
 // Modify Saving balance

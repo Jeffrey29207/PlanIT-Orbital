@@ -3,15 +3,20 @@
 e.g: http://localhost:8080/testUsers */
 
 
-import express from 'express'
+import express from 'express';
+import cors from 'cors';
 import 'dotenv/config';
 import { testUsers, testUserAccounts, createUser, 
-    createUserAccount, setSavings, getTotalBalance,
+    createUserAccount, setSavings, 
+    getTotalBalance, getSpendingBalance, getSavingBalance, getActualSpending,
     transferSavingsToSpending, transferSpendingToSavings,
     recordOneTimeSpend, undoOneTimeSpend,
   setRecurringSpending, refreshRecurringSpending, scheduleRecurringSpend, deleteRecurringSpend} from './database.js';
 
 const app = express()
+
+// allow any react server on localhost 3000 to fetch from the backend server
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 app.use(express.json())
 
@@ -31,8 +36,8 @@ app.get("/testAccounts", async (req, res) => {
 
 //Add User//
 app.post("/data/addUser", async (req, res) => {
-    const {username, password_hash, email} = req.body
-    const user = await createUser(username, password_hash, email)
+    const {user_id, username, password_hash, email} = req.body
+    const user = await createUser(user_id, username, password_hash, email)
     res.status(201).send(user)
 })
 
@@ -43,12 +48,50 @@ app.post("/data/addUserAccount", async (req, res) => {
     res.status(201).send(userAccount)
 })
 
-//return total balance of a user using userId as key
+// Reading values from account table //
+
+//return total balance of a user account using userId as key
 //return format: {"total_balance": "0.00"}
 app.get("/accounts/:id/getTotalBalance", async (req, res) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getTotalBalance(accountId);
+      res.status(200).json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+//return spending balance of a user account using userId as key
+//return format: {"spending_balance": "0.00"}
+app.get("/accounts/:id/getSpendingBalance", async (req, res) => {
+    try {
+      const accountId = Number(req.params.id);
+      const updated = await getSpendingBalance(accountId);
+      res.status(200).json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+//return saving balance of a user account using userId as key
+//return format: {"saving_balance": "0.00"}
+app.get("/accounts/:id/getSavingBalance", async (req, res) => {
+    try {
+      const accountId = Number(req.params.id);
+      const updated = await getSavingBalance(accountId);
+      res.status(200).json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+//return actual amount spent of a user account using userId as key
+//return format: {"actual_spending": "0.00"}
+app.get("/accounts/:id/getActualSpending", async (req, res) => {
+    try {
+      const accountId = Number(req.params.id);
+      const updated = await getActualSpending(accountId);
       res.status(200).json(updated);
     } catch (err) {
       next(err);

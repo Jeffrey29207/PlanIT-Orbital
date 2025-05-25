@@ -4,6 +4,7 @@ import Home from "./Home.tsx";
 import LandingPage from "./components/LandingPage/LandingPage.tsx";
 import RegistrationPage from "./components/RegistrationPage/RegistrationPage.tsx";
 import LoginPage from "./components/LoginPage/LoginPage.tsx";
+import Wrapper from "./components/wrapper.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -21,7 +22,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/home",
-    element: <Home />,
+    element: (
+      <Wrapper>
+        <Home />
+      </Wrapper>
+    ),
   },
 ]);
 

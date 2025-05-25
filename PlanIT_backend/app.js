@@ -16,7 +16,7 @@ import { testUsers, testUserAccounts, createUser,
 const app = express()
 
 // allow any react server on localhost 3000 to fetch from the backend server
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:5173'] }));
 
 app.use(express.json())
 

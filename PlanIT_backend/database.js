@@ -325,6 +325,20 @@ export async function undoOneTimeSpend(transactionId, accountId, description = '
 
 /* Recurring Spending */ 
 
+// read all recurring transactions of a user account
+// arranged from earlist to latest 'next_run_at' timestamp
+export async function getRecurringSpending(accountId) {
+  const {rows} = await pool.query(`
+    SELECT amount, category, next_run_at
+    FROM recurring_transactions
+    WHERE account_id = $1
+    ORDER BY next_run_at ASC;
+    `, [accountId]
+  );
+  return rows;
+}
+
+
 // Set recurring spendings
 export async function setRecurringSpending(accountId, amount, category, frequency, interval, next_run_at) {
 

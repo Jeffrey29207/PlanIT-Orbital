@@ -3,18 +3,17 @@ import "./MenuStyle.css";
 import logout from "../../assets/logout.ico";
 import supabase from "../../helper/config";
 import { useNavigate } from "react-router-dom";
+import type { ReactElement } from "react";
 
-function Menu() {
-  const links = [
-    { name: "HOME", url: "index.html" },
-    { name: "SAVING", url: "index.html" },
-    { name: "SPENDING", url: "index.html" },
-  ];
+interface Props {
+  links: {
+    name: string;
+    component: ReactElement;
+  }[];
+  onSelectItem: (component: ReactElement) => void;
+}
 
-  const onSelectItem = (name: string) => {
-    console.log(`Selected item: ${name}`);
-  };
-
+function Menu({ links, onSelectItem }: Props) {
   const navigate = useNavigate();
 
   // Function to handle logout

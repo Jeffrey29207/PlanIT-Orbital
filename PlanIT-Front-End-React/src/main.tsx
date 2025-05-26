@@ -4,7 +4,7 @@ import Home from "./Home.tsx";
 import LandingPage from "./components/LandingPage/LandingPage.tsx";
 import RegistrationPage from "./components/RegistrationPage/RegistrationPage.tsx";
 import LoginPage from "./components/LoginPage/LoginPage.tsx";
-import Wrapper from "./components/wrapper.tsx";
+import Wrapper from "./components/Wrapper.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([

@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, type ReactElement } from "react";
 
 interface Props {
   links: {
     name: string;
-    url: string;
+    component: ReactElement;
   }[];
-  onSelectItem: (name: string) => void;
+  onSelectItem: (component: ReactElement) => void;
 }
 
 function ListOf({ links, onSelectItem }: Props) {
@@ -21,7 +21,7 @@ function ListOf({ links, onSelectItem }: Props) {
           }
           onClick={() => {
             setSelectedItem(index);
-            onSelectItem(link.name);
+            onSelectItem(link.component);
           }}
         >
           {link.name}

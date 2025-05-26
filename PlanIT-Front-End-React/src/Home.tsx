@@ -3,12 +3,13 @@ import Menu from "./components/Menu/Menu";
 import "./HomeStyle.css";
 import "bootstrap/dist/css/bootstrap.css";
 import SavingDashboard from "./components/SavingDashboard/SavingDashboard";
+import SpendingDashboard from "./components/SpendingDashboard/SpendingDashboard";
 
 function Home() {
   return (
     <div id="homePage">
       <Menu />
-      <HomeDashboard />
+      <SpendingDashboard />
     </div>
   );
 }

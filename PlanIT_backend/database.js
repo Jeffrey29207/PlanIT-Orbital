@@ -803,6 +803,6 @@ export async function scheduleRecurringTransactions() {
   const updatedSpendings = await recordRecurringSpend(recurringSpendingArray);
   const recurringIncomeArray = await refreshRecurringIncome();
   const updatedIncomes = await recordRecurringIncome(recurringIncomeArray);
-  console.log("Spending Scheduler has ran");
+  console.log("Recurring transaction Scheduler has ran");
   return [updatedSpendings, updatedIncomes];
 }

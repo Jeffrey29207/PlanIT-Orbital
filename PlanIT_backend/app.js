@@ -11,7 +11,7 @@ import { testUsers, testUserAccounts, createUser,
     getTotalBalance, getSpendingBalance, getSavingBalance, getActualSpending,
     transferSavingsToSpending, transferSpendingToSavings,
     recordOneTimeSpend, undoOneTimeSpend,
-  setRecurringSpending, refreshRecurringSpending, scheduleRecurringSpend, deleteRecurringSpend} from './database.js';
+  getRecurringSpending, setRecurringSpending, refreshRecurringSpending, scheduleRecurringSpend, deleteRecurringSpend} from './database.js';
 
 const app = express()
 
@@ -164,6 +164,20 @@ app.post("/accounts/:id/undoOneTimeSpend", async (req, res, next) => {
   
       const updated = await undoOneTimeSpend(transactionId, accountId);
       res.json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+
+// read all recurring spending of a user account
+// arranged from earliest to latest next_run_at timestamp
+// input account id
+app.get("/accounts/:id/getRecurringSpending", async (req, res) => {
+    try {
+      const accountId = Number(req.params.id);
+      const updated = await getRecurringSpending(accountId);
+      res.status(200).json(updated);
     } catch (err) {
       next(err);
     }

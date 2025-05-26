@@ -92,7 +92,7 @@ function HomeDashboard() {
       <div className="mainDashboardBlocks transactionGraph lineChart">
         {transactionGraph}
       </div>
-      <div className="mainDashboardBlocks transactionHistory history">
+      <div className="mainDashboardBlocks transactionRecords records">
         <Table data={history} />
       </div>
       <div className="mainDashboardBlocks savingDashboard numericDashboard">

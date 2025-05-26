@@ -1,5 +1,5 @@
 #table {
-    min-width: 340px;
+    min-width: 400px;
 }
 
 #table * {
@@ -7,6 +7,6 @@
     text-align: center;
 }
 
-.history .chartContainer {
+.records .chartContainer {
     align-items: first baseline;
 }

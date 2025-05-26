@@ -2,6 +2,7 @@ import "./RegistrationPageStyle.css";
 import supabase from "../../helper/Config";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { addUserAccount } from "../../helper/BackendAPI";
 
 function RegistrationPage() {
   const [email, setEmail] = useState("");
@@ -58,7 +59,16 @@ function RegistrationPage() {
       setConfirmPassword("");
       setFirstName("");
       setLastName("");
-      navigate("/login"); // Redirect to login page
+
+      const { user } = data;
+
+      if (user) {
+        const account = await addUserAccount(user.id);
+        console.log("Account created:", account);
+        navigate("/login"); // Redirect to login page
+      } else {
+        setMessage("User account creation failed. Please try again.");
+      }
     }
   };
 

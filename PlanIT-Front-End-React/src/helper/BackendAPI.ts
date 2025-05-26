@@ -1,51 +1,41 @@
 const backendAPI = "http://localhost:8080";
 
-export const testUsers = () => {
-    return fetch(`${backendAPI}/testUsers`).then(response => response.json());
+export const testUsers = async () => {
+    return await fetch(`${backendAPI}/testUsers`).then(response => response.json());
 }
 
-export const testAccount = () => {
-    return fetch(`${backendAPI}/testAccounts`).then(response => response.json());
+export const testAccount = async () => {
+    return await fetch(`${backendAPI}/testAccounts`).then(response => response.json());
 }
 
-export const addUserAccount = (userID: string) => {
-    return fetch(`${backendAPI}/data/addUserAccount`, {
+export const addUserAccount = async (userId: string) => {
+    return await fetch(`${backendAPI}/data/addUserAccount`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ userID })
+        body: JSON.stringify({ userId })
     }).then(response => response.json());
 }
 
-export const getTotalBalance = (userId: string) => {
-    return fetch(`${backendAPI}/accounts/${userId}/getTotalBalance`).then(response => response.json());
+export const getTotalBalance = async (userId: string) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/getTotalBalance`).then(response => response.json());
 }
 
-export const getSpendingBalance = (userId: string) => {
-    return fetch(`${backendAPI}/accounts/${userId}/getSpendingBalance`).then(response => response.json());
+export const getSpendingBalance = async (userId: string) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/getSpendingBalance`).then(response => response.json());
 }
 
-export const getSavingBalance = (userId: string) => {
-    return fetch(`${backendAPI}/accounts/${userId}/getSavingBalance`).then(response => response.json());
+export const getSavingBalance = async (userId: string) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/getSavingBalance`).then(response => response.json());
 }
 
-export const getActualSpendind = (userId: string) => {
-    return fetch(`${backendAPI}/accounts/${userId}/getActualSpending`).then(response => response.json());
+export const getActualSpending = async (userId: string) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/getActualSpending`).then(response => response.json());
 }
 
-export const setSavings = (userId: string, amount: number) => {
-    return fetch(`${backendAPI}/accounts/${userId}/setSavings`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ amount })
-    }).then(response => response.json());
-}
-
-export const transferSaving = (userId: string, amount: number) => {
-    return fetch(`${backendAPI}/accounts/${userId}/transferSaving`, {
+export const setSavings = async (userId: string, amount: number) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/setSavings`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -54,8 +44,8 @@ export const transferSaving = (userId: string, amount: number) => {
     }).then(response => response.json());
 }
 
-export const transferSpending = (userId: string, amount: number) => {
-    return fetch(`${backendAPI}/accounts/${userId}/transferSpending`, {
+export const transferSaving = async (userId: string, amount: number) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/transferSaving`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -64,8 +54,18 @@ export const transferSpending = (userId: string, amount: number) => {
     }).then(response => response.json());
 }
 
-export const oneTimeSpend = (userId: string, amount: number, category: string, description: string) => {
-    return fetch(`${backendAPI}/accounts/${userId}/oneTimeSpend`, {
+export const transferSpending = async (userId: string, amount: number) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/transferSpending`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount })
+    }).then(response => response.json());
+}
+
+export const oneTimeSpend = async (userId: string, amount: number, category: string, description: string) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/oneTimeSpend`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -74,8 +74,8 @@ export const oneTimeSpend = (userId: string, amount: number, category: string, d
     }).then(response => response.json());
 }
 
-export const undoOneTimeSpend = (userId: string, transactionId: string) => {
-    return fetch(`${backendAPI}/accounts/${userId}/undoOneTimeSpend`, {
+export const undoOneTimeSpend = async (userId: string, transactionId: string) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/undoOneTimeSpend`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -84,8 +84,8 @@ export const undoOneTimeSpend = (userId: string, transactionId: string) => {
     }).then(response => response.json());
 }
 
-export const recurringSpend = (userId: string, amount: number, category: string, frequency: string, interval: number, next_run_at: string) => {
-    return fetch(`${backendAPI}/accounts/${userId}/recurringSpend`, {
+export const recurringSpend = async (userId: string, amount: number, category: string, frequency: string, interval: number, next_run_at: string) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/recurringSpend`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -94,8 +94,8 @@ export const recurringSpend = (userId: string, amount: number, category: string,
     }).then(response => response.json());
 }
 
-export const refreshRecurSpend = (userId: string) => {
-    return fetch(`${backendAPI}/accounts/${userId}/refreshRecurSpend`, {
+export const refreshRecurSpend = async (userId: string) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/refreshRecurSpend`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -103,8 +103,8 @@ export const refreshRecurSpend = (userId: string) => {
     }).then(response => response.json());
 }
 
-export const scheduleRecurSpend = (userId: string) => {
-    return fetch(`${backendAPI}/accounts/${userId}/scheduleRecurSpend`, {
+export const scheduleRecurSpend = async (userId: string) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/scheduleRecurSpend`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -112,8 +112,8 @@ export const scheduleRecurSpend = (userId: string) => {
     }).then(response => response.json());
 }
 
-export const deleteRecurringSpend = (userId: string, recurId: number) => {
-    return fetch(`${backendAPI}/accounts/${userId}/deleteRecurringSpend`, {
+export const deleteRecurringSpend = async (userId: string, recurId: number) => {
+    return await fetch(`${backendAPI}/accounts/${userId}/deleteRecurringSpend`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

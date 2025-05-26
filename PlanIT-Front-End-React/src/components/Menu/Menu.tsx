@@ -1,9 +1,10 @@
 import ListOf from "../ListOf";
 import "./MenuStyle.css";
 import logout from "../../assets/logout.ico";
+import menu from "../../assets/menu.svg";
 import supabase from "../../helper/config";
 import { useNavigate } from "react-router-dom";
-import type { ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 
 interface Props {
   links: {
@@ -14,6 +15,8 @@ interface Props {
 }
 
 function Menu({ links, onSelectItem }: Props) {
+  const [clicked, setClicked] = useState(false);
+
   const navigate = useNavigate();
 
   // Function to handle logout
@@ -41,8 +44,23 @@ function Menu({ links, onSelectItem }: Props) {
       <div className="menuContainer">
         <ListOf links={links} onSelectItem={onSelectItem} />
       </div>
-      <div className="menuIcon" onClick={handleClickIcon}>
-        <img src={logout} alt="menu" />
+      <div className="dropdown">
+        <div className="menuIcon" onClick={() => setClicked(!clicked)}>
+          <img src={menu} alt="menu" />
+        </div>
+        {clicked && (
+          <ListOf
+            links={[
+              ...links,
+              { name: "LOGOUT", component: links[0].component },
+            ]}
+            onSelectItem={onSelectItem}
+            logoutFunction={handleClickIcon}
+          />
+        )}
+      </div>
+      <div className="logoutIcon" onClick={handleClickIcon}>
+        <img src={logout} alt="logout" />
       </div>
     </div>
   );

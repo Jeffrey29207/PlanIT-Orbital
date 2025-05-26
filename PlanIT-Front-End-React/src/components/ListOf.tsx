@@ -6,9 +6,10 @@ interface Props {
     component: ReactElement;
   }[];
   onSelectItem: (component: ReactElement) => void;
+  logoutFunction?: () => void;
 }
 
-function ListOf({ links, onSelectItem }: Props) {
+function ListOf({ links, onSelectItem, logoutFunction }: Props) {
   const [selectedItem, setSelectedItem] = useState(0);
 
   return (
@@ -20,6 +21,11 @@ function ListOf({ links, onSelectItem }: Props) {
             index === selectedItem ? "list-group-item click" : "list-group-item"
           }
           onClick={() => {
+            if (link.name === "LOGOUT") {
+              if (logoutFunction) {
+                logoutFunction();
+              }
+            }
             setSelectedItem(index);
             onSelectItem(link.component);
           }}

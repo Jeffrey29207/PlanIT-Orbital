@@ -1,5 +1,5 @@
 import "./LoginPageStyle.css";
-import supabase from "../../helper/config";
+import supabase from "../../helper/Config";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 

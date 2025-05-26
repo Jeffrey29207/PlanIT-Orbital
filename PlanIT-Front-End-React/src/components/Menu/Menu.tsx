@@ -2,7 +2,7 @@ import ListOf from "../ListOf";
 import "./MenuStyle.css";
 import logout from "../../assets/logout.ico";
 import menu from "../../assets/menu.svg";
-import supabase from "../../helper/config";
+import supabase from "../../helper/Config";
 import { useNavigate } from "react-router-dom";
 import { useState, type ReactElement } from "react";
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, type PropsWithChildren } from "react";
-import supabase from "../helper/config";
+import supabase from "../helper/Config";
 import { Navigate } from "react-router-dom";
 
 function Wrapper({ children }: PropsWithChildren) {

@@ -3,6 +3,7 @@ import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
 import LineChart from "../LineChart";
 import Table from "../Table/Table";
+import Input from "../Input/Input";
 
 function SpendingDashboard() {
   const spendingDonut = (
@@ -57,6 +58,42 @@ function SpendingDashboard() {
     },
   ];
 
+  const submitTransferSpending = (
+    event: React.FormEvent<HTMLFormElement>,
+    value: number
+  ) => {
+    event.preventDefault();
+    console.log(`Transfer spending: ${value}`);
+  };
+
+  const submitOTS = (
+    event: React.FormEvent<HTMLFormElement>,
+    value: number
+  ) => {
+    event.preventDefault();
+    console.log(`Submit one time spend: ${value}`);
+  };
+
+  const undoOTS = (event: React.FormEvent<HTMLFormElement>, value: number) => {
+    event.preventDefault();
+    console.log(`Undo one time spend: ${value}`);
+  };
+
+  const submitRecurringSpending = (
+    event: React.FormEvent<HTMLFormElement>,
+    value: number
+  ) => {
+    event.preventDefault();
+    console.log(`Set recurring spending: ${value}`);
+  };
+
+  const inputs = [
+    <Input title="Transfer spending" handleSubmit={submitTransferSpending} />,
+    <Input title="One time spend" handleSubmit={submitOTS} />,
+    <Input title="Undo one time spend" handleSubmit={undoOTS} />,
+    <Input title="Recurring spending" handleSubmit={submitRecurringSpending} />,
+  ];
+
   return (
     <div className="spendingDashboardPage">
       <div className="mainDashboardBlocks spendingDashboard numericDashboard">
@@ -71,7 +108,7 @@ function SpendingDashboard() {
       <div className="mainDashboardBlocks spendingLineGraph lineGraph">
         {transactionGraph}
       </div>
-      <div className="mainDashboardBlocks spendingInput input"></div>
+      <div className="mainDashboardBlocks spendingInput input">{inputs}</div>
       <div className="mainDashboardBlocks spendingRecurringRecords records"></div>
       <div className="mainDashboardBlocks spendingRecords records">
         <Table data={history} />

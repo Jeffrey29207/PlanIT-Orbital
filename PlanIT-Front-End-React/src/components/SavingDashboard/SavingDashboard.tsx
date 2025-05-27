@@ -66,6 +66,28 @@ function SavingDashboard() {
     console.log(`Adding saving: ${value}`);
   };
 
+  const submitTransferSaving = (
+    event: React.FormEvent<HTMLFormElement>,
+    value: number
+  ) => {
+    event.preventDefault();
+    console.log(`Transferring saving: ${value}`);
+  };
+
+  const submitSetTargetSaving = (
+    event: React.FormEvent<HTMLFormElement>,
+    value: number
+  ) => {
+    event.preventDefault();
+    console.log(`Setting target saving: ${value}`);
+  };
+
+  const inputs = [
+    <Input title="Add saving" handleSubmit={submitAddSaving} />,
+    <Input title="Transfer saving" handleSubmit={submitTransferSaving} />,
+    <Input title="Set target saving" handleSubmit={submitSetTargetSaving} />,
+  ];
+
   return (
     <div className="savingDashboardPage">
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
@@ -80,9 +102,7 @@ function SavingDashboard() {
       <div className="mainDashboardBlocks savingLineGraph lineGraph">
         {transactionGraph}
       </div>
-      <div className="mainDashboardBlocks savingInput input">
-        <Input title="Add saving" handleSubmit={submitAddSaving} />
-      </div>
+      <div className="mainDashboardBlocks savingInput input">{inputs}</div>
       <div className="mainDashboardBlocks savingRecurringRecords records"></div>
       <div className="mainDashboardBlocks savingRecords records">
         <Table data={history} />

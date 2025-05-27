@@ -116,7 +116,7 @@
         display: grid;
         gap: 1.5rem;
         grid-auto-columns: 1fr;
-        grid-auto-rows: minmax(120px, auto);
+        grid-auto-rows: 1fr;
         grid-template-areas:
         'spendingDashboard spendingDashboard spendedDashboard spendedDashboard spendingInput spendingInput'
         'spendingGraph spendingGraph spendingRecurringRecords spendingRecurringRecords spendingRecords spendingRecords'
@@ -128,5 +128,9 @@
     .mainDashboardBlocks {
         border-radius: 1rem;
         background-color: rgba(250, 254, 255, 0.2);
+    }
+
+    .input {
+        overflow-y: auto;;
     }
 }

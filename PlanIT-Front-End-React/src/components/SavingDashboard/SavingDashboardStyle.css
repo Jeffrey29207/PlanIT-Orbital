@@ -64,6 +64,10 @@
     padding: 10px;
 }
 
+.input {
+    overflow-y: auto;
+}
+
 /* Setting things for tablet screens */
 @media screen and (min-width: 900px) {
     /* Setting the dashboard for tablet*/
@@ -116,7 +120,7 @@
         display: grid;
         gap: 1.5rem;
         grid-auto-columns: 1fr;
-        grid-auto-rows: minmax(120px, auto);
+        grid-auto-rows: 1fr;
         grid-template-areas:
         'savingDashboard savingDashboard savingTargetDashboard savingTargetDashboard savingInput savingInput'
         'savingGraph savingGraph savingRecurringRecords savingRecurringRecords savingRecords savingRecords'

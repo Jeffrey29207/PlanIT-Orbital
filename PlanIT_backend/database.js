@@ -78,6 +78,20 @@ export async function createUserAccount(userId) {
   return result.rows[0];
 }
 
+
+// access user's account id(s)
+export async function getAccountId(userId) {
+  const result = await pool.query(`
+    SELECT account_id FROM accounts WHERE user_id = $1;
+    `, [userId]
+  );
+  if (result.rows.length === 0) {
+    throw new Error("no user accounts found");
+  }
+  return {account_id: result.rows[0]};
+}
+
+
 // access account total balance
 export async function getTotalBalance(accountId) {
   const res = await pool.query(`
@@ -114,9 +128,23 @@ export async function getActualSpending(accountId) {
   return res.rows[0] || null;
 }
 
+// access savings target for the account
+export async function getSavingTarget(accountId) {
+  const res = await pool.query(`
+    SELECT saving_target FROM accounts WHERE account_id = $1;
+    `, [accountId]
+  );
+  return res.rows[0] || null;
+}
+
 /* Savings */ 
 // Modify Saving balance
 export async function setSavings(newAmount, account_id) {
+
+  if (newAmount < 0) {
+    throw new Error("saving balance must be non-negative");
+  }
+
   const result = await pool.query(
     `
     UPDATE accounts
@@ -168,7 +196,7 @@ export async function recordOneTimeIncome(accountId, amount, category, descripti
     await client.query(
       `INSERT INTO transactions
         (account_id, tx_type, subtype, amount, category, description)
-      VALUES ($1, 'spend', 'modify_savings', $2, $3, $4)`,
+      VALUES ($1, 'save', 'modify_savings', $2, $3, $4)`,
       [accountId, amount, category, description]
     );
 
@@ -313,7 +341,7 @@ export async function recordOneTimeSpend(accountId, amount, category, descriptio
 }
 
 
-//undo a one-time transaction
+//undo a one-time spending transaction
 //same as subtracting the amount of the one time transaction
 export async function undoOneTimeSpend(transactionId, accountId, description = 'cancellation') {
   const client = await pool.connect();
@@ -393,7 +421,7 @@ export async function undoOneTimeSpend(transactionId, accountId, description = '
 // arranged from earlist to latest 'next_run_at' timestamp
 export async function getRecurringSpending(accountId) {
   const {rows} = await pool.query(`
-    SELECT amount, category, next_run_at
+    SELECT recur_id, amount, category, next_run_at
     FROM recurring_spending
     WHERE account_id = $1
     ORDER BY next_run_at ASC;
@@ -600,7 +628,7 @@ export async function pauseRecurringSpend(recur_id, accountId, description = 'pa
 // arranged from earlist to latest 'next_run_at' timestamp
 export async function getRecurringIncome(accountId) {
   const {rows} = await pool.query(`
-    SELECT amount, category, next_run_at
+    SELECT recur_id, amount, category, next_run_at
     FROM recurring_income
     WHERE account_id = $1
     ORDER BY next_run_at ASC;
@@ -805,4 +833,16 @@ export async function scheduleRecurringTransactions() {
   const updatedIncomes = await recordRecurringIncome(recurringIncomeArray);
   console.log("Recurring transaction Scheduler has ran");
   return [updatedSpendings, updatedIncomes];
+}
+
+
+// read transaction history of a user account
+// takes in account_id as argument
+export async function getTransactionHistory(accountId) {
+  const res = await pool.query(`
+    SELECT * FROM transactions WHERE account_id = $1
+    ORDER BY created_at DESC;
+    `, [accountId]
+  );
+  return res.rows;
 }

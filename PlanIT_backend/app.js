@@ -7,13 +7,13 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { testUsers, testUserAccounts, createUser, 
-    createUserAccount, setSavings, setSavingTarget,
-    getTotalBalance, getSpendingBalance, getSavingBalance, getActualSpending,
+    createUserAccount, setSavings, setSavingTarget, recordOneTimeIncome,
+    getAccountId, getTotalBalance, getSpendingBalance, getSavingBalance, getActualSpending, getSavingTarget,
     transferSavingsToSpending, transferSpendingToSavings,
     recordOneTimeSpend, undoOneTimeSpend,
     getRecurringSpending, setRecurringSpending, refreshRecurringSpending, deleteRecurringSpend,
     getRecurringIncome, setRecurringIncome, refreshRecurringIncome, deleteRecurringIncome,
-  scheduleRecurringTransactions} from './database.js';
+  scheduleRecurringTransactions, getTransactionHistory} from './database.js';
 
 const app = express()
 
@@ -52,7 +52,20 @@ app.post("/data/addUserAccount", async (req, res) => {
 
 // Reading values from account table //
 
-//return total balance of a user account using userId as key
+
+//return account id(s) of a user account using user_id as key
+//return format: {"account_id": 1}
+app.get("/accounts/:userId/getAccountId", async (req, res, next) => {
+    try {
+      const userId = req.params.userId;
+      const { account_id } = await getAccountId(userId);
+      res.status(200).json(account_id);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+//return total balance of a user account using accountId as key
 //return format: {"total_balance": "0.00"}
 app.get("/accounts/:id/getTotalBalance", async (req, res) => {
     try {
@@ -64,7 +77,7 @@ app.get("/accounts/:id/getTotalBalance", async (req, res) => {
     }
   });
 
-//return spending balance of a user account using userId as key
+//return spending balance of a user account using accountId as key
 //return format: {"spending_balance": "0.00"}
 app.get("/accounts/:id/getSpendingBalance", async (req, res) => {
     try {
@@ -76,7 +89,7 @@ app.get("/accounts/:id/getSpendingBalance", async (req, res) => {
     }
   });
 
-//return saving balance of a user account using userId as key
+//return saving balance of a user account using accountId as key
 //return format: {"saving_balance": "0.00"}
 app.get("/accounts/:id/getSavingBalance", async (req, res) => {
     try {
@@ -88,12 +101,35 @@ app.get("/accounts/:id/getSavingBalance", async (req, res) => {
     }
   });
 
-//return actual amount spent of a user account using userId as key
+//return actual amount spent of a user account using accountid as key
 //return format: {"actual_spending": "0.00"}
 app.get("/accounts/:id/getActualSpending", async (req, res) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getActualSpending(accountId);
+      res.status(200).json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+//return savings target of a user account using accountid as key
+//return format: {"saving_target": "0.00"}
+app.get("/accounts/:id/getSavingTarget", async (req, res) => {
+    try {
+      const accountId = Number(req.params.id);
+      const updated = await getSavingTarget(accountId);
+      res.status(200).json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+//return transaction history of a user account using accountId as key
+app.get("/accounts/:id/getTransactionHistory", async (req, res) => {
+    try {
+      const accountId = Number(req.params.id);
+      const updated = await getTransactionHistory(accountId);
       res.status(200).json(updated);
     } catch (err) {
       next(err);
@@ -126,6 +162,18 @@ app.post("/accounts/:id/setSavingTarget", async (req, res, next) => {
     }
   });
 
+// make a one-time income transaction to savings account
+app.post("/accounts/:id/oneTimeIncome", async (req, res, next) => {
+    try {
+      const accountId = Number(req.params.id);
+      const {amount, category, description} = req.body;
+  
+      const updated = await recordOneTimeIncome(accountId, amount, category, description);
+      res.json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 ///transfers///
 
@@ -157,7 +205,7 @@ app.post("/accounts/:id/transferSpending", async (req, res, next) => {
 
 /// Spending ///
 
-// make a one-time transaction
+// make a one-time spending transaction
 app.post("/accounts/:id/oneTimeSpend", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);
@@ -170,7 +218,7 @@ app.post("/accounts/:id/oneTimeSpend", async (req, res, next) => {
     }
   });
 
-// undo one-time transaction
+// undo one-time spending transaction
 app.post("/accounts/:id/undoOneTimeSpend", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);

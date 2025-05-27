@@ -3,6 +3,7 @@ import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
 import LineChart from "../LineChart";
 import Table from "../Table/Table";
+import Input from "../Input/Input";
 
 function SavingDashboard() {
   const savingDonut = (
@@ -57,13 +58,21 @@ function SavingDashboard() {
     },
   ];
 
+  const submitAddSaving = (
+    event: React.FormEvent<HTMLFormElement>,
+    value: number
+  ) => {
+    event.preventDefault();
+    console.log(`Adding saving: ${value}`);
+  };
+
   return (
     <div className="savingDashboardPage">
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
         <NumericDashboard title="Saving account" value={900000} />
       </div>
       <div className="mainDashboardBlocks savingTargetDashboard numericDashboard">
-        <NumericDashboard title="Saving Target" value={3900000} />
+        <NumericDashboard title="Saving target" value={3900000} />
       </div>
       <div className="mainDashboardBlocks savingGraph pieChart">
         {savingDonut}
@@ -71,7 +80,9 @@ function SavingDashboard() {
       <div className="mainDashboardBlocks savingLineGraph lineGraph">
         {transactionGraph}
       </div>
-      <div className="mainDashboardBlocks savingInput input"></div>
+      <div className="mainDashboardBlocks savingInput input">
+        <Input title="Add saving" handleSubmit={submitAddSaving} />
+      </div>
       <div className="mainDashboardBlocks savingRecurringRecords records"></div>
       <div className="mainDashboardBlocks savingRecords records">
         <Table data={history} />

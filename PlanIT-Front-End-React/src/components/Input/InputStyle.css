@@ -1,0 +1,20 @@
+.inputForm input {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.inputForm button {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: rgb(0, 103, 0);
+    color: white;
+    cursor: pointer;
+}
+
+.input .chart {
+    max-height: 60%; 
+}

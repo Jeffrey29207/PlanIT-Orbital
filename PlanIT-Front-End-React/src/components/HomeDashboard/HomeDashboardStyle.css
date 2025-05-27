@@ -60,8 +60,7 @@
         'savingDashboard'
         'savingGraph' 
         'savingGraph';
-    overflow-y: auto;  /* Enable vertical scrolling */
-    -webkit-overflow-scrolling: touch;  /* Smooth scrolling on iOS */
+    overflow-y: auto; 
 
 }
 

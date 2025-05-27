@@ -4,13 +4,44 @@ import DoughnutChart from "../DoughnutChart";
 import LineChart from "../LineChart";
 import Table from "../Table/Table";
 import Input from "../Input/Input";
+import { useState, useEffect } from "react";
+import {
+  transferSpending,
+  getSpendingBalance,
+  getActualSpending,
+} from "../../helper/BackendAPI";
 
-function SpendingDashboard() {
+interface Props {
+  accountId: number;
+}
+
+function SpendingDashboard({ accountId }: Props) {
+  const [spendingBalance, setSpendingBalance] = useState(100000);
+  const [spended, setSpended] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const balance = await getSpendingBalance(accountId);
+        setSpendingBalance(balance);
+        const actualSpending = await getActualSpending(accountId);
+        setSpended(actualSpending);
+      } catch (error) {
+        console.error("Error fetching spending data:", error);
+      }
+    };
+    fetchData();
+    const interval = setInterval(fetchData, 1000); // Realtime update every second
+    return () => {
+      clearInterval(interval); // Clear the interval on component unmount
+    };
+  }, [accountId]);
+
   const spendingDonut = (
     <DoughnutChart
       title="Spending balance"
       labels={["Spendable", "Spended"]}
-      data={[100000, 0]}
+      data={[spendingBalance, spended]}
       colors={["#AD0101", "#FAFAFA"]}
     />
   );
@@ -58,11 +89,14 @@ function SpendingDashboard() {
     },
   ];
 
-  const submitTransferSpending = (
+  const submitTransferSpending = async (
     event: React.FormEvent<HTMLFormElement>,
     value: number
   ) => {
     event.preventDefault();
+
+    await transferSpending(accountId, value);
+
     console.log(`Transfer spending: ${value}`);
   };
 
@@ -71,12 +105,8 @@ function SpendingDashboard() {
     value: number
   ) => {
     event.preventDefault();
-    console.log(`Submit one time spend: ${value}`);
-  };
 
-  const undoOTS = (event: React.FormEvent<HTMLFormElement>, value: number) => {
-    event.preventDefault();
-    console.log(`Undo one time spend: ${value}`);
+    console.log(`Submit one time spend: ${value}`);
   };
 
   const submitRecurringSpending = (
@@ -88,19 +118,26 @@ function SpendingDashboard() {
   };
 
   const inputs = [
-    <Input title="Transfer spending" handleSubmit={submitTransferSpending} />,
-    <Input title="One time spend" handleSubmit={submitOTS} />,
-    <Input title="Undo one time spend" handleSubmit={undoOTS} />,
-    <Input title="Recurring spending" handleSubmit={submitRecurringSpending} />,
+    <Input
+      key={1}
+      title="Transfer spending"
+      handleSubmit={submitTransferSpending}
+    />,
+    <Input key={2} title="One time spend" handleSubmit={submitOTS} />,
+    <Input
+      key={3}
+      title="Recurring spending"
+      handleSubmit={submitRecurringSpending}
+    />,
   ];
 
   return (
     <div className="spendingDashboardPage">
       <div className="mainDashboardBlocks spendingDashboard numericDashboard">
-        <NumericDashboard title="Spending account" value={100000} />
+        <NumericDashboard title="Spending account" value={spendingBalance} />
       </div>
       <div className="mainDashboardBlocks spendedDashboard numericDashboard">
-        <NumericDashboard title="Spended" value={0} />
+        <NumericDashboard title="Spended" value={spended} />
       </div>
       <div className="mainDashboardBlocks spendingGraph pieChart">
         {spendingDonut}

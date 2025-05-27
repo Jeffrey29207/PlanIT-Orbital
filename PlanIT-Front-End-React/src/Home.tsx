@@ -7,12 +7,19 @@ import SpendingDashboard from "./components/SpendingDashboard/SpendingDashboard"
 import { type ReactElement, useState } from "react";
 
 function Home() {
-  const [dashboard, setDashboard] = useState<ReactElement>(<HomeDashboard />);
+  const [accountId, setAccountId] = useState<number>(12);
+
+  const [dashboard, setDashboard] = useState<ReactElement>(
+    <HomeDashboard accountId={accountId} />
+  );
 
   const links = [
-    { name: "HOME", component: <HomeDashboard /> },
-    { name: "SAVING", component: <SavingDashboard /> },
-    { name: "SPENDING", component: <SpendingDashboard /> },
+    { name: "HOME", component: <HomeDashboard accountId={accountId} /> },
+    { name: "SAVING", component: <SavingDashboard accountId={accountId} /> },
+    {
+      name: "SPENDING",
+      component: <SpendingDashboard accountId={accountId} />,
+    },
   ];
 
   const onSelectItem = (component: ReactElement) => {

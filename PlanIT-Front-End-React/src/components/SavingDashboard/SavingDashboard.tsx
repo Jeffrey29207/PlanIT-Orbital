@@ -4,13 +4,41 @@ import DoughnutChart from "../DoughnutChart";
 import LineChart from "../LineChart";
 import Table from "../Table/Table";
 import Input from "../Input/Input";
+import {
+  setSavings,
+  transferSaving,
+  getSavingBalance,
+} from "../../helper/BackendAPI";
+import { useEffect, useState } from "react";
 
-function SavingDashboard() {
+interface Props {
+  accountId: number;
+}
+
+function SavingDashboard({ accountId }: Props) {
+  const [savingBalance, setSavingBalance] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const balance = await getSavingBalance(accountId);
+        setSavingBalance(balance);
+      } catch (error) {
+        console.error("Error fetching saving balance:", error);
+      }
+    };
+    fetchData();
+    const interval = setInterval(fetchData, 1000); // Realtime update every second
+    return () => {
+      clearInterval(interval); // Clear the interval on component unmount
+    };
+  }, [accountId]);
+
   const savingDonut = (
     <DoughnutChart
       title="Saving balance"
       labels={["Target", "Saved"]}
-      data={[3000000, 900000]}
+      data={[3000000, savingBalance]}
       colors={["#FAFAFA", "#00B432"]}
     />
   );
@@ -58,19 +86,25 @@ function SavingDashboard() {
     },
   ];
 
-  const submitAddSaving = (
+  const submitSetSaving = async (
     event: React.FormEvent<HTMLFormElement>,
     value: number
   ) => {
     event.preventDefault();
+
+    await setSavings(accountId, value).catch(console.error);
+
     console.log(`Adding saving: ${value}`);
   };
 
-  const submitTransferSaving = (
+  const submitTransferSaving = async (
     event: React.FormEvent<HTMLFormElement>,
     value: number
   ) => {
     event.preventDefault();
+
+    await transferSaving(accountId, value).catch(console.error);
+
     console.log(`Transferring saving: ${value}`);
   };
 
@@ -79,19 +113,28 @@ function SavingDashboard() {
     value: number
   ) => {
     event.preventDefault();
+
     console.log(`Setting target saving: ${value}`);
   };
 
   const inputs = [
-    <Input title="Add saving" handleSubmit={submitAddSaving} />,
-    <Input title="Transfer saving" handleSubmit={submitTransferSaving} />,
-    <Input title="Set target saving" handleSubmit={submitSetTargetSaving} />,
+    <Input key={1} title="Set saving" handleSubmit={submitSetSaving} />,
+    <Input
+      key={2}
+      title="Transfer saving"
+      handleSubmit={submitTransferSaving}
+    />,
+    <Input
+      key={3}
+      title="Set target saving"
+      handleSubmit={submitSetTargetSaving}
+    />,
   ];
 
   return (
     <div className="savingDashboardPage">
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
-        <NumericDashboard title="Saving account" value={900000} />
+        <NumericDashboard title="Saving account" value={savingBalance} />
       </div>
       <div className="mainDashboardBlocks savingTargetDashboard numericDashboard">
         <NumericDashboard title="Saving target" value={3900000} />

@@ -39,7 +39,7 @@ export const getSavingBalance = async (accountId: number) => {
 export const getActualSpending = async (accountId: number) => {
     return await fetch(`${backendAPI}/accounts/${accountId}/getActualSpending`)
     .then(response => response.json())
-    .then(data => {const { actualSpending } = data; return actualSpending;});
+    .then(data => {const { actual_spending } = data; return actual_spending;});
 }
 
 export const setSavings = async (accountId: number, newAmount: number) => {
@@ -143,6 +143,16 @@ export const deleteRecurringSpend = async (recurId: number) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ recurId })
+    }).then(response => response.json());
+}
+
+export const recurringIncome = async (accountId: number, amount: number, category: string, frequency: string, interval: number, next_run_at: string) => {
+    return await fetch(`${backendAPI}/accounts/${accountId}/recurringIncome`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount, category, frequency, interval, next_run_at })
     }).then(response => response.json());
 }
 

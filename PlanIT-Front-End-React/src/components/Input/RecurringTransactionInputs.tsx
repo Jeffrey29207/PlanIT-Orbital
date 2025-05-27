@@ -41,6 +41,7 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
       }}
     >
       <input
+        key={1}
         type="number"
         placeholder="Amount"
         value={amount !== null ? amount : ""}
@@ -50,6 +51,7 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
         className="inputField"
       />
       <input
+        key={2}
         type="text"
         placeholder="Category"
         value={category}
@@ -57,15 +59,17 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
         className="inputField"
       />
       <input
+        key={3}
         type="text"
-        placeholder="Frequency (e.g., daily, weekly)"
+        placeholder="Frequency (min|hour|day|week|month)"
         value={frequency}
         onChange={(e) => setFrequency(e.target.value)}
         className="inputField"
       />
       <input
+        key={4}
         type="number"
-        placeholder="Interval (in days)"
+        placeholder="Interval"
         value={interval !== null ? interval : ""}
         onChange={(e) =>
           setInterval(e.target.value ? parseInt(e.target.value) : null)
@@ -73,8 +77,9 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
         className="inputField"
       />
       <input
-        type="date"
-        placeholder="Next Run At"
+        key={5}
+        type="text"
+        placeholder="Next Run At (YYYY-MM-DD hh:mm:ss)"
         value={nextRunAt}
         onChange={(e) => setNextRunAt(e.target.value)}
         className="inputField"

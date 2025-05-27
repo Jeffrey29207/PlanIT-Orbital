@@ -1,7 +1,17 @@
+.recurringTransactionForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    height: inherit;
+}
+
 .recurringTransactionForm  input {
     margin: 10px;
     padding: 10px;
     border-radius: 5px;
+    width: 80%;
+    min-width: 300px;
     border: 1px solid #ccc;
 }
 
@@ -16,7 +26,7 @@
 }
 
 .input .chart {
-    max-height: 70%; 
+    max-height: 70%;
     overflow: hidden;
 }
 

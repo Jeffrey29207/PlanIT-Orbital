@@ -1,17 +1,17 @@
 interface props {
-  id: number;
-  date: string;
-  type: string;
-  amount: string;
+  content1: any;
+  content2: any;
+  content3: any;
+  content4: any;
 }
 
-function TableData({ id, date, type, amount }: props) {
+function TableData({ content1, content2, content3, content4 }: props) {
   return (
     <tr>
-      <td>{id}</td>
-      <td>{date}</td>
-      <td>{type}</td>
-      <td>{amount}</td>
+      <td>{content1}</td>
+      <td>{content2}</td>
+      <td>{content3}</td>
+      <td>{content4}</td>
     </tr>
   );
 }

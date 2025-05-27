@@ -68,27 +68,6 @@ function SpendingDashboard({ accountId }: Props) {
     />
   );
 
-  const history = [
-    {
-      id: 1,
-      date: "2023-01-01",
-      type: "Recurring",
-      amount: "$1000",
-    },
-    {
-      id: 2,
-      date: "2023-02-01",
-      type: "Recurring",
-      amount: "$500",
-    },
-    {
-      id: 3,
-      date: "2023-03-01",
-      type: "Irregular",
-      amount: "$200",
-    },
-  ];
-
   const submitTransferSpending = async (
     event: React.FormEvent<HTMLFormElement>,
     value: number
@@ -142,13 +121,20 @@ function SpendingDashboard({ accountId }: Props) {
       <div className="mainDashboardBlocks spendingGraph pieChart">
         {spendingDonut}
       </div>
-      <div className="mainDashboardBlocks spendingLineGraph lineGraph">
-        {transactionGraph}
+      <div
+        className="mainDashboardBlocks spendingLineGraph lineGraph"
+        style={{ color: "white" }}
+      >
+        {" "}
+        Transaction graph is not available for milestone 1.
       </div>
       <div className="mainDashboardBlocks spendingInput input">{inputs}</div>
       <div className="mainDashboardBlocks spendingRecurringRecords records"></div>
-      <div className="mainDashboardBlocks spendingRecords records">
-        <Table data={history} />
+      <div
+        className="mainDashboardBlocks spendingRecords records"
+        style={{ color: "white" }}
+      >
+        Transaction history table is not available for milestone 1.
       </div>
     </div>
   );

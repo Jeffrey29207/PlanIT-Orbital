@@ -3,33 +3,42 @@ import "./TableStyle.css";
 import TableData from "./TableData";
 
 interface props {
+  title: string;
+  heading: {
+    heading1: string;
+    heading2: string;
+    heading3: string;
+    heading4: string;
+  };
   data: {
-    id: number;
-    date: string;
-    type: string;
-    amount: string;
+    content1: any;
+    content2: any;
+    content3: any;
+    content4: any;
   }[];
 }
 
-function Table({ data }: props) {
+function Table({ title, heading, data }: props) {
+  const { heading1, heading2, heading3, heading4 } = heading;
+
   const dummy = (
     <table id="table">
       <thead className="tableHeader">
         <tr>
-          <th>ID</th>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Amount</th>
+          <th>{heading1}</th>
+          <th>{heading2}</th>
+          <th>{heading3}</th>
+          <th>{heading4}</th>
         </tr>
       </thead>
       <tbody>
-        {data.map((item) => (
+        {data.map((item, index) => (
           <TableData
-            key={item.id}
-            id={item.id}
-            date={item.date}
-            type={item.type}
-            amount={item.amount}
+            key={index}
+            content1={item.content1}
+            content2={item.content2}
+            content3={item.content3}
+            content4={item.content4}
           />
         ))}
       </tbody>
@@ -37,7 +46,7 @@ function Table({ data }: props) {
   );
   return (
     <>
-      <DashboardContent title="Transaction History" value={dummy} />
+      <DashboardContent title={title} value={dummy} />
     </>
   );
 }

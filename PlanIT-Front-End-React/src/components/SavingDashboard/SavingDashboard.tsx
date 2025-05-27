@@ -4,10 +4,15 @@ import DoughnutChart from "../DoughnutChart";
 import LineChart from "../LineChart";
 import Table from "../Table/Table";
 import Input from "../Input/Input";
+import RecurringTransactionInputs from "../Input/RecurringTransactionInputs";
 import {
   setSavings,
   transferSaving,
   getSavingBalance,
+  recurringIncome,
+  getRecurringIncome,
+  scheduleRecurTransactions,
+  deleteRecurringIncome,
 } from "../../helper/BackendAPI";
 import { useEffect, useState } from "react";
 
@@ -65,26 +70,37 @@ function SavingDashboard({ accountId }: Props) {
     />
   );
 
-  const history = [
-    {
-      id: 1,
-      date: "2023-01-01",
-      type: "Recurring",
-      amount: "$1000",
-    },
-    {
-      id: 2,
-      date: "2023-02-01",
-      type: "Recurring",
-      amount: "$500",
-    },
-    {
-      id: 3,
-      date: "2023-03-01",
-      type: "Irregular",
-      amount: "$200",
-    },
-  ];
+  const recurringSavingTableHeadings = {
+    heading1: "Recurring id",
+    heading2: "Description",
+    heading3: "Amount",
+    heading4: "Next transaction",
+  };
+
+  const [recurringSavingTable, setRecurringSavingTable] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchRecurringIncome = async () => {
+      try {
+        await scheduleRecurTransactions();
+        const data = await getRecurringIncome(accountId);
+        const formattedData = data.map((item: any, index: number) => ({
+          content1: index + 1,
+          content2: item.category,
+          content3: item.amount,
+          content4: new Date(item.next_run_at).toString(),
+        }));
+        setRecurringSavingTable(formattedData);
+      } catch (error) {
+        console.error("Error fetching recurring income:", error);
+      }
+    };
+    fetchRecurringIncome();
+    const interval = setInterval(fetchRecurringIncome, 1000); // Realtime update every second
+    return () => {
+      clearInterval(interval); // Clear the interval on component unmount
+    };
+  }, [accountId]);
 
   const submitSetSaving = async (
     event: React.FormEvent<HTMLFormElement>,
@@ -117,6 +133,30 @@ function SavingDashboard({ accountId }: Props) {
     console.log(`Setting target saving: ${value}`);
   };
 
+  const submitRecurringTransaction = async (
+    event: React.FormEvent<HTMLFormElement>,
+    amount: number,
+    category: string,
+    frequency: string,
+    interval: number,
+    next_run_at: string
+  ) => {
+    event.preventDefault();
+
+    await recurringIncome(
+      accountId,
+      amount,
+      category,
+      frequency,
+      interval,
+      next_run_at + "+08:00"
+    ).catch(console.error);
+
+    await console.log(
+      `Adding recurring transaction: ${amount}, ${category}, ${frequency}, ${interval}, ${next_run_at}`
+    );
+  };
+
   const inputs = [
     <Input key={1} title="Set saving" handleSubmit={submitSetSaving} />,
     <Input
@@ -131,6 +171,14 @@ function SavingDashboard({ accountId }: Props) {
     />,
   ];
 
+  const recurringInputs = (
+    <RecurringTransactionInputs
+      key={4}
+      title="Add recurring income"
+      handleSubmit={submitRecurringTransaction}
+    />
+  );
+
   return (
     <div className="savingDashboardPage">
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
@@ -142,13 +190,28 @@ function SavingDashboard({ accountId }: Props) {
       <div className="mainDashboardBlocks savingGraph pieChart">
         {savingDonut}
       </div>
-      <div className="mainDashboardBlocks savingLineGraph lineGraph">
-        {transactionGraph}
+      <div
+        className="mainDashboardBlocks savingLineGraph lineGraph"
+        style={{ color: "white" }}
+      >
+        Saving graph is not available for milestone 1.
       </div>
-      <div className="mainDashboardBlocks savingInput input">{inputs}</div>
-      <div className="mainDashboardBlocks savingRecurringRecords records"></div>
-      <div className="mainDashboardBlocks savingRecords records">
-        <Table data={history} />
+      <div className="mainDashboardBlocks savingInput input">
+        {inputs}
+        {recurringInputs}
+      </div>
+      <div className="mainDashboardBlocks savingRecurringRecords records">
+        <Table
+          title="Recurring income"
+          heading={recurringSavingTableHeadings}
+          data={recurringSavingTable}
+        />
+      </div>
+      <div
+        className="mainDashboardBlocks savingRecords records"
+        style={{ color: "white" }}
+      >
+        Transaction history table is not available for milestone 1.
       </div>
     </div>
   );

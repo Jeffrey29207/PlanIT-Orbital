@@ -802,7 +802,7 @@ export async function deleteRecurringIncome(recurId, description = "deleted recu
     await client.query(
       `INSERT INTO transactions
         (account_id, tx_type, subtype, amount, category, description)
-      VALUES ($1, 'save', 'modify_saving', $2, $3, $4);`,
+      VALUES ($1, 'save', 'modify_savings', $2, $3, $4);`,
       [account_id, amount, category, description]
     );
 

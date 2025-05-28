@@ -1,12 +1,13 @@
 import "./HomeDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
-import LineChart from "../LineChart";
-import Table from "../Table/Table";
+// import LineChart from "../LineChart"; Not in use for milestone 1
+// import Table from "../Table/Table"; Not in use for milestone 1
 import {
   getTotalBalance,
   getSpendingBalance,
   getSavingBalance,
+  getSavingTarget,
   getActualSpending,
 } from "../../helper/BackendAPI";
 import { useEffect, useState } from "react";
@@ -16,9 +17,11 @@ interface Props {
 }
 
 function HomeDashboard({ accountId }: Props) {
+  //Handle numeric dashboard and doughnut chart
   const [overallBalance, setOverallBalance] = useState(0);
   const [spendingBalance, setSpendingBalance] = useState(0);
   const [savingBalance, setSavingBalance] = useState(0);
+  const [savingTarget, setSavingTarget] = useState(0);
   const [spended, setSpended] = useState(0);
 
   useEffect(() => {
@@ -32,6 +35,9 @@ function HomeDashboard({ accountId }: Props) {
 
         const savingBalance = await getSavingBalance(accountId);
         setSavingBalance(savingBalance);
+
+        const savingsTarget = await getSavingTarget(accountId);
+        setSavingTarget(savingsTarget);
 
         const actualSpending = await getActualSpending(accountId);
         setSpended(actualSpending);
@@ -47,6 +53,18 @@ function HomeDashboard({ accountId }: Props) {
       clearInterval(interval); // Clear the interval on component unmount
     };
   }, [accountId]);
+
+  const overallNumDashboard = (
+    <NumericDashboard title="Overall account" value={overallBalance} />
+  );
+
+  const spendingNumDashboard = (
+    <NumericDashboard title="Spending account" value={spendingBalance} />
+  );
+
+  const savingNumDashboard = (
+    <NumericDashboard title="Saving account" value={savingBalance} />
+  );
 
   const overallDonut = (
     <DoughnutChart
@@ -70,11 +88,15 @@ function HomeDashboard({ accountId }: Props) {
     <DoughnutChart
       title="Saving balance"
       labels={["Target", "Saved"]}
-      data={[3000000, savingBalance]}
+      data={[savingTarget - savingBalance, savingBalance]}
       colors={["#FAFAFA", "#00B432"]}
     />
   );
 
+  //-------------------------------------------------------------------------
+
+  /*
+  Not in use for milestone 1
   const transactionGraph = (
     <LineChart
       title="Transaction graph"
@@ -96,17 +118,20 @@ function HomeDashboard({ accountId }: Props) {
       colors={["#00B432"]}
     />
   );
+  */
+
+  //-------------------------------------------------------------------------
 
   return (
     <div className="dashboard">
       <div className="mainDashboardBlocks overallDashboard numericDashboard">
-        <NumericDashboard title="Overall account" value={overallBalance} />
+        {overallNumDashboard}
       </div>
       <div className="mainDashboardBlocks overallGraph pieChart">
         {overallDonut}
       </div>
       <div className="mainDashboardBlocks spendingDashboard numericDashboard">
-        <NumericDashboard title="Spending account" value={spendingBalance} />
+        {spendingNumDashboard}
       </div>
       <div className="mainDashboardBlocks spendingGraph pieChart">
         {spendingDonut}
@@ -124,7 +149,7 @@ function HomeDashboard({ accountId }: Props) {
         Transaction history table is not available for milestone 1.
       </div>
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
-        <NumericDashboard title="Saving account" value={savingBalance} />
+        {savingNumDashboard}
       </div>
       <div className="mainDashboardBlocks savingGraph pieChart">
         {savingDonut}

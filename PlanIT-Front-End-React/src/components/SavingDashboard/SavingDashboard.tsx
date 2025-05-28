@@ -47,6 +47,14 @@ function SavingDashboard({ accountId }: Props) {
     };
   }, [accountId]);
 
+  const savingNumDashboard = (
+    <NumericDashboard title="Saving account" value={savingBalance} />
+  );
+
+  const savingTargetNumDashboard = (
+    <NumericDashboard title="Saving target" value={savingsTarget} />
+  );
+
   const savingDonut = (
     <DoughnutChart
       title="Saving balance"
@@ -221,31 +229,25 @@ function SavingDashboard({ accountId }: Props) {
       title="Transfer saving"
       handleSubmit={submitTransferSaving}
     />,
-  ];
-
-  const recurringInputs = (
     <RecurringTransactionInputs
       key={4}
       title="Add recurring income"
       handleSubmit={submitRecurringTransaction}
-    />
-  );
-
-  const oneTimeTransactionInputs = (
+    />,
     <OneTimeTransactionInputs
       key={5}
       title="Add one time income"
       handleSubmit={submitOneTimeTransaction}
-    />
-  );
+    />,
+  ];
 
   return (
     <div className="savingDashboardPage">
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
-        <NumericDashboard title="Saving account" value={savingBalance} />
+        {savingNumDashboard}
       </div>
       <div className="mainDashboardBlocks savingTargetDashboard numericDashboard">
-        <NumericDashboard title="Saving target" value={savingsTarget} />
+        {savingTargetNumDashboard}
       </div>
       <div className="mainDashboardBlocks savingGraph pieChart">
         {savingDonut}
@@ -256,11 +258,7 @@ function SavingDashboard({ accountId }: Props) {
       >
         Saving graph is not available for milestone 1.
       </div>
-      <div className="mainDashboardBlocks savingInput input">
-        {inputs}
-        {recurringInputs}
-        {oneTimeTransactionInputs}
-      </div>
+      <div className="mainDashboardBlocks savingInput input">{inputs}</div>
       <div className="mainDashboardBlocks savingRecurringRecords records">
         {recurringTable}
       </div>

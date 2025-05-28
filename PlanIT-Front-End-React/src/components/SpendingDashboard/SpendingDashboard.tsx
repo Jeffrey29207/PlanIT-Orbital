@@ -45,6 +45,14 @@ function SpendingDashboard({ accountId }: Props) {
     };
   }, [accountId]);
 
+  const spendingNumDashboard = (
+    <NumericDashboard title="Spending account" value={spendingBalance} />
+  );
+
+  const spendedNumDashboard = (
+    <NumericDashboard title="Spended" value={spended} />
+  );
+
   const spendingDonut = (
     <DoughnutChart
       title="Spending balance"
@@ -208,10 +216,10 @@ function SpendingDashboard({ accountId }: Props) {
   return (
     <div className="spendingDashboardPage">
       <div className="mainDashboardBlocks spendingDashboard numericDashboard">
-        <NumericDashboard title="Spending account" value={spendingBalance} />
+        {spendingNumDashboard}
       </div>
       <div className="mainDashboardBlocks spendedDashboard numericDashboard">
-        <NumericDashboard title="Spended" value={spended} />
+        {spendedNumDashboard}
       </div>
       <div className="mainDashboardBlocks spendingGraph pieChart">
         {spendingDonut}

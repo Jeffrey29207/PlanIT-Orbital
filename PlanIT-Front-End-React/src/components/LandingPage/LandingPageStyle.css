@@ -54,12 +54,19 @@
 
 .landingPageContent {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: first baseline;
     align-items: center;
     height: calc(100vh - 70px);
     width: 100vw;
+    overflow-y: auto;
 }
 
 .landingPageContent h1 {
-    color: white
+    color: white;
+    height: inherit;
+    width: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

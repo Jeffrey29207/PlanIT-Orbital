@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import "./LandingPageStyle.css";
+import NewsDashboard from "../News/NewsDashboard";
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ function LandingPage() {
         </div>
       </div>
       <div className="landingPageContent">
-        <h1>Content under development</h1>
+        {NewsDashboard() ? <NewsDashboard /> : <h1>Loading...</h1>}
       </div>
     </div>
   );

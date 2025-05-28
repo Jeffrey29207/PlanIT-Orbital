@@ -72,13 +72,13 @@ export const setSavings = async (accountId: number, newAmount: number) => {
     }).then(response => response.json());
 }
 
-export const setSavingTarget = async (accountId: number, amount: number) => {
+export const setSavingTarget = async (accountId: number, newAmount: number) => {
     return await fetch(`${backendAPI}/accounts/${accountId}/setSavingTarget`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ amount })
+        body: JSON.stringify({ newAmount })
     }).then(response => response.json());
 }
 

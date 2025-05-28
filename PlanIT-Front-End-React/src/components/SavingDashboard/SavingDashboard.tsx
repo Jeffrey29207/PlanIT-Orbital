@@ -1,14 +1,16 @@
 import "./SavingDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
-import LineChart from "../LineChart";
+// import LineChart from "../LineChart"; not in use for milestone1
 import Table from "../Table/Table";
 import Input from "../Input/Input";
 import RecurringTransactionInputs from "../Input/RecurringTransactionInputs";
 import {
   setSavings,
+  setSavingTarget,
   transferSaving,
   getSavingBalance,
+  getSavingTarget,
   recurringIncome,
   getRecurringIncome,
   scheduleRecurTransactions,
@@ -21,13 +23,17 @@ interface Props {
 }
 
 function SavingDashboard({ accountId }: Props) {
+  //Hanlde numeric dashboard and dougnut chart for saving balance and target saving
   const [savingBalance, setSavingBalance] = useState(0);
+  const [savingsTarget, setSavingsTarget] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const balance = await getSavingBalance(accountId);
+        const target = await getSavingTarget(accountId);
         setSavingBalance(balance);
+        setSavingsTarget(target);
       } catch (error) {
         console.error("Error fetching saving balance:", error);
       }
@@ -43,11 +49,15 @@ function SavingDashboard({ accountId }: Props) {
     <DoughnutChart
       title="Saving balance"
       labels={["Target", "Saved"]}
-      data={[3000000, savingBalance]}
+      data={[savingsTarget - savingBalance, savingBalance]}
       colors={["#FAFAFA", "#00B432"]}
     />
   );
 
+  //-------------------------------------------------------------------------
+
+  /*
+   Not in use for Milestone 1
   const transactionGraph = (
     <LineChart
       title="Saving graph"
@@ -69,7 +79,11 @@ function SavingDashboard({ accountId }: Props) {
       colors={["#00B432"]}
     />
   );
+  */
 
+  //-------------------------------------------------------------------------
+
+  // Handle recurring saving table
   const recurringSavingTableHeadings = {
     heading1: "Recurring id",
     heading2: "Description",
@@ -84,8 +98,8 @@ function SavingDashboard({ accountId }: Props) {
       try {
         await scheduleRecurTransactions();
         const data = await getRecurringIncome(accountId);
-        const formattedData = data.map((item: any, index: number) => ({
-          content1: index + 1,
+        const formattedData = data.map((item: any) => ({
+          content1: item.recur_id,
           content2: item.category,
           content3: item.amount,
           content4: new Date(item.next_run_at).toString(),
@@ -102,6 +116,13 @@ function SavingDashboard({ accountId }: Props) {
     };
   }, [accountId]);
 
+  const handleClickForRecurringTableButton = (recurId: number) => {
+    deleteRecurringIncome(recurId);
+  };
+
+  //-------------------------------------------------------------------------
+
+  // Handle inputs
   const submitSetSaving = async (
     event: React.FormEvent<HTMLFormElement>,
     value: number
@@ -124,11 +145,13 @@ function SavingDashboard({ accountId }: Props) {
     console.log(`Transferring saving: ${value}`);
   };
 
-  const submitSetTargetSaving = (
+  const submitSetSavingTarget = async (
     event: React.FormEvent<HTMLFormElement>,
     value: number
   ) => {
     event.preventDefault();
+
+    await setSavingTarget(accountId, value);
 
     console.log(`Setting target saving: ${value}`);
   };
@@ -152,7 +175,7 @@ function SavingDashboard({ accountId }: Props) {
       next_run_at + "+08:00"
     ).catch(console.error);
 
-    await console.log(
+    console.log(
       `Adding recurring transaction: ${amount}, ${category}, ${frequency}, ${interval}, ${next_run_at}`
     );
   };
@@ -161,13 +184,13 @@ function SavingDashboard({ accountId }: Props) {
     <Input key={1} title="Set saving" handleSubmit={submitSetSaving} />,
     <Input
       key={2}
-      title="Transfer saving"
-      handleSubmit={submitTransferSaving}
+      title="Set saving target"
+      handleSubmit={submitSetSavingTarget}
     />,
     <Input
       key={3}
-      title="Set target saving"
-      handleSubmit={submitSetTargetSaving}
+      title="Transfer saving"
+      handleSubmit={submitTransferSaving}
     />,
   ];
 
@@ -185,7 +208,7 @@ function SavingDashboard({ accountId }: Props) {
         <NumericDashboard title="Saving account" value={savingBalance} />
       </div>
       <div className="mainDashboardBlocks savingTargetDashboard numericDashboard">
-        <NumericDashboard title="Saving target" value={3900000} />
+        <NumericDashboard title="Saving target" value={savingsTarget} />
       </div>
       <div className="mainDashboardBlocks savingGraph pieChart">
         {savingDonut}
@@ -205,6 +228,8 @@ function SavingDashboard({ accountId }: Props) {
           title="Recurring income"
           heading={recurringSavingTableHeadings}
           data={recurringSavingTable}
+          button="Delete"
+          handleClick={handleClickForRecurringTableButton}
         />
       </div>
       <div

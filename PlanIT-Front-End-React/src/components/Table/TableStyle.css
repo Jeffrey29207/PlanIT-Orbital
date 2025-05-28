@@ -1,5 +1,7 @@
 #table {
     min-width: 360px;
+    border-collapse: separate;
+    border-spacing: 0 15px;
 }
 
 #table * {
@@ -14,4 +16,14 @@
 
 .records .chartContainer {
     align-items: first baseline;
+}
+
+.tableButton {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: rgb(0, 103, 0);
+    color: white;
+    cursor: pointer;
 }

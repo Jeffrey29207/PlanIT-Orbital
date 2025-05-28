@@ -16,12 +16,14 @@ interface props {
     content3: any;
     content4: any;
   }[];
+  button?: string;
+  handleClick?: (value: number) => void;
 }
 
-function Table({ title, heading, data }: props) {
+function Table({ title, heading, data, button, handleClick }: props) {
   const { heading1, heading2, heading3, heading4 } = heading;
 
-  const dummy = (
+  const content = (
     <table id="table">
       <thead className="tableHeader">
         <tr>
@@ -39,6 +41,8 @@ function Table({ title, heading, data }: props) {
             content2={item.content2}
             content3={item.content3}
             content4={item.content4}
+            button={button}
+            handleClick={handleClick}
           />
         ))}
       </tbody>
@@ -46,7 +50,7 @@ function Table({ title, heading, data }: props) {
   );
   return (
     <>
-      <DashboardContent title={title} value={dummy} />
+      <DashboardContent title={title} value={content} />
     </>
   );
 }

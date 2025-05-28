@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, type ReactElement } from "react";
 
 interface Props {
+  name: string;
   links: {
     name: string;
     component: ReactElement;
@@ -14,7 +15,7 @@ interface Props {
   onSelectItem: (component: ReactElement) => void;
 }
 
-function Menu({ links, onSelectItem }: Props) {
+function Menu({ name, links, onSelectItem }: Props) {
   const [clicked, setClicked] = useState(false);
 
   const navigate = useNavigate();
@@ -35,10 +36,10 @@ function Menu({ links, onSelectItem }: Props) {
   return (
     <div className="menu">
       <div className="profileContainer">
-        <img src="./Trump_Cropped.png" alt="Donald Trump"></img>
+        <img src="./PlanIT_logo.png" alt="Profile picture"></img>
         <div className="profileName">
-          <p className="name">D. J. Trump</p>
-          <p className="tier">Private Client</p>
+          <p className="name">{name}</p>
+          <p className="tier">General Client</p>
         </div>
       </div>
       <div className="menuContainer">

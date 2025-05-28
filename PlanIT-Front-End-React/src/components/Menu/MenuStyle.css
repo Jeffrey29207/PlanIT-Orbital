@@ -33,6 +33,8 @@
 
 .profileName {
     height: 50px;
+    max-width: 103.35px;
+    overflow-x: auto;
 }
 
 .profileName * {

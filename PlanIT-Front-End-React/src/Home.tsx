@@ -10,6 +10,7 @@ import { getAccountId } from "./helper/BackendAPI";
 
 function Home() {
   const [accountId, setAccountId] = useState<number>(-1);
+  const [email, setEmail] = useState<string>("");
   const [dashboard, setDashboard] = useState<ReactElement | null>(null);
 
   useEffect(() => {
@@ -19,9 +20,11 @@ function Home() {
       } = await supabase.auth.getUser();
 
       const userId = user?.id;
+      const email = user?.email;
 
-      if (userId) {
+      if (userId && email) {
         const accId = await getAccountId(userId);
+        setEmail(email);
         setAccountId(accId);
       } else {
         console.log("Account id fetching failed");
@@ -50,7 +53,7 @@ function Home() {
 
   return (
     <div id="homePage">
-      <Menu links={links} onSelectItem={onSelectItem} />
+      <Menu name={email} links={links} onSelectItem={onSelectItem} />
       {dashboard}
     </div>
   );

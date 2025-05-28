@@ -55,11 +55,12 @@ function SavingDashboard({ accountId }: Props) {
     <NumericDashboard title="Saving target" value={savingsTarget} />
   );
 
+  const gapToTarget = savingsTarget - savingBalance;
   const savingDonut = (
     <DoughnutChart
       title="Saving balance"
       labels={["Target", "Saved"]}
-      data={[savingsTarget - savingBalance, savingBalance]}
+      data={[gapToTarget > 0 ? gapToTarget : 0, savingBalance]}
       colors={["#FAFAFA", "#00B432"]}
     />
   );

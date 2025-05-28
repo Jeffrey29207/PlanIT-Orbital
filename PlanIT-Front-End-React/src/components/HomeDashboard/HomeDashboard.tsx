@@ -84,11 +84,12 @@ function HomeDashboard({ accountId }: Props) {
     />
   );
 
+  const gapToTarget = savingTarget - savingBalance;
   const savingDonut = (
     <DoughnutChart
       title="Saving balance"
       labels={["Target", "Saved"]}
-      data={[savingTarget - savingBalance, savingBalance]}
+      data={[gapToTarget > 0 ? gapToTarget : 0, savingBalance]}
       colors={["#FAFAFA", "#00B432"]}
     />
   );

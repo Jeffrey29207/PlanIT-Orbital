@@ -54,6 +54,7 @@
         'spendingRecords'
         'spendingRecords';
     overflow-y: auto; 
+    overflow-x: hidden;
 
 }
 

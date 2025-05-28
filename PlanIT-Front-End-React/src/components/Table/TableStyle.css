@@ -16,6 +16,11 @@
 
 .records .chartContainer {
     align-items: first baseline;
+    overflow-x: auto;
+}
+
+.records {
+    max-width: 90vw;
 }
 
 .tableButton {

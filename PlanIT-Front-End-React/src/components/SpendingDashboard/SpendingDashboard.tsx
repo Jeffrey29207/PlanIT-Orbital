@@ -1,14 +1,21 @@
 import "./SpendingDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
-import LineChart from "../LineChart";
+// import LineChart from "../LineChart"; Not in use for milestone 1
+import RecurringTransactionInputs from "../Input/RecurringTransactionInputs";
+import OneTimeTransactionInputs from "../Input/OneTimeTransactionInputs";
 import Table from "../Table/Table";
 import Input from "../Input/Input";
 import { useState, useEffect } from "react";
 import {
   transferSpending,
+  oneTimeSpend,
   getSpendingBalance,
   getActualSpending,
+  scheduleRecurTransactions,
+  recurringSpend,
+  getRecurringSpending,
+  deleteRecurringSpend,
 } from "../../helper/BackendAPI";
 
 interface Props {
@@ -16,6 +23,7 @@ interface Props {
 }
 
 function SpendingDashboard({ accountId }: Props) {
+  // Hanlde numeric dashboard and dougnut chart for spending balance and actual spending (spended)
   const [spendingBalance, setSpendingBalance] = useState(100000);
   const [spended, setSpended] = useState(0);
 
@@ -46,6 +54,10 @@ function SpendingDashboard({ accountId }: Props) {
     />
   );
 
+  //-------------------------------------------------------------------------
+
+  /*
+  Not in use for milestone 1
   const transactionGraph = (
     <LineChart
       title="Transaction graph"
@@ -67,7 +79,62 @@ function SpendingDashboard({ accountId }: Props) {
       colors={["#00B432"]}
     />
   );
+  */
 
+  //-------------------------------------------------------------------------
+
+  // Handle recurring spending table
+  const recurringSpendingTableHeadings = {
+    heading1: "Recurring id",
+    heading2: "Description",
+    heading3: "Amount",
+    heading4: "Next transaction",
+  };
+
+  const [recurringSpendingTable, setRecurringSpendingTable] = useState<any[]>(
+    []
+  );
+
+  useEffect(() => {
+    const fetchRecurringIncome = async () => {
+      try {
+        await scheduleRecurTransactions();
+        const data = await getRecurringSpending(accountId);
+        const formattedData = data.map((item: any) => ({
+          content1: item.recur_id,
+          content2: item.category,
+          content3: item.amount,
+          content4: new Date(item.next_run_at).toString(),
+        }));
+        setRecurringSpendingTable(formattedData);
+      } catch (error) {
+        console.error("Error fetching recurring income:", error);
+      }
+    };
+    fetchRecurringIncome();
+    const interval = setInterval(fetchRecurringIncome, 1000); // Realtime update every second
+    return () => {
+      clearInterval(interval); // Clear the interval on component unmount
+    };
+  }, [accountId]);
+
+  const handleClickForRecurringTableButton = (recurId: number) => {
+    deleteRecurringSpend(recurId);
+  };
+
+  const recurringTable = (
+    <Table
+      title="Recurring spending"
+      heading={recurringSpendingTableHeadings}
+      data={recurringSpendingTable}
+      button="Delete"
+      handleClick={handleClickForRecurringTableButton}
+    />
+  );
+
+  //-------------------------------------------------------------------------
+
+  // Handle inputs
   const submitTransferSpending = async (
     event: React.FormEvent<HTMLFormElement>,
     value: number
@@ -79,21 +146,45 @@ function SpendingDashboard({ accountId }: Props) {
     console.log(`Transfer spending: ${value}`);
   };
 
-  const submitOTS = (
+  const submitRecurringSpending = async (
     event: React.FormEvent<HTMLFormElement>,
-    value: number
+    amount: number,
+    category: string,
+    frequency: string,
+    interval: number,
+    next_run_at: string
   ) => {
     event.preventDefault();
 
-    console.log(`Submit one time spend: ${value}`);
+    await recurringSpend(
+      accountId,
+      amount,
+      category,
+      frequency,
+      interval,
+      next_run_at + "+08:00"
+    ).catch(console.error);
+
+    console.log(
+      `Adding recurring spending: ${amount}, ${category}, ${frequency}, ${interval}, ${next_run_at}`
+    );
   };
 
-  const submitRecurringSpending = (
+  const submitOTS = async (
     event: React.FormEvent<HTMLFormElement>,
-    value: number
+    amount: number,
+    category: string,
+    description: string
   ) => {
     event.preventDefault();
-    console.log(`Set recurring spending: ${value}`);
+
+    await oneTimeSpend(accountId, amount, category, description).catch(
+      console.error
+    );
+
+    console.log(
+      `Adding one time income: ${amount}, ${category}, ${description}`
+    );
   };
 
   const inputs = [
@@ -102,11 +193,15 @@ function SpendingDashboard({ accountId }: Props) {
       title="Transfer spending"
       handleSubmit={submitTransferSpending}
     />,
-    <Input key={2} title="One time spend" handleSubmit={submitOTS} />,
-    <Input
-      key={3}
-      title="Recurring spending"
+    <RecurringTransactionInputs
+      key={2}
+      title="Add recurring spending"
       handleSubmit={submitRecurringSpending}
+    />,
+    <OneTimeTransactionInputs
+      key={3}
+      title="Input one time spending"
+      handleSubmit={submitOTS}
     />,
   ];
 
@@ -129,7 +224,9 @@ function SpendingDashboard({ accountId }: Props) {
         Transaction graph is not available for milestone 1.
       </div>
       <div className="mainDashboardBlocks spendingInput input">{inputs}</div>
-      <div className="mainDashboardBlocks spendingRecurringRecords records"></div>
+      <div className="mainDashboardBlocks spendingRecurringRecords records">
+        {recurringTable}
+      </div>
       <div
         className="mainDashboardBlocks spendingRecords records"
         style={{ color: "white" }}

@@ -85,7 +85,7 @@ function SavingDashboard({ accountId }: Props) {
 
   //-------------------------------------------------------------------------
 
-  // Handle recurring saving table
+  // Handle recurring income table
   const recurringSavingTableHeadings = {
     heading1: "Recurring id",
     heading2: "Description",
@@ -122,6 +122,16 @@ function SavingDashboard({ accountId }: Props) {
     deleteRecurringIncome(recurId);
   };
 
+  const recurringTable = (
+    <Table
+      title="Recurring income"
+      heading={recurringSavingTableHeadings}
+      data={recurringSavingTable}
+      button="Delete"
+      handleClick={handleClickForRecurringTableButton}
+    />
+  );
+
   //-------------------------------------------------------------------------
 
   // Handle inputs
@@ -136,17 +146,6 @@ function SavingDashboard({ accountId }: Props) {
     console.log(`Adding saving: ${value}`);
   };
 
-  const submitTransferSaving = async (
-    event: React.FormEvent<HTMLFormElement>,
-    value: number
-  ) => {
-    event.preventDefault();
-
-    await transferSaving(accountId, value).catch(console.error);
-
-    console.log(`Transferring saving: ${value}`);
-  };
-
   const submitSetSavingTarget = async (
     event: React.FormEvent<HTMLFormElement>,
     value: number
@@ -156,6 +155,17 @@ function SavingDashboard({ accountId }: Props) {
     await setSavingTarget(accountId, value);
 
     console.log(`Setting target saving: ${value}`);
+  };
+
+  const submitTransferSaving = async (
+    event: React.FormEvent<HTMLFormElement>,
+    value: number
+  ) => {
+    event.preventDefault();
+
+    await transferSaving(accountId, value).catch(console.error);
+
+    console.log(`Transferring saving: ${value}`);
   };
 
   const submitRecurringTransaction = async (
@@ -252,13 +262,7 @@ function SavingDashboard({ accountId }: Props) {
         {oneTimeTransactionInputs}
       </div>
       <div className="mainDashboardBlocks savingRecurringRecords records">
-        <Table
-          title="Recurring income"
-          heading={recurringSavingTableHeadings}
-          data={recurringSavingTable}
-          button="Delete"
-          handleClick={handleClickForRecurringTableButton}
-        />
+        {recurringTable}
       </div>
       <div
         className="mainDashboardBlocks savingRecords records"

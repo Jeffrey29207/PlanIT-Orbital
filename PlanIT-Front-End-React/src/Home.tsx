@@ -4,33 +4,36 @@ import "bootstrap/dist/css/bootstrap.css";
 import HomeDashboard from "./components/HomeDashboard/HomeDashboard";
 import SavingDashboard from "./components/SavingDashboard/SavingDashboard";
 import SpendingDashboard from "./components/SpendingDashboard/SpendingDashboard";
-import { type ReactElement, useState } from "react";
+import { type ReactElement, useState, useEffect } from "react";
 import supabase from "./helper/Config";
 import { getAccountId } from "./helper/BackendAPI";
 
 function Home() {
   const [accountId, setAccountId] = useState<number>(-1);
+  const [dashboard, setDashboard] = useState<ReactElement | null>(null);
 
-  const fetchAccountId = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  useEffect(() => {
+    const fetchAccountId = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    const userId = user?.id;
+      const userId = user?.id;
 
-    if (userId) {
-      const accId = await getAccountId(userId);
-      setAccountId(accId);
-    } else {
-      console.log("Account id fetching failed");
-    }
-  };
+      if (userId) {
+        const accId = await getAccountId(userId);
+        setAccountId(accId);
+      } else {
+        console.log("Account id fetching failed");
+      }
+    };
 
-  fetchAccountId();
+    fetchAccountId();
+  }, []);
 
-  const [dashboard, setDashboard] = useState<ReactElement>(
-    <HomeDashboard accountId={accountId} />
-  );
+  useEffect(() => {
+    accountId >= 0 && setDashboard(<HomeDashboard accountId={accountId} />);
+  }, [accountId]);
 
   const links = [
     { name: "HOME", component: <HomeDashboard accountId={accountId} /> },
@@ -46,12 +49,10 @@ function Home() {
   };
 
   return (
-    accountId >= 0 && (
-      <div id="homePage">
-        <Menu links={links} onSelectItem={onSelectItem} />
-        {dashboard}
-      </div>
-    )
+    <div id="homePage">
+      <Menu links={links} onSelectItem={onSelectItem} />
+      {dashboard}
+    </div>
   );
 }
 

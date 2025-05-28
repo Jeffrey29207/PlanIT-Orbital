@@ -38,7 +38,7 @@ function OneTimeTransactionInputs({ title, handleSubmit }: Props) {
       />
       <input
         type="text"
-        placeholder="Category"
+        placeholder="Category (main|side|misc)"
         value={category}
         onChange={(e) => setCategory(e.target.value)}
         className="inputField"

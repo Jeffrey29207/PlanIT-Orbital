@@ -5,10 +5,12 @@ import DoughnutChart from "../DoughnutChart";
 import Table from "../Table/Table";
 import Input from "../Input/Input";
 import RecurringTransactionInputs from "../Input/RecurringTransactionInputs";
+import OneTimeTransactionInputs from "../Input/OneTimeTransactionInputs";
 import {
   setSavings,
   setSavingTarget,
   transferSaving,
+  oneTimeIncome,
   getSavingBalance,
   getSavingTarget,
   recurringIncome,
@@ -180,6 +182,23 @@ function SavingDashboard({ accountId }: Props) {
     );
   };
 
+  const submitOneTimeTransaction = async (
+    event: React.FormEvent<HTMLFormElement>,
+    amount: number,
+    category: string,
+    description: string
+  ) => {
+    event.preventDefault();
+
+    await oneTimeIncome(accountId, amount, category, description).catch(
+      console.error
+    );
+
+    console.log(
+      `Adding one time income: ${amount}, ${category}, ${description}`
+    );
+  };
+
   const inputs = [
     <Input key={1} title="Set saving" handleSubmit={submitSetSaving} />,
     <Input
@@ -199,6 +218,14 @@ function SavingDashboard({ accountId }: Props) {
       key={4}
       title="Add recurring income"
       handleSubmit={submitRecurringTransaction}
+    />
+  );
+
+  const oneTimeTransactionInputs = (
+    <OneTimeTransactionInputs
+      key={5}
+      title="Add one time income"
+      handleSubmit={submitOneTimeTransaction}
     />
   );
 
@@ -222,6 +249,7 @@ function SavingDashboard({ accountId }: Props) {
       <div className="mainDashboardBlocks savingInput input">
         {inputs}
         {recurringInputs}
+        {oneTimeTransactionInputs}
       </div>
       <div className="mainDashboardBlocks savingRecurringRecords records">
         <Table

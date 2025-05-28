@@ -53,7 +53,7 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
       <input
         key={2}
         type="text"
-        placeholder="Category"
+        placeholder="Description"
         value={category}
         onChange={(e) => setCategory(e.target.value)}
         className="inputField"

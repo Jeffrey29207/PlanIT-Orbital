@@ -22,7 +22,7 @@ function HomeDashboard({ accountId }: Props) {
   const [spendingBalance, setSpendingBalance] = useState(0);
   const [savingBalance, setSavingBalance] = useState(0);
   const [savingTarget, setSavingTarget] = useState(0);
-  const [spended, setSpended] = useState(0);
+  const [spent, setSpent] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +40,7 @@ function HomeDashboard({ accountId }: Props) {
         setSavingTarget(savingsTarget);
 
         const actualSpending = await getActualSpending(accountId);
-        setSpended(actualSpending);
+        setSpent(actualSpending);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -78,8 +78,8 @@ function HomeDashboard({ accountId }: Props) {
   const spendingDonut = (
     <DoughnutChart
       title="Spending balance"
-      labels={["Spendable", "Spended"]}
-      data={[spendingBalance, spended]}
+      labels={["Spendable", "Amount spent"]}
+      data={[spendingBalance, spent]}
       colors={["#AD0101", "#FAFAFA"]}
     />
   );

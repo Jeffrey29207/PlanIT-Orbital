@@ -23,9 +23,9 @@ interface Props {
 }
 
 function SpendingDashboard({ accountId }: Props) {
-  // Hanlde numeric dashboard and dougnut chart for spending balance and actual spending (spended)
+  // Hanlde numeric dashboard and dougnut chart for spending balance and actual spending (spent)
   const [spendingBalance, setSpendingBalance] = useState(100000);
-  const [spended, setSpended] = useState(0);
+  const [spent, setSpent] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +33,7 @@ function SpendingDashboard({ accountId }: Props) {
         const balance = await getSpendingBalance(accountId);
         setSpendingBalance(balance);
         const actualSpending = await getActualSpending(accountId);
-        setSpended(actualSpending);
+        setSpent(actualSpending);
       } catch (error) {
         console.error("Error fetching spending data:", error);
       }
@@ -50,14 +50,14 @@ function SpendingDashboard({ accountId }: Props) {
   );
 
   const spendedNumDashboard = (
-    <NumericDashboard title="Spended" value={spended} />
+    <NumericDashboard title="Amound spent" value={spent} />
   );
 
   const spendingDonut = (
     <DoughnutChart
       title="Spending balance"
-      labels={["Spendable", "Spended"]}
-      data={[spendingBalance, spended]}
+      labels={["Spendable", "Spent"]}
+      data={[spendingBalance, spent]}
       colors={["#AD0101", "#FAFAFA"]}
     />
   );

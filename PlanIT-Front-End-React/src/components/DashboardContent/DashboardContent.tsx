@@ -1,3 +1,5 @@
+// An abstraction to the dashboard content
+
 import "./DashboardContentStyle.css";
 
 interface props {

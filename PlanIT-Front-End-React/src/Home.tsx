@@ -1,3 +1,5 @@
+// This is the home page where users are directed afer login
+
 import Menu from "./components/Menu/Menu";
 import "./HomeStyle.css";
 import "bootstrap/dist/css/bootstrap.css";

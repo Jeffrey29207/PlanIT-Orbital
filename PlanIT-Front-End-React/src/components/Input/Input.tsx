@@ -1,3 +1,5 @@
+// An abstraction for dashboard components that have one input fields
+
 import "./InputStyle.css";
 import DashboardContent from "../DashboardContent/DashboardContent";
 import { useState } from "react";

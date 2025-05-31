@@ -1,3 +1,5 @@
+// A component that displays the fetched news from the news API as a content for the landing page
+
 import "./NewsDashboardStyle.css";
 import { fetchNewsApi } from "./NewsApi";
 import { useState, useEffect } from "react";

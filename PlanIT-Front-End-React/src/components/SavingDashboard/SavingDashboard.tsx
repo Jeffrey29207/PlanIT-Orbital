@@ -1,3 +1,8 @@
+/* 
+Saving dashboard components that displays detailed information
+about the saving account and accept inputs from users
+*/
+
 import "./SavingDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";

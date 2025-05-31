@@ -1,3 +1,5 @@
+// An abstraction for list of items
+
 import { useState, type ReactElement } from "react";
 
 interface Props {

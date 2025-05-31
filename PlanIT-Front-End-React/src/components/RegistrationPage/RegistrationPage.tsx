@@ -1,3 +1,5 @@
+// Registration page for new users to register
+
 import "./RegistrationPageStyle.css";
 import supabase from "../../helper/Config";
 import { useState } from "react";

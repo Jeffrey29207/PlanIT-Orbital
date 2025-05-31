@@ -1,3 +1,5 @@
+// An abstraction for savings and spending one time transactions input
+
 import "./OneTimeTransactionInputsStyle.css";
 import DashboardContent from "../DashboardContent/DashboardContent";
 import { useState } from "react";

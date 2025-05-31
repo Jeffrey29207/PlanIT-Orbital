@@ -1,3 +1,5 @@
+// This tsx file serves as the entry point to the React application
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import Home from "./Home.tsx";

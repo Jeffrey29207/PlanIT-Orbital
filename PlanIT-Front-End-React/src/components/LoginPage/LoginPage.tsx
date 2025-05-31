@@ -1,3 +1,5 @@
+// Login page for registered users to log back in
+
 import "./LoginPageStyle.css";
 import supabase from "../../helper/Config";
 import { useState } from "react";

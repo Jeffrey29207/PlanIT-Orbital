@@ -1,3 +1,5 @@
+// These are functions to access fetch the backend API
+
 const backendAPI = "http://localhost:8080";
 
 export const testUsers = async () => {

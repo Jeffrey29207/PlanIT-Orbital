@@ -1,3 +1,8 @@
+/* 
+Spending dashboard components that displays detailed information
+about the spending account and accept inputs from users
+*/
+
 import "./SpendingDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";

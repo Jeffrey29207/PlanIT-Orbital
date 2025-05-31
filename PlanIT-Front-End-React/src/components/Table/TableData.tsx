@@ -1,3 +1,5 @@
+// An abstraction for table rows that store data
+
 interface props {
   content1: any;
   content2: any;

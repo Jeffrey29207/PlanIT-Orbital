@@ -1,3 +1,5 @@
+// The landing page where users are directed upon entering the website main URL
+
 import { useNavigate } from "react-router";
 import "./LandingPageStyle.css";
 import NewsDashboard from "../News/NewsDashboard";

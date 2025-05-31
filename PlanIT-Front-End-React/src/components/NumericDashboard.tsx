@@ -1,3 +1,5 @@
+// An abstraction for dashboards that display numeric value
+
 import DashboardContent from "./DashboardContent/DashboardContent";
 
 interface props {

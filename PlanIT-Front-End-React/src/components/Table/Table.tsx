@@ -1,3 +1,5 @@
+// An abstraction for tables
+
 import DashboardContent from "../DashboardContent/DashboardContent";
 import "./TableStyle.css";
 import TableData from "./TableData";

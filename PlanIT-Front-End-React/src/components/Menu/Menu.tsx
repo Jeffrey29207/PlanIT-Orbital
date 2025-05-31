@@ -1,3 +1,5 @@
+// Sidebar or top bar element in mobile screen size that contains menu for the users to navigate
+
 import ListOf from "../ListOf";
 import "./MenuStyle.css";
 import logout from "../../assets/logout.ico";

@@ -1,3 +1,5 @@
+// Create a supabase client to connect with the backend database in supabase
+
 import {createClient} from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;

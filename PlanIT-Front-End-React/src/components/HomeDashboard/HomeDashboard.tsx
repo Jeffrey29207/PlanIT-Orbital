@@ -1,3 +1,5 @@
+// Home dashboard component that displays a summary of informations about savings and spending accounts
+
 import "./HomeDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";

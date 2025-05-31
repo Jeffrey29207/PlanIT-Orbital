@@ -55,7 +55,7 @@ function SpendingDashboard({ accountId }: Props) {
   );
 
   const spendedNumDashboard = (
-    <NumericDashboard title="Amounts spent" value={spent} />
+    <NumericDashboard title="Amount spent" value={spent} />
   );
 
   const spendingDonut = (

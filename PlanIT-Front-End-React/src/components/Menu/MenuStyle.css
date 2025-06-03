@@ -94,6 +94,12 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    border-radius: 0.3rem;
+    transition: background-color 500ms;
+}
+
+.menuIcon:hover {
+    background-color: rgb(245, 243, 243, 0.2);
 }
 
 .menuIcon > img {
@@ -103,6 +109,7 @@
 }
 
 .dropdown .list-group {
+    background-color: rgb(0, 48, 0);
     top: 65px;
     right: 20px;
     position: absolute;
@@ -111,29 +118,25 @@
 }
 
 .dropdown .list-group-item {
-    background-color: rgb(0, 52, 0);
+    background-color: rgb(0, 48, 0);
+    padding: 15px;
+    margin: 5px;
     border: none;
+    border-radius: 0.3rem;
     text-decoration: none;
     color: white;
     font-size: 15px;
     font-family: Arial, Helvetica, sans-serif;
     cursor: pointer;
+    transition: filter 500ms;
+}
+
+.dropdown .list-group-item:hover {
+    filter: brightness(2);
 }
 
 .logoutIcon {
-    height: 70px;
-    width: 70px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
     display: none;
-}
-
-.logoutIcon > img {
-    width: 24px;
-    height: 24px;
-    object-fit: cover;
 }
 
 @media screen and (min-width: 900px) {
@@ -215,6 +218,11 @@
         font-size: 15px;
         font-family: Arial, Helvetica, sans-serif;
         cursor: pointer;
+        transition: background-color 500ms;
+    }
+
+    .menuContainer .list-group-item:hover {
+        background-color: rgb(245, 243, 243, 0.2);
     }
 
     .menuContainer .click {
@@ -226,8 +234,24 @@
     }
 
     .logoutIcon {
+        height: 70px;
+        width: 70px;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
         display: flex;
         margin-top: calc(50vh - 180px);
+        transition: background-color 500ms;
+    }
+
+    .logoutIcon:hover {
+        background-color: rgb(245, 243, 243, 0.2);
+    }
+
+    .logoutIcon > img {
+        width: 24px;
+        height: 24px;
+        object-fit: cover;
     }
 }
 

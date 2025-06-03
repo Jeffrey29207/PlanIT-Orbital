@@ -193,13 +193,6 @@ export async function recordOneTimeIncome(accountId, amount, category, descripti
   try {
     await client.query("BEGIN");
 
-    await client.query(
-      `INSERT INTO transactions
-        (account_id, tx_type, subtype, amount, category, description)
-      VALUES ($1, 'save', 'modify_savings', $2, $3, $4)`,
-      [accountId, amount, category, description]
-    );
-
     const upd = await client.query(
       `UPDATE accounts
         SET saving_balance     = saving_balance + $2,
@@ -213,6 +206,15 @@ export async function recordOneTimeIncome(accountId, amount, category, descripti
     if (upd.rowCount === 0) {
       throw new Error("account not found");
     }
+
+    const {total_balance, saving_balance, actual_spending} = upd.rows[0];
+
+    await client.query(
+      `INSERT INTO transactions
+        (account_id, tx_type, subtype, amount, category, description, total_balance, saving_balance, actual_spending)
+      VALUES ($1, 'save', 'modify_savings', $2, $3, $4, $5, $6, $7)`,
+      [accountId, amount, category, description, total_balance, saving_balance, actual_spending]
+    );
 
     await client.query("COMMIT");
     return upd.rows[0];
@@ -307,13 +309,6 @@ export async function recordOneTimeSpend(accountId, amount, category, descriptio
   try {
     await client.query("BEGIN");
 
-    await client.query(
-      `INSERT INTO transactions
-        (account_id, tx_type, subtype, amount, category, description)
-      VALUES ($1, 'spend', 'modify_spending', $2, $3, $4)`,
-      [accountId, amount, category, description]
-    );
-
     const upd = await client.query(
       `UPDATE accounts
         SET actual_spending     = actual_spending + $2,
@@ -329,6 +324,15 @@ export async function recordOneTimeSpend(accountId, amount, category, descriptio
     if (upd.rowCount === 0) {
       throw new Error(`Insufficient spending balance to transact $${amount}`);
     }
+
+    const {total_balance, saving_balance, actual_spending} = upd.rows[0];
+
+    await client.query(
+      `INSERT INTO transactions
+        (account_id, tx_type, subtype, amount, category, description, total_balance, saving_balance, actual_spending)
+      VALUES ($1, 'spend', 'modify_spending', $2, $3, $4, $5, $6, $7)`,
+      [accountId, amount, category, description, total_balance, saving_balance, actual_spending]
+    );
 
     await client.query("COMMIT");
     return upd.rows[0];
@@ -379,15 +383,8 @@ export async function undoOneTimeSpend(transactionId, accountId, description = '
     );
     
 
-    // 3) insert a reversal record with negated amount
-    await client.query(
-      `INSERT INTO transactions
-         (account_id, tx_type, subtype, amount, category, description, cancelled)
-       VALUES ($1, 'spend', 'modify_spending', $2, $3, $4, True);`,
-      [accountId, -amount, category, description]
-    );
-
-    // 4) roll back the balances
+    // 3) roll back the balances in accounts table
+    // undo the changes in the balances
     const upd = await client.query(
       `UPDATE accounts
           SET actual_spending     = actual_spending - $2,
@@ -400,8 +397,18 @@ export async function undoOneTimeSpend(transactionId, accountId, description = '
       [accountId, amount]
     );
     if (upd.rowCount === 0) {
-      throw new Error("Cannot undo: not enough actual spending to refund");
+      throw new Error("Cannot undo - not enough actual spending to refund");
     }
+
+    const {total_balance, saving_balance, actual_spending} = upd.rows[0];
+
+    // 4) insert cancellation record with negated amount
+    await client.query(
+      `INSERT INTO transactions
+         (account_id, tx_type, subtype, amount, category, description, cancelled, total_balance, saving_balance, actual_spending)
+       VALUES ($1, 'spend', 'modify_spending', $2, $3, $4, True, $5, $6, $7);`,
+      [accountId, -amount, category, description, total_balance, saving_balance, actual_spending]
+    );
 
     await client.query("COMMIT");
     return upd.rows[0];
@@ -845,4 +852,41 @@ export async function getTransactionHistory(accountId) {
     `, [accountId]
   );
   return res.rows;
+}
+
+// read transaction history for each month
+// return array of jsons each containing {month: total_balance:__ , saving_balance:__, actual_spending:__}
+// group by the same months together
+// for each month, trace the latest total_balance, spending_balance, actual_spending
+// arrange in descending order, take the first row's total_balance, spending_balance, actual_spending
+
+export async function getMonthlyBalances(accountId) {
+  const { rows } = await pool.query(
+    `
+    SELECT
+      to_char(month_start, 'Mon') AS month,
+      total_balance,
+      saving_balance,
+      actual_spending
+    FROM (
+      SELECT
+        date_trunc('month', created_at) AS month_start,
+        total_balance,
+        saving_balance,
+        actual_spending,
+        created_at,
+        row_number() OVER (
+          PARTITION BY date_trunc('month', created_at)
+          ORDER BY created_at DESC
+        ) AS rn
+      FROM transactions
+      WHERE account_id = $1
+    ) AS sub
+    WHERE rn = 1
+    ORDER BY month_start ASC;
+    `,
+    [accountId]
+  );
+
+  return rows;
 }

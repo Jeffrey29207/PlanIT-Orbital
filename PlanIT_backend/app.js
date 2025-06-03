@@ -13,7 +13,8 @@ import { testUsers, testUserAccounts, createUser,
     recordOneTimeSpend, undoOneTimeSpend,
     getRecurringSpending, setRecurringSpending, refreshRecurringSpending, deleteRecurringSpend,
     getRecurringIncome, setRecurringIncome, refreshRecurringIncome, deleteRecurringIncome,
-  scheduleRecurringTransactions, getTransactionHistory} from './database.js';
+  scheduleRecurringTransactions, 
+  getTransactionHistory, getMonthlyBalances} from './database.js';
 
 const app = express()
 
@@ -130,6 +131,17 @@ app.get("/accounts/:id/getTransactionHistory", async (req, res) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getTransactionHistory(accountId);
+      res.status(200).json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+//return monthly historical balances of a user account using accountId as key
+app.get("/accounts/:id/getMonthlyBalances", async (req, res, next) => {
+    try {
+      const accountId = Number(req.params.id);
+      const updated = await getMonthlyBalances(accountId);
       res.status(200).json(updated);
     } catch (err) {
       next(err);
@@ -332,6 +344,7 @@ app.post("/accounts/deleteRecurringIncome", async (req, res, next) => {
     }
   });
   
+
 // middleware for error handling
 // throws an error produced by the function
 app.use((err, req, res, next) => {

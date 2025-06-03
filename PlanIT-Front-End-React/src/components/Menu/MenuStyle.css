@@ -202,16 +202,18 @@
         display: flex;
         height: 30vh;
         flex-direction: column;
-        justify-content: flex-start
+        justify-content: flex-start;
+        border-radius: 0.3rem;
     }
 
     .menuContainer .list-group-item {
         background-color: transparent;
+        margin-bottom: 15px;
+        border-radius: 0.3rem;
         display: flex;
         align-items: center;
         height: 70px;
         width: 180px;
-        border-radius: 0%;
         border: none;
         text-decoration: none;
         color: white;
@@ -236,6 +238,7 @@
     .logoutIcon {
         height: 70px;
         width: 70px;
+        border-radius: 0.3rem;
         justify-content: center;
         align-items: center;
         cursor: pointer;

@@ -863,27 +863,55 @@ export async function getTransactionHistory(accountId) {
 export async function getMonthlyBalances(accountId) {
   const { rows } = await pool.query(
     `
-    SELECT
-      to_char(month_start, 'Mon') AS month,
-      total_balance,
-      saving_balance,
-      actual_spending
-    FROM (
+    WITH
+    -- 1) for each calendar month with transactions, find the single row whose timestamp is highest (“last” entry in that month).
+    month_data AS (
       SELECT
-        date_trunc('month', created_at) AS month_start,
+        date_trunc('month', created_at)       AS month_start,
         total_balance,
         saving_balance,
-        actual_spending,
-        created_at,
-        row_number() OVER (
-          PARTITION BY date_trunc('month', created_at)
-          ORDER BY created_at DESC
-        ) AS rn
-      FROM transactions
-      WHERE account_id = $1
-    ) AS sub
-    WHERE rn = 1
-    ORDER BY month_start ASC;
+        actual_spending
+      FROM (
+        SELECT
+          date_trunc('month', created_at)     AS month_start,
+          total_balance,
+          saving_balance,
+          actual_spending,
+          created_at,
+          row_number() OVER (
+            PARTITION BY date_trunc('month', created_at)
+            ORDER BY created_at DESC
+          ) AS rn
+        FROM transactions
+        WHERE account_id = $1
+          
+          AND created_at >= date_trunc('year', now())
+          AND created_at <  date_trunc('year', now()) + INTERVAL '1 year'
+
+      ) AS t
+      WHERE t.rn = 1
+    ),
+
+    -- 2) Build a series of month_start values from Jan 1 to end of this year.
+    month_series AS (
+      SELECT
+        generate_series(
+          date_trunc('year', now()),           
+          date_trunc('year', now()) + INTERVAL '11 month',         
+          INTERVAL '1 month'
+        ) AS month_start
+    )
+
+    -- 3) LEFT JOIN so that months with no data produce NULLs.
+    SELECT
+      to_char(ms.month_start, 'Mon YYYY')     AS month,  
+      md.total_balance,
+      md.saving_balance,
+      md.actual_spending
+    FROM month_series AS ms
+    LEFT JOIN month_data   AS md
+      ON md.month_start = ms.month_start
+    ORDER BY ms.month_start ASC;
     `,
     [accountId]
   );

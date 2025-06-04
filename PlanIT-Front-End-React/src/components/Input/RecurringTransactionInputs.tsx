@@ -44,7 +44,7 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
     >
       <input
         key={1}
-        type="number"
+        type="text"
         placeholder="Amount"
         value={amount !== null ? amount : ""}
         onChange={(e) =>
@@ -70,7 +70,7 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
       />
       <input
         key={4}
-        type="number"
+        type="text"
         placeholder="Interval"
         value={interval !== null ? interval : ""}
         onChange={(e) =>

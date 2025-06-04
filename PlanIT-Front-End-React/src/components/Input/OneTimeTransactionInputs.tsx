@@ -30,7 +30,7 @@ function OneTimeTransactionInputs({ title, handleSubmit }: Props) {
       }}
     >
       <input
-        type="number"
+        type="text"
         placeholder="Amount"
         value={amount !== null ? amount : ""}
         onChange={(e) =>

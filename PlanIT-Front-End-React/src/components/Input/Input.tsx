@@ -24,7 +24,7 @@ function Input({ title, handleSubmit }: Props) {
       }}
     >
       <input
-        type="number"
+        type="text"
         placeholder={title}
         value={inputValue !== null ? inputValue : ""}
         onChange={(e) =>

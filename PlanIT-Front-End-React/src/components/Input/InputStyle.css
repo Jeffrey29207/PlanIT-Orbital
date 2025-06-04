@@ -20,13 +20,6 @@
     overflow: hidden;
 }
 
-@media screen and (min-width: 900px) {
-    .input .chart {
-        max-height: 70%;
-        overflow: hidden;
-    }
-}
-
 @media screen and (min-width: 1200px) {
     .input .chartContainer {
         height: 100%;

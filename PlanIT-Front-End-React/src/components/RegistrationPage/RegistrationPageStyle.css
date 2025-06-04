@@ -53,4 +53,9 @@
     background-color: rgb(1, 81, 1);
     color: white;
     cursor: pointer;
+    transition: filter 500ms;
+}
+
+.registrationForm button:hover {
+    filter: brightness(1.2);
 }

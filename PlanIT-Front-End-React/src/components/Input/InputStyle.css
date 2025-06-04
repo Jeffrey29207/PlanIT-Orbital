@@ -20,6 +20,17 @@
     overflow: hidden;
 }
 
+/* Remove increment and decrement arrows */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    appearance: none;
+}
+
+/* Remove increment and decrement arrows for firefox */
+input[type=number] {
+    appearance: textfield;
+}
+
 @media screen and (min-width: 1200px) {
     .input .chartContainer {
         height: 100%;

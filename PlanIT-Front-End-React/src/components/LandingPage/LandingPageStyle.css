@@ -50,6 +50,11 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    transition: background-color 500ms;
+}
+
+.landingPageButton:hover {
+    background-color: rgb(245, 243, 243, 0.2);
 }
 
 .landingPageContent {

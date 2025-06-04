@@ -23,4 +23,9 @@
     background-color: rgb(0, 103, 0);
     color: white;
     cursor: pointer;
+    transition: filter 500ms;
+}
+
+.oneTimeTransactionForm button:hover {
+    filter: brightness(1.2);
 }

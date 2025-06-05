@@ -70,6 +70,10 @@
     padding: 10px;
 }
 
+.lineChart {
+    overflow-y: auto;
+}
+
 /* Setting things for tablet screens */
 @media screen and (min-width: 900px) {
     /* Setting the dashboard for tablet*/

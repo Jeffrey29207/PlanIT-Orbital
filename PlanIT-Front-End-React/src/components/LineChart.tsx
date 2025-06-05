@@ -70,6 +70,7 @@ function LineChart({ title, labels, data, colors }: props) {
         },
       },
       y: {
+        beginAtZero: true,
         grid: {
           color: "rgba(255, 255, 255, 0.1)", // Y-axis grid color
           borderColor: "rgba(255, 255, 255, 0.1)", // Y-axis line color

@@ -20,6 +20,10 @@
     height: 80%;
 }
 
+.lineChart .chartContainer {
+    margin-top: 30px;
+}
+
 .value {
     color: rgb(206, 230, 201);
     font-family: Arial, Helvetica, sans-serif;

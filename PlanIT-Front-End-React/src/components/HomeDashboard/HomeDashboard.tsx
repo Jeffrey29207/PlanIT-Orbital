@@ -3,7 +3,7 @@
 import "./HomeDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
-// import LineChart from "../LineChart"; Not in use for milestone 1
+import LineChart from "../LineChart";
 // import Table from "../Table/Table"; Not in use for milestone 1
 import {
   getTotalBalance,
@@ -11,6 +11,7 @@ import {
   getSavingBalance,
   getSavingTarget,
   getActualSpending,
+  getMonthlyBalances,
 } from "../../helper/BackendAPI";
 import { useEffect, useState } from "react";
 
@@ -25,6 +26,15 @@ function HomeDashboard({ accountId }: Props) {
   const [savingBalance, setSavingBalance] = useState(0);
   const [savingTarget, setSavingTarget] = useState(0);
   const [spent, setSpent] = useState(0);
+  const [monthlyOverallBalances, setMonthlyOverallBalances] = useState<
+    number[]
+  >([0]);
+  const [monthlySavingBalances, setMonthlySavingBalances] = useState<number[]>([
+    0,
+  ]);
+  const [monthlyActualSpending, setMonthlyActualSpending] = useState<number[]>([
+    0,
+  ]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +53,23 @@ function HomeDashboard({ accountId }: Props) {
 
         const actualSpending = await getActualSpending(accountId);
         setSpent(actualSpending);
+
+        const monthlyBalances = await getMonthlyBalances(accountId);
+
+        const overallBalancePerMonth = monthlyBalances.map(
+          (data: any) => data.total_balance
+        );
+        setMonthlyOverallBalances(overallBalancePerMonth);
+
+        const savingBalancePerMonth = monthlyBalances.map(
+          (data: any) => data.saving_balace
+        );
+        setMonthlySavingBalances(savingBalancePerMonth);
+
+        const actualSpendingPerMonth = monthlyBalances.map(
+          (data: any) => data.actual_spending
+        );
+        setMonthlyActualSpending(actualSpendingPerMonth);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -98,11 +125,10 @@ function HomeDashboard({ accountId }: Props) {
 
   //-------------------------------------------------------------------------
 
-  /*
-  Not in use for milestone 1
-  const transactionGraph = (
+  // Handle line chart
+  const overallBalanceMonthlyGraph = (
     <LineChart
-      title="Transaction graph"
+      title="Overall graph"
       labels={[
         "January",
         "February",
@@ -117,11 +143,54 @@ function HomeDashboard({ accountId }: Props) {
         "November",
         "December",
       ]}
-      data={[100, 200, 300, 400, 500, 600, 300, 300, 450, 700, 800, 900]}
+      data={monthlyOverallBalances}
       colors={["#00B432"]}
     />
   );
-  */
+
+  const savingBalanceMonthlyGraph = (
+    <LineChart
+      title="Saving graph"
+      labels={[
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ]}
+      data={monthlySavingBalances}
+      colors={["#00B432"]}
+    />
+  );
+
+  const actualSpendingMonthlyGraph = (
+    <LineChart
+      title="Spent graph"
+      labels={[
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ]}
+      data={monthlyActualSpending}
+      colors={["#00B432"]}
+    />
+  );
 
   //-------------------------------------------------------------------------
 
@@ -143,7 +212,9 @@ function HomeDashboard({ accountId }: Props) {
         className="mainDashboardBlocks transactionGraph lineChart"
         style={{ color: "white" }}
       >
-        Transaction graph is not available for milestone 1.
+        {overallBalanceMonthlyGraph}
+        {savingBalanceMonthlyGraph}
+        {actualSpendingMonthlyGraph}
       </div>
       <div
         className="mainDashboardBlocks transactionRecords records"

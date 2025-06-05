@@ -225,7 +225,7 @@ function SpendingDashboard({ accountId }: Props) {
         {spendingDonut}
       </div>
       <div
-        className="mainDashboardBlocks spendingLineGraph lineGraph"
+        className="mainDashboardBlocks spendingLineGraph lineChart"
         style={{ color: "white" }}
       >
         {actualSpendingMonthlyGraph}

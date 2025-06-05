@@ -64,6 +64,11 @@ export const getTransactionHistory = async (accountId: number) => {
     .then(response => response.json());
 }
 
+export const getMonthlyBalances = async (accountId: number) => {
+    return await fetch(`${backendAPI}/accounts/${accountId}/getMonthlyBalances`)
+    .then(response => response.json());
+}
+
 export const setSavings = async (accountId: number, newAmount: number) => {
     return await fetch(`${backendAPI}/accounts/${accountId}/setSavings`, {
         method: 'POST',

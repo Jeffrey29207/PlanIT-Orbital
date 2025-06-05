@@ -6,7 +6,7 @@ about the spending account and accept inputs from users
 import "./SpendingDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
-// import LineChart from "../LineChart"; Not in use for milestone 1
+import LineChart from "../LineChart";
 import RecurringTransactionInputs from "../Input/RecurringTransactionInputs";
 import OneTimeTransactionInputs from "../Input/OneTimeTransactionInputs";
 import Table from "../Table/Table";
@@ -21,6 +21,7 @@ import {
   recurringSpend,
   getRecurringSpending,
   deleteRecurringSpend,
+  getMonthlyBalances,
 } from "../../helper/BackendAPI";
 
 interface Props {
@@ -28,9 +29,15 @@ interface Props {
 }
 
 function SpendingDashboard({ accountId }: Props) {
-  // Hanlde numeric dashboard and dougnut chart for spending balance and actual spending (spent)
+  // Hanlde fetching, numeric dashboard, and dougnut chart for spending balance and actual spending (spent)
   const [spendingBalance, setSpendingBalance] = useState(100000);
   const [spent, setSpent] = useState(0);
+  const [recurringSpendingTable, setRecurringSpendingTable] = useState<any[]>(
+    []
+  );
+  const [monthlyActualSpending, setMonthlyActualSpending] = useState<number[]>([
+    0,
+  ]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +46,23 @@ function SpendingDashboard({ accountId }: Props) {
         setSpendingBalance(balance);
         const actualSpending = await getActualSpending(accountId);
         setSpent(actualSpending);
+
+        await scheduleRecurTransactions();
+        const data = await getRecurringSpending(accountId);
+        const formattedData = data.map((item: any) => ({
+          content1: item.recur_id,
+          content2: item.category,
+          content3: item.amount,
+          content4: new Date(item.next_run_at).toString(),
+        }));
+        setRecurringSpendingTable(formattedData);
+
+        const monthlyBalances = await getMonthlyBalances(accountId);
+
+        const actualSpendingPerMonth = monthlyBalances.map(
+          (data: any) => data.actual_spending
+        );
+        setMonthlyActualSpending(actualSpendingPerMonth);
       } catch (error) {
         console.error("Error fetching spending data:", error);
       }
@@ -69,11 +93,10 @@ function SpendingDashboard({ accountId }: Props) {
 
   //-------------------------------------------------------------------------
 
-  /*
-  Not in use for milestone 1
-  const transactionGraph = (
+  // Handle line chart
+  const actualSpendingMonthlyGraph = (
     <LineChart
-      title="Transaction graph"
+      title="Spent graph"
       labels={[
         "January",
         "February",
@@ -88,11 +111,10 @@ function SpendingDashboard({ accountId }: Props) {
         "November",
         "December",
       ]}
-      data={[100, 200, 300, 400, 500, 600, 300, 300, 450, 700, 800, 900]}
+      data={monthlyActualSpending}
       colors={["#00B432"]}
     />
   );
-  */
 
   //-------------------------------------------------------------------------
 
@@ -103,33 +125,6 @@ function SpendingDashboard({ accountId }: Props) {
     heading3: "Amount",
     heading4: "Next transaction",
   };
-
-  const [recurringSpendingTable, setRecurringSpendingTable] = useState<any[]>(
-    []
-  );
-
-  useEffect(() => {
-    const fetchRecurringIncome = async () => {
-      try {
-        await scheduleRecurTransactions();
-        const data = await getRecurringSpending(accountId);
-        const formattedData = data.map((item: any) => ({
-          content1: item.recur_id,
-          content2: item.category,
-          content3: item.amount,
-          content4: new Date(item.next_run_at).toString(),
-        }));
-        setRecurringSpendingTable(formattedData);
-      } catch (error) {
-        console.error("Error fetching recurring income:", error);
-      }
-    };
-    fetchRecurringIncome();
-    const interval = setInterval(fetchRecurringIncome, 1000); // Realtime update every second
-    return () => {
-      clearInterval(interval); // Clear the interval on component unmount
-    };
-  }, [accountId]);
 
   const handleClickForRecurringTableButton = (recurId: number) => {
     deleteRecurringSpend(recurId);
@@ -233,8 +228,7 @@ function SpendingDashboard({ accountId }: Props) {
         className="mainDashboardBlocks spendingLineGraph lineGraph"
         style={{ color: "white" }}
       >
-        {" "}
-        Transaction graph is not available for milestone 1.
+        {actualSpendingMonthlyGraph}
       </div>
       <div className="mainDashboardBlocks spendingInput input">{inputs}</div>
       <div className="mainDashboardBlocks spendingRecurringRecords records">

@@ -6,7 +6,7 @@ about the saving account and accept inputs from users
 import "./SavingDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
-// import LineChart from "../LineChart"; not in use for milestone1
+import LineChart from "../LineChart";
 import Table from "../Table/Table";
 import Input from "../Input/Input";
 import RecurringTransactionInputs from "../Input/RecurringTransactionInputs";
@@ -22,6 +22,7 @@ import {
   getRecurringIncome,
   scheduleRecurTransactions,
   deleteRecurringIncome,
+  getMonthlyBalances,
 } from "../../helper/BackendAPI";
 import { useEffect, useState } from "react";
 
@@ -30,9 +31,13 @@ interface Props {
 }
 
 function SavingDashboard({ accountId }: Props) {
-  //Hanlde numeric dashboard and dougnut chart for saving balance and target saving
+  //Hanlde fetching, numeric dashboard and dougnut chart for saving balance and target saving
   const [savingBalance, setSavingBalance] = useState(0);
   const [savingsTarget, setSavingsTarget] = useState(0);
+  const [recurringSavingTable, setRecurringSavingTable] = useState<any[]>([]);
+  const [monthlySavingBalances, setMonthlySavingBalances] = useState<number[]>([
+    0,
+  ]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +46,23 @@ function SavingDashboard({ accountId }: Props) {
         const target = await getSavingTarget(accountId);
         setSavingBalance(balance);
         setSavingsTarget(target);
+
+        await scheduleRecurTransactions();
+        const data = await getRecurringIncome(accountId);
+        const formattedData = data.map((item: any) => ({
+          content1: item.recur_id,
+          content2: item.category,
+          content3: item.amount,
+          content4: new Date(item.next_run_at).toString(),
+        }));
+        setRecurringSavingTable(formattedData);
+
+        const monthlyBalances = await getMonthlyBalances(accountId);
+
+        const savingBalancePerMonth = monthlyBalances.map(
+          (data: any) => data.saving_balace
+        );
+        setMonthlySavingBalances(savingBalancePerMonth);
       } catch (error) {
         console.error("Error fetching saving balance:", error);
       }
@@ -72,9 +94,8 @@ function SavingDashboard({ accountId }: Props) {
 
   //-------------------------------------------------------------------------
 
-  /*
-   Not in use for Milestone 1
-  const transactionGraph = (
+  // Handle line chart
+  const savingBalanceMonthlyGraph = (
     <LineChart
       title="Saving graph"
       labels={[
@@ -91,11 +112,10 @@ function SavingDashboard({ accountId }: Props) {
         "November",
         "December",
       ]}
-      data={[100, 200, 300, 400, 500, 600, 300, 300, 450, 700, 800, 900]}
+      data={monthlySavingBalances}
       colors={["#00B432"]}
     />
   );
-  */
 
   //-------------------------------------------------------------------------
 
@@ -106,31 +126,6 @@ function SavingDashboard({ accountId }: Props) {
     heading3: "Amount",
     heading4: "Next transaction",
   };
-
-  const [recurringSavingTable, setRecurringSavingTable] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchRecurringIncome = async () => {
-      try {
-        await scheduleRecurTransactions();
-        const data = await getRecurringIncome(accountId);
-        const formattedData = data.map((item: any) => ({
-          content1: item.recur_id,
-          content2: item.category,
-          content3: item.amount,
-          content4: new Date(item.next_run_at).toString(),
-        }));
-        setRecurringSavingTable(formattedData);
-      } catch (error) {
-        console.error("Error fetching recurring income:", error);
-      }
-    };
-    fetchRecurringIncome();
-    const interval = setInterval(fetchRecurringIncome, 1000); // Realtime update every second
-    return () => {
-      clearInterval(interval); // Clear the interval on component unmount
-    };
-  }, [accountId]);
 
   const handleClickForRecurringTableButton = (recurId: number) => {
     deleteRecurringIncome(recurId);
@@ -259,10 +254,10 @@ function SavingDashboard({ accountId }: Props) {
         {savingDonut}
       </div>
       <div
-        className="mainDashboardBlocks savingLineGraph lineGraph"
+        className="mainDashboardBlocks savingLineGraph lineChart"
         style={{ color: "white" }}
       >
-        Saving graph is not available for milestone 1.
+        {savingBalanceMonthlyGraph}
       </div>
       <div className="mainDashboardBlocks savingInput input">{inputs}</div>
       <div className="mainDashboardBlocks savingRecurringRecords records">

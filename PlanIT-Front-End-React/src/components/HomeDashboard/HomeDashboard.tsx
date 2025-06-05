@@ -20,7 +20,7 @@ interface Props {
 }
 
 function HomeDashboard({ accountId }: Props) {
-  //Handle numeric dashboard and doughnut chart
+  //Handle fetching, numeric dashboard, and doughnut chart
   const [overallBalance, setOverallBalance] = useState(0);
   const [spendingBalance, setSpendingBalance] = useState(0);
   const [savingBalance, setSavingBalance] = useState(0);

@@ -54,14 +54,20 @@
         'spendingRecords'
         'spendingRecords';
     overflow-y: auto; 
-    overflow-x: hidden;
-
 }
 
 .mainDashboardBlocks {
     border-radius: 1rem;
     background-color: rgba(250, 254, 255, 0.2);
     padding: 10px;
+}
+
+.input {
+        overflow-y: auto;
+}
+
+.lineChart {
+    overflow-y: auto;
 }
 
 /* Setting things for tablet screens */
@@ -128,9 +134,5 @@
     .mainDashboardBlocks {
         border-radius: 1rem;
         background-color: rgba(250, 254, 255, 0.2);
-    }
-
-    .input {
-        overflow-y: auto;;
     }
 }

@@ -1,6 +1,7 @@
 // These are functions to access fetch the backend API
 
-const backendAPI = "https://planit-orbital-2025.onrender.com";
+//const backendAPI = "https://planit-orbital-2025.onrender.com";
+const backendAPI = "http://localhost:8080";
 
 export const testUsers = async () => {
     return await fetch(`${backendAPI}/testUsers`).then(response => response.json());
@@ -129,7 +130,7 @@ export const oneTimeSpend = async (accountId: number, amount: number, category: 
     }).then(response => response.json());
 }
 
-export const undoOneTimeSpend = async (accountId: number, transactionId: string) => {
+export const undoOneTimeSpend = async (accountId: number, transactionId: number) => {
     return await fetch(`${backendAPI}/accounts/${accountId}/undoOneTimeSpend`, {
         method: 'POST',
         headers: {

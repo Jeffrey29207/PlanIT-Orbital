@@ -4,7 +4,7 @@ import "./HomeDashboardStyle.css";
 import NumericDashboard from "../NumericDashboard";
 import DoughnutChart from "../DoughnutChart";
 import LineChart from "../LineChart";
-// import Table from "../Table/Table"; Not in use for milestone 1
+import Table from "../Table/Table";
 import {
   getTotalBalance,
   getSpendingBalance,
@@ -13,6 +13,7 @@ import {
   getActualSpending,
   getMonthlyBalances,
   getTransactionHistory,
+  undoOneTimeSpend,
 } from "../../helper/BackendAPI";
 import { useEffect, useState } from "react";
 
@@ -36,6 +37,8 @@ function HomeDashboard({ accountId }: Props) {
   const [monthlyActualSpending, setMonthlyActualSpending] = useState<number[]>([
     0,
   ]);
+  const [transactionHistoryTableContent, setTransactionHistoryTableContent] =
+    useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +59,6 @@ function HomeDashboard({ accountId }: Props) {
         setSpent(actualSpending);
 
         const monthlyBalances = await getMonthlyBalances(accountId);
-        console.log(monthlyBalances);
 
         const overallBalancePerMonth = monthlyBalances.map(
           (data: any) => data.total_balance
@@ -67,7 +69,6 @@ function HomeDashboard({ accountId }: Props) {
           (data: any) => data.saving_balance
         );
         setMonthlySavingBalances(savingBalancePerMonth);
-        console.log(savingBalancePerMonth);
 
         const actualSpendingPerMonth = monthlyBalances.map(
           (data: any) => data.actual_spending
@@ -75,6 +76,20 @@ function HomeDashboard({ accountId }: Props) {
         setMonthlyActualSpending(actualSpendingPerMonth);
 
         const transactionHistory = await getTransactionHistory(accountId);
+        const formattedTransactionHistory = transactionHistory
+          .filter(
+            (item: any) =>
+              item.tx_type === "spend" &&
+              item.description !== "cancellation" &&
+              item.description !== "recurring spending"
+          )
+          .map((item: any) => ({
+            content1: item.tx_id,
+            content2: item.description,
+            content3: item.amount,
+            content4: item.cancelled ? "Cancelled" : "Executed",
+          }));
+        setTransactionHistoryTableContent(formattedTransactionHistory);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -199,6 +214,30 @@ function HomeDashboard({ accountId }: Props) {
 
   //-------------------------------------------------------------------------
 
+  // Handle transaction history table
+  const transactionHistroyTableHeadings = {
+    heading1: "Transaction ID",
+    heading2: "Description",
+    heading3: "Amount",
+    heading4: "Status",
+  };
+
+  const handleUndoTransaction = (transactionId: number) => {
+    undoOneTimeSpend(accountId, transactionId);
+  };
+
+  const transactionHistoryTable = (
+    <Table
+      title="Transaction History"
+      heading={transactionHistroyTableHeadings}
+      data={transactionHistoryTableContent}
+      button="Undo"
+      handleClick={handleUndoTransaction}
+    />
+  );
+
+  //-------------------------------------------------------------------------
+
   return (
     <div className="dashboard">
       <div className="mainDashboardBlocks overallDashboard numericDashboard">
@@ -225,7 +264,7 @@ function HomeDashboard({ accountId }: Props) {
         className="mainDashboardBlocks transactionRecords records"
         style={{ color: "white" }}
       >
-        Transaction history table is not available for milestone 1.
+        {transactionHistoryTable}
       </div>
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
         {savingNumDashboard}

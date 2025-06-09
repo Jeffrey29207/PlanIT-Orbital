@@ -22,6 +22,8 @@ import {
   getRecurringSpending,
   deleteRecurringSpend,
   getMonthlyBalances,
+  getTransactionHistory,
+  undoOneTimeSpend,
 } from "../../helper/BackendAPI";
 
 interface Props {
@@ -38,6 +40,8 @@ function SpendingDashboard({ accountId }: Props) {
   const [monthlyActualSpending, setMonthlyActualSpending] = useState<number[]>([
     0,
   ]);
+  const [spendingHistoryTableContent, setSpendingHistoryTableContent] =
+    useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +67,22 @@ function SpendingDashboard({ accountId }: Props) {
           (data: any) => data.actual_spending
         );
         setMonthlyActualSpending(actualSpendingPerMonth);
+
+        const spendingHistory = await getTransactionHistory(accountId);
+        const formattedSpendingHistory = spendingHistory
+          .filter(
+            (item: any) =>
+              item.tx_type === "spend" &&
+              item.description !== "cancellation" &&
+              item.description !== "recurring spending"
+          )
+          .map((item: any) => ({
+            content1: item.tx_id,
+            content2: item.description,
+            content3: item.amount,
+            content4: item.cancelled ? "Cancelled" : "Executed",
+          }));
+        setSpendingHistoryTableContent(formattedSpendingHistory);
       } catch (error) {
         console.error("Error fetching spending data:", error);
       }
@@ -213,6 +233,31 @@ function SpendingDashboard({ accountId }: Props) {
     />,
   ];
 
+  //-------------------------------------------------------------------------
+  // Handle spending history table
+  const spendingHistroyTableHeadings = {
+    heading1: "Transaction ID",
+    heading2: "Description",
+    heading3: "Amount",
+    heading4: "Status",
+  };
+
+  const handleUndoTransaction = (transactionId: number) => {
+    undoOneTimeSpend(accountId, transactionId);
+  };
+
+  const spendingHistoryTable = (
+    <Table
+      title="Spending history"
+      heading={spendingHistroyTableHeadings}
+      data={spendingHistoryTableContent}
+      button="Undo"
+      handleClick={handleUndoTransaction}
+    />
+  );
+
+  //-------------------------------------------------------------------------
+
   return (
     <div className="spendingDashboardPage">
       <div className="mainDashboardBlocks spendingDashboard numericDashboard">
@@ -238,7 +283,7 @@ function SpendingDashboard({ accountId }: Props) {
         className="mainDashboardBlocks spendingRecords records"
         style={{ color: "white" }}
       >
-        Transaction history table is not available for milestone 1.
+        {spendingHistoryTable}
       </div>
     </div>
   );

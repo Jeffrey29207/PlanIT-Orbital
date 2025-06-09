@@ -156,6 +156,16 @@ export async function setSavings(newAmount, account_id) {
     `,
     [newAmount, account_id]
   );
+
+  const {total_balance, saving_balance, actual_spending} = result.rows[0];
+
+  await pool.query(
+    `INSERT INTO transactions
+      (account_id, tx_type, subtype, amount, category, description, total_balance, saving_balance, actual_spending)
+    VALUES ($1, 'save', 'modify_savings', $2, 'set savings', 'set savings' , $3, $4, $5)`,
+    [account_id, newAmount, total_balance, saving_balance, actual_spending]
+  );
+
   return result.rows[0];
 }
 
@@ -258,6 +268,15 @@ export async function transferSavingsToSpending(accountId, amount) {
     throw new Error("Insufficient savings balance for transfer");
   }
 
+  const {total_balance, saving_balance, actual_spending} = rows[0];
+
+  await pool.query(
+    `INSERT INTO transactions
+      (account_id, tx_type, subtype, amount, category, description, total_balance, saving_balance, actual_spending)
+    VALUES ($1, 'transfer', 'saving_to_spending', $2, 'transfer from savings to spending', 'transfer from savings to spending' , $3, $4, $5)`,
+    [accountId, amount, total_balance, saving_balance, actual_spending]
+  );
+
   // rows[0] is the single updated account
   return rows[0];
 }
@@ -291,6 +310,15 @@ export async function transferSpendingToSavings(accountId, amount) {
   if (rowCount === 0) {
     throw new Error("Insufficient spending budget for transfer");
   }
+
+  const {total_balance, saving_balance, actual_spending} = rows[0];
+
+  await pool.query(
+    `INSERT INTO transactions
+      (account_id, tx_type, subtype, amount, category, description, total_balance, saving_balance, actual_spending)
+    VALUES ($1, 'transfer', 'spending_to_saving', $2, 'transfer from spending to saving', 'transfer from spending to saving' , $3, $4, $5)`,
+    [accountId, amount, total_balance, saving_balance, actual_spending]
+  );
 
   return rows[0];
 }
@@ -886,7 +914,7 @@ export async function getMonthlyBalances(accountId) {
         WHERE account_id = $1
           
           AND created_at >= date_trunc('year', now())
-          AND created_at <  date_trunc('year', now()) + INTERVAL '1 year'
+          AND created_at <  date_trunc('year', now()) + INTERVAL '2 year'
 
       ) AS t
       WHERE t.rn = 1
@@ -897,7 +925,7 @@ export async function getMonthlyBalances(accountId) {
       SELECT
         generate_series(
           date_trunc('year', now()),           
-          date_trunc('year', now()) + INTERVAL '11 month',         
+          date_trunc('year', now()) + INTERVAL '23 month',         
           INTERVAL '1 month'
         ) AS month_start
     )

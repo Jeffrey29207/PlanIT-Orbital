@@ -22,13 +22,11 @@
 
 .input .chart {
     max-height: 70%; 
-    overflow: hidden;
 }
 
 
 @media screen and (min-width: 900px) {
     .input .chartContainer {
         height: 100%;
-        overflow: hidden;
     }
 }

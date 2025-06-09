@@ -189,7 +189,7 @@ export async function setSavingTarget(newAmount, account_id) {
   return result.rows[0];
 }
 
-/* One time Spending */ 
+/* One time Income */ 
 
 //make a one-time additon to the savings account
 //BEGIN/COMMIT - query executes only if all the SQL statements work
@@ -228,6 +228,81 @@ export async function recordOneTimeIncome(accountId, amount, category, descripti
 
     await client.query("COMMIT");
     return upd.rows[0];
+  } catch (err) {
+    await client.query("ROLLBACK");
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+//undo a one-time income transaction
+//same as subtracting the amount of the one time income transaction
+export async function undoOneTimeIncome(transactionId, accountId, description = 'cancellation') {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    
+    // 1) Check if transaction can be found
+    // if yes, check if the order has already been cancelled
+    const { rows: txRows } = await client.query(
+      `SELECT amount, category, cancelled
+         FROM transactions
+        WHERE tx_id = $1
+          AND account_id = $2
+        LIMIT 1;`,
+      [transactionId, accountId]
+    );
+
+    if (txRows.length === 0) {
+      throw new Error("Original transaction not found");
+    }
+
+    const { amount, category, cancelled } = txRows[0];
+
+    if (cancelled) {
+      throw new Error('transaction is already cancelled');
+    }
+
+    // 2) If all checks pass, update cancel status of the original transaction 
+    await client.query(
+      `UPDATE transactions
+        SET cancelled = True
+      WHERE tx_id = $1
+        AND account_id = $2;`,
+      [transactionId, accountId]
+    );
+    
+
+    // 3) roll back the balances in accounts table
+    // undo the changes in the balances
+    const upd = await client.query(
+      `UPDATE accounts
+          SET saving_balance     = saving_balance - $2,
+              total_balance       = total_balance - $2,
+              updated_at          = now()
+        WHERE account_id = $1
+        RETURNING *;`,
+      [accountId, amount]
+    );
+
+    if (upd.rowCount === 0) {
+      throw new Error("Cannot undo - Income Transaction cannot be found");
+    }
+
+    const {total_balance, saving_balance, actual_spending} = upd.rows[0];
+
+    // 4) insert cancellation record with negated amount
+    await client.query(
+      `INSERT INTO transactions
+         (account_id, tx_type, subtype, amount, category, description, cancelled, total_balance, saving_balance, actual_spending)
+       VALUES ($1, 'save', 'modify_savings', $2, $3, $4, True, $5, $6, $7);`,
+      [accountId, -amount, category, description, total_balance, saving_balance, actual_spending]
+    );
+
+    await client.query("COMMIT");
+    return upd.rows[0];
+
   } catch (err) {
     await client.query("ROLLBACK");
     throw err;
@@ -398,7 +473,7 @@ export async function undoOneTimeSpend(transactionId, accountId, description = '
     const { amount, category, cancelled } = txRows[0];
 
     if (cancelled) {
-      throw new Error('transaction was cancelled or is a cancellation');
+      throw new Error('transaction is already cancelled');
     }
 
     // 2) If all checks pass, update cancel status of the original transaction 

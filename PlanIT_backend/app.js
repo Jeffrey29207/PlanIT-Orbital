@@ -7,12 +7,13 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { testUsers, testUserAccounts, createUser, 
-    createUserAccount, setSavings, setSavingTarget, recordOneTimeIncome,
+    createUserAccount, setSavings, setSavingTarget, 
+    recordOneTimeIncome, undoOneTimeIncome,
     getAccountId, getTotalBalance, getSpendingBalance, getSavingBalance, getActualSpending, getSavingTarget,
     transferSavingsToSpending, transferSpendingToSavings,
     recordOneTimeSpend, undoOneTimeSpend,
     getRecurringSpending, setRecurringSpending, refreshRecurringSpending, deleteRecurringSpend,
-    getRecurringIncome, setRecurringIncome, refreshRecurringIncome, deleteRecurringIncome,
+    getRecurringIncome, setRecurringIncome, deleteRecurringIncome,
   scheduleRecurringTransactions, 
   getTransactionHistory, getMonthlyBalances} from './database.js';
 
@@ -181,6 +182,19 @@ app.post("/accounts/:id/oneTimeIncome", async (req, res, next) => {
       const {amount, category, description} = req.body;
   
       const updated = await recordOneTimeIncome(accountId, amount, category, description);
+      res.json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+// undo one-time spending transaction
+app.post("/accounts/:id/undoOneTimeIncome", async (req, res, next) => {
+    try {
+      const accountId = Number(req.params.id);
+      const {transactionId} = req.body;
+  
+      const updated = await undoOneTimeIncome(transactionId, accountId);
       res.json(updated);
     } catch (err) {
       next(err);

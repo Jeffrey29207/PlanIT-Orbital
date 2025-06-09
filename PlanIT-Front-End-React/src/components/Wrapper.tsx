@@ -27,7 +27,7 @@ function Wrapper({ children }: PropsWithChildren) {
   if (authenticated) {
     return <>{children}</>;
   } else {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 }
 

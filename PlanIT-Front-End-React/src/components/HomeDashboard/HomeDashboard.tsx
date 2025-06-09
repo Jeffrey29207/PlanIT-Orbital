@@ -12,6 +12,7 @@ import {
   getSavingTarget,
   getActualSpending,
   getMonthlyBalances,
+  getTransactionHistory,
 } from "../../helper/BackendAPI";
 import { useEffect, useState } from "react";
 
@@ -55,6 +56,7 @@ function HomeDashboard({ accountId }: Props) {
         setSpent(actualSpending);
 
         const monthlyBalances = await getMonthlyBalances(accountId);
+        console.log(monthlyBalances);
 
         const overallBalancePerMonth = monthlyBalances.map(
           (data: any) => data.total_balance
@@ -62,14 +64,17 @@ function HomeDashboard({ accountId }: Props) {
         setMonthlyOverallBalances(overallBalancePerMonth);
 
         const savingBalancePerMonth = monthlyBalances.map(
-          (data: any) => data.saving_balace
+          (data: any) => data.saving_balance
         );
         setMonthlySavingBalances(savingBalancePerMonth);
+        console.log(savingBalancePerMonth);
 
         const actualSpendingPerMonth = monthlyBalances.map(
           (data: any) => data.actual_spending
         );
         setMonthlyActualSpending(actualSpendingPerMonth);
+
+        const transactionHistory = await getTransactionHistory(accountId);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

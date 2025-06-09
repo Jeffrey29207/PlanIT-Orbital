@@ -1,6 +1,6 @@
 // These are functions to access fetch the backend API
 
-const backendAPI = "http://localhost:8080";
+const backendAPI = "https://planit-orbital-2025.onrender.com";
 
 export const testUsers = async () => {
     return await fetch(`${backendAPI}/testUsers`).then(response => response.json());

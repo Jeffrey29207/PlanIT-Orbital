@@ -60,7 +60,7 @@ function SavingDashboard({ accountId }: Props) {
         const monthlyBalances = await getMonthlyBalances(accountId);
 
         const savingBalancePerMonth = monthlyBalances.map(
-          (data: any) => data.saving_balace
+          (data: any) => data.saving_balance
         );
         setMonthlySavingBalances(savingBalancePerMonth);
       } catch (error) {

@@ -876,7 +876,8 @@ export async function scheduleRecurringTransactions() {
 export async function getTransactionHistory(accountId) {
   const res = await pool.query(`
     SELECT * FROM transactions WHERE account_id = $1
-    ORDER BY created_at DESC;
+    ORDER BY created_at DESC
+    LIMIT 10;
     `, [accountId]
   );
   return res.rows;

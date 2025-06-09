@@ -127,7 +127,7 @@ app.get("/accounts/:id/getSavingTarget", async (req, res) => {
   });
 
 //return transaction history of a user account using accountId as key
-app.get("/accounts/:id/getTransactionHistory", async (req, res) => {
+app.get("/accounts/:id/getTransactionHistory", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getTransactionHistory(accountId);

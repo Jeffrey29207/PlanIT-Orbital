@@ -74,7 +74,8 @@ function SpendingDashboard({ accountId }: Props) {
             (item: any) =>
               item.tx_type === "spend" &&
               item.description !== "cancellation" &&
-              item.description !== "recurring spending"
+              item.description !== "recurring spending" &&
+              item.description !== "deleted recurring spending"
           )
           .map((item: any) => ({
             content1: item.tx_id,

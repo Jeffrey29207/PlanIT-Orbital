@@ -23,6 +23,8 @@ import {
   scheduleRecurTransactions,
   deleteRecurringIncome,
   getMonthlyBalances,
+  getTransactionHistory,
+  undoOneTimeIncome,
 } from "../../helper/BackendAPI";
 import { useEffect, useState } from "react";
 
@@ -38,6 +40,9 @@ function SavingDashboard({ accountId }: Props) {
   const [monthlySavingBalances, setMonthlySavingBalances] = useState<number[]>([
     0,
   ]);
+  const [savingHistoryTableContent, setSavingHistoryTableContent] = useState<
+    any[]
+  >([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +68,23 @@ function SavingDashboard({ accountId }: Props) {
           (data: any) => data.saving_balance
         );
         setMonthlySavingBalances(savingBalancePerMonth);
+
+        const spendingHistory = await getTransactionHistory(accountId);
+        const formattedSpendingHistory = spendingHistory
+          .filter(
+            (item: any) =>
+              item.tx_type === "save" &&
+              item.description !== "cancellation" &&
+              item.description !== "recurring income" &&
+              item.description !== "deleted recurring income"
+          )
+          .map((item: any) => ({
+            content1: item.tx_id,
+            content2: item.description,
+            content3: item.amount,
+            content4: item.cancelled ? "Cancelled" : "Executed",
+          }));
+        setSavingHistoryTableContent(formattedSpendingHistory);
       } catch (error) {
         console.error("Error fetching saving balance:", error);
       }
@@ -242,6 +264,31 @@ function SavingDashboard({ accountId }: Props) {
     />,
   ];
 
+  //-------------------------------------------------------------------------
+  // Handle spending history table
+  const savingHistroyTableHeadings = {
+    heading1: "Transaction ID",
+    heading2: "Description",
+    heading3: "Amount",
+    heading4: "Status",
+  };
+
+  const handleUndoTransaction = (transactionId: number) => {
+    undoOneTimeIncome(accountId, transactionId);
+  };
+
+  const savingHistoryTable = (
+    <Table
+      title="Spending history"
+      heading={savingHistroyTableHeadings}
+      data={savingHistoryTableContent}
+      button="Undo"
+      handleClick={handleUndoTransaction}
+    />
+  );
+
+  //-------------------------------------------------------------------------
+
   return (
     <div className="savingDashboardPage">
       <div className="mainDashboardBlocks savingDashboard numericDashboard">
@@ -267,7 +314,7 @@ function SavingDashboard({ accountId }: Props) {
         className="mainDashboardBlocks savingRecords records"
         style={{ color: "white" }}
       >
-        Transaction history table is not available for milestone 1.
+        {savingHistoryTable}
       </div>
     </div>
   );

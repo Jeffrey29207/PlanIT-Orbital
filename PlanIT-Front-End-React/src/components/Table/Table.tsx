@@ -17,12 +17,21 @@ interface props {
     content2: any;
     content3: any;
     content4: any;
+    option?: string;
   }[];
   button?: string;
   handleClick?: (value: number) => void;
+  handleClickWithOption?: (value: number, option: string) => void;
 }
 
-function Table({ title, heading, data, button, handleClick }: props) {
+function Table({
+  title,
+  heading,
+  data,
+  button,
+  handleClick,
+  handleClickWithOption,
+}: props) {
   const { heading1, heading2, heading3, heading4 } = heading;
 
   const content = (
@@ -45,6 +54,8 @@ function Table({ title, heading, data, button, handleClick }: props) {
             content4={item.content4}
             button={button}
             handleClick={handleClick}
+            option={item.option}
+            handleClickWithOption={handleClickWithOption}
           />
         ))}
       </tbody>

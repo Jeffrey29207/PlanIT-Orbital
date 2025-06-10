@@ -14,6 +14,7 @@ import {
   getMonthlyBalances,
   getTransactionHistory,
   undoOneTimeSpend,
+  undoOneTimeIncome,
 } from "../../helper/BackendAPI";
 import { useEffect, useState } from "react";
 
@@ -79,15 +80,18 @@ function HomeDashboard({ accountId }: Props) {
         const formattedTransactionHistory = transactionHistory
           .filter(
             (item: any) =>
-              item.tx_type === "spend" &&
               item.description !== "cancellation" &&
-              item.description !== "recurring spending"
+              item.description !== "recurring spending" &&
+              item.description !== "recurring income" &&
+              item.description !== "deleted recurring spending" &&
+              item.description !== "deleted recurring income"
           )
           .map((item: any) => ({
             content1: item.tx_id,
-            content2: item.description,
+            content2: `${item.description} - ${item.tx_type}`,
             content3: item.amount,
             content4: item.cancelled ? "Cancelled" : "Executed",
+            option: item.tx_type,
           }));
         setTransactionHistoryTableContent(formattedTransactionHistory);
       } catch (error) {
@@ -222,8 +226,15 @@ function HomeDashboard({ accountId }: Props) {
     heading4: "Status",
   };
 
-  const handleUndoTransaction = (transactionId: number) => {
-    undoOneTimeSpend(accountId, transactionId);
+  const handleUndoTransactionWithOption = (
+    transactionId: number,
+    type: string
+  ) => {
+    if (type === "spend") {
+      undoOneTimeSpend(accountId, transactionId);
+    } else if (type === "save") {
+      undoOneTimeIncome(accountId, transactionId);
+    }
   };
 
   const transactionHistoryTable = (
@@ -232,7 +243,7 @@ function HomeDashboard({ accountId }: Props) {
       heading={transactionHistroyTableHeadings}
       data={transactionHistoryTableContent}
       button="Undo"
-      handleClick={handleUndoTransaction}
+      handleClickWithOption={handleUndoTransactionWithOption}
     />
   );
 

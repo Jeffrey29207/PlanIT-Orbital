@@ -7,6 +7,8 @@ interface props {
   content4: any;
   button?: string;
   handleClick?: (value: number) => void;
+  option?: string;
+  handleClickWithOption?: (value: number, option: string) => void;
 }
 
 function TableData({
@@ -16,6 +18,8 @@ function TableData({
   content4,
   button,
   handleClick,
+  option,
+  handleClickWithOption,
 }: props) {
   return (
     <tr>
@@ -23,9 +27,18 @@ function TableData({
       <td>{content2}</td>
       <td>{content3}</td>
       <td>{content4}</td>
-      {button && handleClick && (
+      {button && (
         <td>
-          <button className="tableButton" onClick={() => handleClick(content1)}>
+          <button
+            className="tableButton"
+            onClick={
+              option && handleClickWithOption
+                ? () => handleClickWithOption(content1, option)
+                : handleClick
+                ? () => handleClick(content1)
+                : undefined
+            }
+          >
             {button}
           </button>
         </td>

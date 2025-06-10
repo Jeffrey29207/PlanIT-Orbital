@@ -279,7 +279,7 @@ function SavingDashboard({ accountId }: Props) {
 
   const savingHistoryTable = (
     <Table
-      title="Spending history"
+      title="Saving history"
       heading={savingHistroyTableHeadings}
       data={savingHistoryTableContent}
       button="Undo"

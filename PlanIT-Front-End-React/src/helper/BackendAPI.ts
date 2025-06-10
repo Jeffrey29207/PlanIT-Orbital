@@ -100,6 +100,16 @@ export const oneTimeIncome = async (accountId: number, amount: number, category:
     }).then(response => response.json());
 }
 
+export const undoOneTimeIncome = async (accountId: number, transactionId: number) => {
+    return await fetch(`${backendAPI}/accounts/${accountId}/undoOneTimeIncome`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ transactionId })
+    }).then(response => response.json());
+}
+
 export const transferSaving = async (accountId: number, amount: number) => {
     return await fetch(`${backendAPI}/accounts/${accountId}/transferSaving`, {
         method: 'POST',

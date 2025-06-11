@@ -12,6 +12,10 @@ This css file styles home page
     width: 100vw;
 }
 
+*::-webkit-scrollbar {
+    display: none;
+}
+
 
 
 

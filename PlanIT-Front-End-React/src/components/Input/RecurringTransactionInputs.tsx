@@ -1,7 +1,7 @@
 // An abstraction for savings and spending recurring transactions input
 
 import "./RecurringTransactionInputsStyle.css";
-import DashboardContent from "../DashboardContent/DashboardContent";
+import DashboardContent from "../DashboardContent/DashboardContent.tsx";
 import { useState } from "react";
 
 interface Props {

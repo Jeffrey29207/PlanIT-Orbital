@@ -1,10 +1,10 @@
 // Sidebar or top bar element in mobile screen size that contains menu for the users to navigate
 
-import ListOf from "../ListOf";
+import ListOf from "../ListOf.tsx";
 import "./MenuStyle.css";
 import logout from "../../assets/logout.ico";
 import menu from "../../assets/menu.svg";
-import supabase from "../../helper/Config";
+import supabase from "../../helper/config.ts";
 import { useNavigate } from "react-router-dom";
 import { useState, type ReactElement } from "react";
 

@@ -1,14 +1,14 @@
 // This is the home page where users are directed afer login
 
-import Menu from "./components/Menu/Menu";
+import Menu from "./components/Menu/Menu.tsx";
 import "./HomeStyle.css";
 import "bootstrap/dist/css/bootstrap.css";
-import HomeDashboard from "./components/HomeDashboard/HomeDashboard";
-import SavingDashboard from "./components/SavingDashboard/SavingDashboard";
-import SpendingDashboard from "./components/SpendingDashboard/SpendingDashboard";
+import HomeDashboard from "./components/HomeDashboard/HomeDashboard.tsx";
+import SavingDashboard from "./components/SavingDashboard/SavingDashboard.tsx";
+import SpendingDashboard from "./components/SpendingDashboard/SpendingDashboard.tsx";
 import { type ReactElement, useState, useEffect } from "react";
-import supabase from "./helper/Config";
-import { getAccountId } from "./helper/BackendAPI";
+import supabase from "./helper/config.ts";
+import { getAccountId } from "./helper/BackendAPI.ts";
 
 function Home() {
   const [accountId, setAccountId] = useState<number>(-1);

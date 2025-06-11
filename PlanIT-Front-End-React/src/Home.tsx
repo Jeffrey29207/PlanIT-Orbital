@@ -7,7 +7,7 @@ import HomeDashboard from "./components/HomeDashboard/HomeDashboard.tsx";
 import SavingDashboard from "./components/SavingDashboard/SavingDashboard.tsx";
 import SpendingDashboard from "./components/SpendingDashboard/SpendingDashboard.tsx";
 import { type ReactElement, useState, useEffect } from "react";
-import supabase from "./helper/Config.ts";
+import supabase from "./helper/config.ts";
 import { getAccountId } from "./helper/BackendAPI.ts";
 
 function Home() {

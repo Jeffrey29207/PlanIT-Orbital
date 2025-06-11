@@ -1,7 +1,7 @@
 // Registration page for new users to register
 
 import "./RegistrationPageStyle.css";
-import supabase from "../../helper/Config.ts";
+import supabase from "../../helper/config.ts";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { addUserAccount } from "../../helper/BackendAPI.ts";

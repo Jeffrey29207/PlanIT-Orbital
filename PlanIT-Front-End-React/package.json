@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.8",
     "@types/chart.js": "^2.9.41",
     "bootstrap": "^5.3.6",
     "chart.js": "^4.4.9",

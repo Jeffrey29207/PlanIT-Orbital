@@ -1,7 +1,7 @@
 // Wrap the home components to ensure that it is accessible only after login
 
 import { useState, useEffect, type PropsWithChildren } from "react";
-import supabase from "../helper/Config";
+import supabase from "../helper/Config.ts";
 import { Navigate } from "react-router-dom";
 
 function Wrapper({ children }: PropsWithChildren) {

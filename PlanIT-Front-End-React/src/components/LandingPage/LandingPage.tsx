@@ -2,7 +2,7 @@
 
 import { useNavigate } from "react-router";
 import "./LandingPageStyle.css";
-import NewsDashboard from "../News/NewsDashboard";
+import NewsDashboard from "../News/NewsDashboard.tsx";
 
 function LandingPage() {
   const navigate = useNavigate();

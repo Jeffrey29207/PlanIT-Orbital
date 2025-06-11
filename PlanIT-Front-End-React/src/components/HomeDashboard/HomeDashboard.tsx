@@ -1,10 +1,10 @@
 // Home dashboard component that displays a summary of informations about savings and spending accounts
 
 import "./HomeDashboardStyle.css";
-import NumericDashboard from "../NumericDashboard";
-import DoughnutChart from "../DoughnutChart";
-import LineChart from "../LineChart";
-import Table from "../Table/Table";
+import NumericDashboard from "../NumericDashboard.tsx";
+import DoughnutChart from "../DoughnutChart.tsx";
+import LineChart from "../LineChart.tsx";
+import Table from "../Table/Table.tsx";
 import {
   getTotalBalance,
   getSpendingBalance,
@@ -15,7 +15,7 @@ import {
   getTransactionHistory,
   undoOneTimeSpend,
   undoOneTimeIncome,
-} from "../../helper/BackendAPI";
+} from "../../helper/BackendAPI.ts";
 import { useEffect, useState } from "react";
 
 interface Props {

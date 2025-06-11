@@ -4,13 +4,13 @@ about the spending account and accept inputs from users
 */
 
 import "./SpendingDashboardStyle.css";
-import NumericDashboard from "../NumericDashboard";
-import DoughnutChart from "../DoughnutChart";
-import LineChart from "../LineChart";
-import RecurringTransactionInputs from "../Input/RecurringTransactionInputs";
-import OneTimeTransactionInputs from "../Input/OneTimeTransactionInputs";
-import Table from "../Table/Table";
-import Input from "../Input/Input";
+import NumericDashboard from "../NumericDashboard.tsx";
+import DoughnutChart from "../DoughnutChart.tsx";
+import LineChart from "../LineChart.tsx";
+import RecurringTransactionInputs from "../Input/RecurringTransactionInputs.tsx";
+import OneTimeTransactionInputs from "../Input/OneTimeTransactionInputs.tsx";
+import Table from "../Table/Table.tsx";
+import Input from "../Input/Input.tsx";
 import { useState, useEffect } from "react";
 import {
   transferSpending,
@@ -24,7 +24,7 @@ import {
   getMonthlyBalances,
   getTransactionHistory,
   undoOneTimeSpend,
-} from "../../helper/BackendAPI";
+} from "../../helper/BackendAPI.ts";
 
 interface Props {
   accountId: number;

@@ -1,6 +1,6 @@
 // An abstraction for dashboards that display numeric value
 
-import DashboardContent from "./DashboardContent/DashboardContent";
+import DashboardContent from "./DashboardContent/DashboardContent.tsx";
 
 interface props {
   title: string;

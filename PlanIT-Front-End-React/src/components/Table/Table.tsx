@@ -1,8 +1,8 @@
 // An abstraction for tables
 
-import DashboardContent from "../DashboardContent/DashboardContent";
+import DashboardContent from "../DashboardContent/DashboardContent.tsx";
 import "./TableStyle.css";
-import TableData from "./TableData";
+import TableData from "./TableData.tsx";
 
 interface props {
   title: string;

@@ -1,10 +1,10 @@
 // Registration page for new users to register
 
 import "./RegistrationPageStyle.css";
-import supabase from "../../helper/Config";
+import supabase from "../../helper/Config.ts";
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { addUserAccount } from "../../helper/BackendAPI";
+import { addUserAccount } from "../../helper/BackendAPI.ts";
 
 function RegistrationPage() {
   const [email, setEmail] = useState("");

@@ -1,7 +1,7 @@
 // Login page for registered users to log back in
 
 import "./LoginPageStyle.css";
-import supabase from "../../helper/Config";
+import supabase from "../../helper/Config.ts";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 

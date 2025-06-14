@@ -23,14 +23,14 @@ function NewsDashboard() {
             <img
               key={index}
               className="newsImage"
-              src={article.urlToImage}
+              src={article.fields.thumbnail}
               alt="newsImage"
             ></img>
-            <a key={index + 1} className="newsTitle" href={article.url}>
-              {article.title}
+            <a key={index + 1} className="newsTitle" href={article.webUrl}>
+              {article.webTitle}
             </a>
             <p key={index + 2} className="newsDescription">
-              {article.description}
+              {article.fields.trailText}
             </p>
           </div>
         ))}

@@ -1,6 +1,7 @@
 // These are functions to access fetch the backend API
 
-const backendAPI = "https://plan-it-orbital-2025.vercel.app";
+//const backendAPI = "https://plan-it-orbital-2025.vercel.app/api";
+const backendAPI = "http://localhost:8080";
 
 export const testUsers = async () => {
     return await fetch(`${backendAPI}/testUsers`).then(response => response.json());

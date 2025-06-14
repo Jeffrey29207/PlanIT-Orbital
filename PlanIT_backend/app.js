@@ -19,10 +19,12 @@ import { testUsers, testUserAccounts, createUser,
 
 const app = express()
 
-// allow any react server on localhost 3000 to fetch from the backend server
-app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:5173', 'https://plan-it-orbital-2025-kayf.vercel.app'], credentials: true }));
+// allow any react server to fetch from the backend server
+app.use(cors({ origin: '*' }));
+// previous config: app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:5173', 'https://plan-it-orbital-2025-kayf.vercel.app'], credentials: true }));
+
+app.use(express.json());
 const port = process.env.PORT || 8080; 
-app.use(express.json())
 
 //Dev testing//
 

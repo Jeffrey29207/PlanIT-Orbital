@@ -22,9 +22,10 @@ dotenv.config();
 //   ssl: { rejectUnauthorized: false },
 //   connectionTimeoutMillis: 10000,
 // });
+// external database connection string
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: 'postgresql://postgres.tawzugumouawtstryldu:J_1129l12345@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres',
   ssl: { rejectUnauthorized: false },
 
   connectionTimeoutMillis: 20000, 

@@ -71,7 +71,7 @@ app.get("/accounts/:userId/getAccountId", async (req, res, next) => {
 
 //return total balance of a user account using accountId as key
 //return format: {"total_balance": "0.00"}
-app.get("/accounts/:id/getTotalBalance", async (req, res) => {
+app.get("/accounts/:id/getTotalBalance", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getTotalBalance(accountId);
@@ -83,7 +83,7 @@ app.get("/accounts/:id/getTotalBalance", async (req, res) => {
 
 //return spending balance of a user account using accountId as key
 //return format: {"spending_balance": "0.00"}
-app.get("/accounts/:id/getSpendingBalance", async (req, res) => {
+app.get("/accounts/:id/getSpendingBalance", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getSpendingBalance(accountId);
@@ -95,7 +95,7 @@ app.get("/accounts/:id/getSpendingBalance", async (req, res) => {
 
 //return saving balance of a user account using accountId as key
 //return format: {"saving_balance": "0.00"}
-app.get("/accounts/:id/getSavingBalance", async (req, res) => {
+app.get("/accounts/:id/getSavingBalance", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getSavingBalance(accountId);
@@ -107,7 +107,7 @@ app.get("/accounts/:id/getSavingBalance", async (req, res) => {
 
 //return actual amount spent of a user account using accountid as key
 //return format: {"actual_spending": "0.00"}
-app.get("/accounts/:id/getActualSpending", async (req, res) => {
+app.get("/accounts/:id/getActualSpending", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getActualSpending(accountId);
@@ -119,7 +119,7 @@ app.get("/accounts/:id/getActualSpending", async (req, res) => {
 
 //return savings target of a user account using accountid as key
 //return format: {"saving_target": "0.00"}
-app.get("/accounts/:id/getSavingTarget", async (req, res) => {
+app.get("/accounts/:id/getSavingTarget", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getSavingTarget(accountId);
@@ -263,7 +263,7 @@ app.post("/accounts/:id/undoOneTimeSpend", async (req, res, next) => {
 // read all recurring spending of a user account
 // arranged from earliest to latest next_run_at timestamp
 // input account id
-app.get("/accounts/:id/getRecurringSpending", async (req, res) => {
+app.get("/accounts/:id/getRecurringSpending", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getRecurringSpending(accountId);
@@ -324,7 +324,7 @@ app.post("/accounts/deleteRecurringSpend", async (req, res, next) => {
 // read all recurring income of a user account
 // arranged from earliest to latest next_run_at timestamp
 // input account id
-app.get("/accounts/:id/getRecurringIncome", async (req, res) => {
+app.get("/accounts/:id/getRecurringIncome", async (req, res, next) => {
     try {
       const accountId = Number(req.params.id);
       const updated = await getRecurringIncome(accountId);

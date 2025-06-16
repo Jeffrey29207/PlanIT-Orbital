@@ -28,11 +28,7 @@ const pool = new Pool({
   connectionString: 'postgresql://postgres.tawzugumouawtstryldu:J_1129l12345@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres',
   ssl: { rejectUnauthorized: false },
 
-  connectionTimeoutMillis: 20000, 
-
-  idleTimeoutMillis: 30000,      
-
-  max: 10
+  connectionTimeoutMillis: 10000, 
 });
 
 

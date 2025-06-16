@@ -17,11 +17,24 @@ dotenv.config();
 
 // Port Specifications (connect to supabase)
 // Create Pool
+// const pool = new Pool({
+//   connectionString: 'postgresql://postgres.tawzugumouawtstryldu:J_1129l12345@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres',
+//   ssl: { rejectUnauthorized: false },
+//   connectionTimeoutMillis: 10000,
+// });
+// external database connection string
+
 const pool = new Pool({
   connectionString: 'postgresql://postgres.tawzugumouawtstryldu:J_1129l12345@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres',
   ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 10000,
+
+  connectionTimeoutMillis: 20000, 
+
+  idleTimeoutMillis: 30000,      
+
+  max: 10
 });
+
 
 
 // test query function for user table

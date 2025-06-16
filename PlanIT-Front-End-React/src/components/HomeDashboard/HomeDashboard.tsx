@@ -15,6 +15,7 @@ import {
   getTransactionHistory,
   undoOneTimeSpend,
   undoOneTimeIncome,
+  scheduleRecurTransactions,
 } from "../../helper/BackendAPI.ts";
 import { useEffect, useState } from "react";
 
@@ -40,6 +41,8 @@ function HomeDashboard({ accountId }: Props) {
   ]);
   const [transactionHistoryTableContent, setTransactionHistoryTableContent] =
     useState<any[]>([]);
+
+  const [stateChange, setStateChange] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,12 +103,20 @@ function HomeDashboard({ accountId }: Props) {
     };
 
     fetchData();
+  }, [stateChange]);
 
-    const interval = setInterval(fetchData, 1000); // Realtime update every second
+  // Handle realtime update of recurring transactions
+  useEffect(() => {
+    const trackState = async () => {
+      const { isMutated } = await scheduleRecurTransactions();
+      isMutated && setStateChange(!stateChange);
+    };
+    trackState();
+    const interval = setInterval(trackState, 10000); // Realtime update every 10 seconds
     return () => {
       clearInterval(interval); // Clear the interval on component unmount
     };
-  }, [accountId]);
+  }, []);
 
   const overallNumDashboard = (
     <NumericDashboard title="Overall account" value={overallBalance} />

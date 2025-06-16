@@ -43,6 +43,8 @@ function SpendingDashboard({ accountId }: Props) {
   const [spendingHistoryTableContent, setSpendingHistoryTableContent] =
     useState<any[]>([]);
 
+  const [stateChange, setStateChange] = useState<boolean>(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,7 +53,6 @@ function SpendingDashboard({ accountId }: Props) {
         const actualSpending = await getActualSpending(accountId);
         setSpent(actualSpending);
 
-        await scheduleRecurTransactions();
         const data = await getRecurringSpending(accountId);
         const formattedData = data.map((item: any) => ({
           content1: item.recur_id,
@@ -89,11 +90,20 @@ function SpendingDashboard({ accountId }: Props) {
       }
     };
     fetchData();
-    const interval = setInterval(fetchData, 1000); // Realtime update every second
+  }, [stateChange]);
+
+  // Handle realtime update of recurring transactions
+  useEffect(() => {
+    const trackState = async () => {
+      const { isMutated } = await scheduleRecurTransactions();
+      isMutated && setStateChange(!stateChange);
+    };
+    trackState();
+    const interval = setInterval(trackState, 10000); // Realtime update every 10 seconds
     return () => {
       clearInterval(interval); // Clear the interval on component unmount
     };
-  }, [accountId]);
+  }, []);
 
   const spendingNumDashboard = (
     <NumericDashboard title="Spending account" value={spendingBalance} />
@@ -172,6 +182,8 @@ function SpendingDashboard({ accountId }: Props) {
 
     await transferSpending(accountId, value);
 
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
+
     console.log(`Transfer spending: ${value}`);
   };
 
@@ -194,6 +206,8 @@ function SpendingDashboard({ accountId }: Props) {
       next_run_at + "+08:00"
     ).catch(console.error);
 
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
+
     console.log(
       `Adding recurring spending: ${amount}, ${category}, ${frequency}, ${interval}, ${next_run_at}`
     );
@@ -210,6 +224,8 @@ function SpendingDashboard({ accountId }: Props) {
     await oneTimeSpend(accountId, amount, category, description).catch(
       console.error
     );
+
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
 
     console.log(
       `Adding one time income: ${amount}, ${category}, ${description}`

@@ -44,6 +44,8 @@ function SavingDashboard({ accountId }: Props) {
     any[]
   >([]);
 
+  const [stateChange, setStateChange] = useState<boolean>(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -52,7 +54,6 @@ function SavingDashboard({ accountId }: Props) {
         setSavingBalance(balance);
         setSavingsTarget(target);
 
-        await scheduleRecurTransactions();
         const data = await getRecurringIncome(accountId);
         const formattedData = data.map((item: any) => ({
           content1: item.recur_id,
@@ -90,11 +91,20 @@ function SavingDashboard({ accountId }: Props) {
       }
     };
     fetchData();
-    const interval = setInterval(fetchData, 1000); // Realtime update every second
+  }, [stateChange]);
+
+  // Handle realtime update of recurring transactions
+  useEffect(() => {
+    const trackState = async () => {
+      const { isMutated } = await scheduleRecurTransactions();
+      isMutated && setStateChange(!stateChange);
+    };
+    trackState();
+    const interval = setInterval(trackState, 10000); // Realtime update every 10 seconds
     return () => {
       clearInterval(interval); // Clear the interval on component unmount
     };
-  }, [accountId]);
+  }, []);
 
   const savingNumDashboard = (
     <NumericDashboard title="Saving account" value={savingBalance} />
@@ -174,6 +184,8 @@ function SavingDashboard({ accountId }: Props) {
 
     await setSavings(accountId, value).catch(console.error);
 
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
+
     console.log(`Adding saving: ${value}`);
   };
 
@@ -185,6 +197,8 @@ function SavingDashboard({ accountId }: Props) {
 
     await setSavingTarget(accountId, value);
 
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
+
     console.log(`Setting target saving: ${value}`);
   };
 
@@ -195,6 +209,8 @@ function SavingDashboard({ accountId }: Props) {
     event.preventDefault();
 
     await transferSaving(accountId, value).catch(console.error);
+
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
 
     console.log(`Transferring saving: ${value}`);
   };
@@ -218,6 +234,8 @@ function SavingDashboard({ accountId }: Props) {
       next_run_at + "+08:00"
     ).catch(console.error);
 
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
+
     console.log(
       `Adding recurring transaction: ${amount}, ${category}, ${frequency}, ${interval}, ${next_run_at}`
     );
@@ -234,6 +252,8 @@ function SavingDashboard({ accountId }: Props) {
     await oneTimeIncome(accountId, amount, category, description).catch(
       console.error
     );
+
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
 
     console.log(
       `Adding one time income: ${amount}, ${category}, ${description}`

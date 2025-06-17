@@ -22,8 +22,10 @@ dotenv.config();
 //   ssl: { rejectUnauthorized: false },
 //   connectionTimeoutMillis: 10000,
 // });
-// external database connection string
 
+
+
+// external database connection string
 const pool = new Pool({
   connectionString: 'postgresql://postgres.tawzugumouawtstryldu:J_1129l12345@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres',
   ssl: { rejectUnauthorized: false },
@@ -1030,4 +1032,79 @@ export async function getMonthlyBalances(accountId) {
   );
 
   return rows;
+}
+
+// get average daily spending over 7-day interval for an account
+// uses a 7-day simple moving average 
+
+export async function getAverageDailySpending_7daysSMA(accountId) {
+  const client = await pool.connect();
+  
+  try {
+    // find and save all rows where the recurring transaction is due
+    await client.query("BEGIN");
+    const {rows: dailyavg } = await client.query(`
+      WITH daily AS (
+        SELECT
+          date_trunc('day', created_at)::date AS day,
+          SUM(amount)                       AS total_spent
+        FROM transactions
+        WHERE account_id = $1
+          AND tx_type  = 'spend'
+          AND subtype  = 'modify_spending'
+        GROUP BY 1
+      ),
+      dates AS (
+        -- find the range of dates for the data
+        SELECT
+          MIN(day) AS start_day,
+          MAX(day) AS end_day
+        FROM daily
+      ),
+      all_days AS (
+        -- generate one row per calendar date in date range
+        SELECT
+          generate_series(start_day, end_day, '1 day')::date AS day
+        FROM dates
+      ),
+      filled AS (
+        -- left‐join - defaulting missing totals to 0
+        SELECT
+          ad.day,
+          COALESCE(d.total_spent, 0.00) AS total_spent
+        FROM all_days AS ad
+        LEFT JOIN daily    AS d USING(day)
+      )
+      SELECT
+        to_char(day, 'YYYY-MM-DD') AS day,
+        total_spent,
+        -- compute 7-day rolling avg on time series
+        ROUND(
+          AVG(total_spent)
+            OVER (
+              ORDER BY day
+              ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+            ),
+          2
+        ) AS avg_daily_spending_7_days_interval
+      FROM filled
+      ORDER BY day DESC;
+      `, 
+      [accountId]
+    );
+    // If no rows returned, throw error
+    if (dailyavg.length === 0) {
+      throw new Error("no spending transaction has been made yet");
+    }
+
+    await client.query('COMMIT');
+
+    return dailyavg;
+  
+  } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+  } finally {
+    client.release();
+  }
 }

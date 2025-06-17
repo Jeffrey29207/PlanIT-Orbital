@@ -15,7 +15,8 @@ import { testUsers, testUserAccounts, createUser,
     getRecurringSpending, setRecurringSpending, refreshRecurringSpending, deleteRecurringSpend,
     getRecurringIncome, setRecurringIncome, deleteRecurringIncome,
   scheduleRecurringTransactions, 
-  getTransactionHistory, getMonthlyBalances} from './database.js';
+  getTransactionHistory, getMonthlyBalances,
+getAverageDailySpending_7daysSMA} from './database.js';
 
 const app = express()
 
@@ -359,7 +360,22 @@ app.post("/accounts/deleteRecurringIncome", async (req, res, next) => {
       next(err);
     }
   });
-  
+
+
+// Forecasting algorithm // 
+
+// get average daily spending over 7-day interval for an account
+// uses a 7-day simple moving average 
+app.get("/accounts/:id/getAverageDailySpending_7daysSMA", async (req, res, next) => {
+    try {
+      const accountId = Number(req.params.id);
+      const updated = await getAverageDailySpending_7daysSMA(accountId);
+      res.status(200).json(updated);
+    } catch (err) {
+      next(err);
+    }
+  });
+
 
 // middleware for error handling
 // throws an error produced by the function

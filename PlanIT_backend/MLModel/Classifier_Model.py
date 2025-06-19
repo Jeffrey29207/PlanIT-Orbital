@@ -5,7 +5,7 @@ from IPython.display import display
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import QuantileTransformer
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, cross_val_score
 from sklearn.metrics import accuracy_score, precision_score
 
 df_train = pd.read_csv("./Datasets/spending_dataset_train.csv")
@@ -26,6 +26,7 @@ model = GridSearchCV(
     estimator=pipe,
     param_grid={'model__n_neighbors': [number for number in range(1, 21)]},
     cv=10,
+    return_train_score=True,
     n_jobs=-1
 )
 
@@ -45,8 +46,10 @@ def test_model(est, test_x, test_y):
     y_pred = est.predict(test_x)
     print("Accuracy: ", accuracy_score(y_pred, test_y))
     print("Precision: ", precision_score(y_pred, test_y, average=None))
+    print("Cross validation score: ", cross_val_score(est, test_x, test_y, cv=10).mean())
 
 test_model(good_model, X_test, y_test)
+
 
 
 

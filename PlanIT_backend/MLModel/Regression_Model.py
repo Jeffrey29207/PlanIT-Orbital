@@ -1,23 +1,25 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib.pylab as plt
+from IPython.display import display
 
-from sklearn.linear_model import Ridge, RidgeCV
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import QuantileTransformer
 from sklearn.model_selection import GridSearchCV
 
+
 pipe = Pipeline([
     ('scaler', QuantileTransformer(output_distribution='normal')),
-    ('model', Ridge())
+    ('model', RandomForestRegressor(max_depth=None))
 ])
-
-print(pipe.get_params())
-
 
 model = GridSearchCV(
     estimator=pipe,
-    param_grid={'model__alpha': np.logspace(-3,3, 10)},
-    cv=5
+    param_grid={'model__n_estimators': np.linspace(0,100, 50)},
+    cv=10,
+    n_jobs=-1
 )
+
+
 

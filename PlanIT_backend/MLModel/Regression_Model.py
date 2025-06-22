@@ -11,8 +11,8 @@ from sklearn.metrics import r2_score
 from sklearn.multioutput import MultiOutputRegressor
 
 df_train = pd.read_csv("./Datasets/enhanced_train_spending_data.csv")
-df_test = pd.read_csv("./Datasets/rl_test2_spending_data.csv")
-df_test2 = pd.read_csv("./Datasets/rl_train_spending_data.csv")
+df_test = pd.read_csv("./Datasets/rl_test_spending_data.csv")
+df_test2 = pd.read_csv("./Datasets/test_spending_data_1000.csv")
 
 X_train = df_train.drop(columns=["avg_spend_week6", "balance_week6_start"])
 y_train = df_train[["avg_spend_week6", "balance_week6_start"]]

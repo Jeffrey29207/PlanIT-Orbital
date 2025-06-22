@@ -57,8 +57,8 @@ def test_model(est, test_x, test_y):
 test_model(good_model, X_test, y_test)
 test_model(good_model, X_test2, y_test2)
 
-'''
-with open('Regressor_Model.pkl', 'wb') as f:
+
+with open('Classifier_Model.pkl', 'wb') as f:
     pickle.dump(good_model, f)
-'''
+
 

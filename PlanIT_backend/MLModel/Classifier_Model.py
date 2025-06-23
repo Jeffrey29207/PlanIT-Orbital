@@ -59,8 +59,9 @@ def test_model(est, test_x, test_y):
 test_model(good_model, X_test, y_test)
 test_model(good_model, X_test2, y_test2)
 
-type = [('float_input', FloatTensorType([None, good_model.n_features_in_]))]
-onnx_model = convert_sklearn(good_model, initial_types=type)
+init_type = [('float_input', FloatTensorType([None, good_model.n_features_in_]))]
+options = {type(good_model): {'output_class_labels': True, 'zipmap': False}}
+onnx_model = convert_sklearn(good_model, initial_types=init_type, options=options)
 with open('Classifier_Model.onnx', 'wb') as f:
     f.write(onnx_model.SerializeToString())
 

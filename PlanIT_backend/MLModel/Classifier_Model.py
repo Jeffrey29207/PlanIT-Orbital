@@ -7,7 +7,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import RobustScaler
 from sklearn.model_selection import GridSearchCV, cross_val_score
 from sklearn.metrics import accuracy_score, precision_score
-import pickle
+
+from skl2onnx import convert_sklearn
+from skl2onnx.common.data_types import FloatTensorType
 
 df_train = pd.read_csv("./Datasets/enhanced_train_spending_data.csv")
 df_test = pd.read_csv("./Datasets/rl_test_spending_data.csv")
@@ -57,8 +59,8 @@ def test_model(est, test_x, test_y):
 test_model(good_model, X_test, y_test)
 test_model(good_model, X_test2, y_test2)
 
-
-with open('Classifier_Model.pkl', 'wb') as f:
-    pickle.dump(good_model, f)
-
+type = [('float_input', FloatTensorType([None, good_model.n_features_in_]))]
+onnx_model = convert_sklearn(good_model, initial_types=type)
+with open('Classifier_Model.onnx', 'wb') as f:
+    f.write(onnx_model.SerializeToString())
 

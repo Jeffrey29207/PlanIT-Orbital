@@ -1,7 +1,6 @@
 import pandas as pd
 import matplotlib.pylab as plt
 from IPython.display import display
-import pickle
 
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.pipeline import Pipeline

@@ -161,6 +161,7 @@ function SavingDashboard({ accountId }: Props) {
 
   const handleClickForRecurringTableButton = (recurId: number) => {
     deleteRecurringIncome(recurId);
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
   };
 
   const recurringTable = (
@@ -295,6 +296,7 @@ function SavingDashboard({ accountId }: Props) {
 
   const handleUndoTransaction = (transactionId: number) => {
     undoOneTimeIncome(accountId, transactionId);
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
   };
 
   const savingHistoryTable = (

@@ -361,7 +361,6 @@ app.post("/accounts/deleteRecurringIncome", async (req, res, next) => {
     }
   });
 
-
 // Forecasting algorithm // 
 
 // get average daily spending over 7-day interval for an account

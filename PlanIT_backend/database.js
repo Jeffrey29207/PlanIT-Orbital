@@ -983,13 +983,13 @@ export async function getMonthlyBalances(accountId) {
     -- 1) for each calendar month with transactions, find the single row whose timestamp is highest (“last” entry in that month).
     month_data AS (
       SELECT
-        date_trunc('month', created_at)       AS month_start,
+        date_trunc('month', created_at) AS month_start,
         total_balance,
         saving_balance,
         actual_spending
       FROM (
         SELECT
-          date_trunc('month', created_at)     AS month_start,
+          date_trunc('month', created_at) AS month_start,
           total_balance,
           saving_balance,
           actual_spending,
@@ -1020,12 +1020,12 @@ export async function getMonthlyBalances(accountId) {
 
     -- 3) LEFT JOIN so that months with no data produce NULLs.
     SELECT
-      to_char(ms.month_start, 'Mon YYYY')     AS month,  
+      to_char(ms.month_start, 'Mon YYYY') AS month,  
       md.total_balance,
       md.saving_balance,
       md.actual_spending
     FROM month_series AS ms
-    LEFT JOIN month_data   AS md
+    LEFT JOIN month_data AS md
       ON md.month_start = ms.month_start
     ORDER BY ms.month_start ASC;
     `,
@@ -1048,7 +1048,7 @@ export async function getAverageDailySpending_7daysSMA(accountId) {
       WITH daily AS (
         SELECT
           date_trunc('day', created_at)::date AS day,
-          SUM(amount)                       AS total_spent
+          SUM(amount) AS total_spent
         FROM transactions
         WHERE account_id = $1
           AND tx_type  = 'spend'
@@ -1074,7 +1074,7 @@ export async function getAverageDailySpending_7daysSMA(accountId) {
           ad.day,
           COALESCE(d.total_spent, 0.00) AS total_spent
         FROM all_days AS ad
-        LEFT JOIN daily    AS d USING(day)
+        LEFT JOIN daily AS d USING(day)
       )
       SELECT
         to_char(day, 'YYYY-MM-DD') AS day,
@@ -1113,13 +1113,13 @@ export async function getAverageDailySpending_7daysSMA(accountId) {
 // gets the input features for spending forecasts
 /**
  * Returns the 12-feature array for forecasting:
- *   [avg_spend_wk1, bal_wk1_start, …, avg_spend_wk5, bal_wk5_start]
+ *
  */
 export async function getForecastFeatures(accountId) {
   const sql = `
     WITH range AS (
       SELECT generate_series(
-               date_trunc('week', now()) - INTERVAL '6 week',
+               date_trunc('week', now()) - INTERVAL '5 week',
                date_trunc('week', now()) - INTERVAL '1 week',
                '1 week'
              ) AS week_start
@@ -1134,32 +1134,28 @@ export async function getForecastFeatures(accountId) {
       SELECT
         w.week_start,
 
-        -- if there is no transaction that day, bal_start becomes 0
-        COALESCE(
-          (SELECT t2.total_balance
-             FROM transactions t2
-            WHERE t2.account_id = $1
-              AND date_trunc('day', t2.created_at) = w.week_start::date
-            ORDER BY t2.created_at
-            LIMIT 1
-          ),
-          0
-        )::numeric AS bal_start,
+        -- carry-forward last known balance
+        COALESCE((
+          SELECT t2.total_balance
+            FROM transactions t2
+           WHERE t2.account_id = $1
+             AND t2.created_at <= w.week_start + INTERVAL '1 day'
+           ORDER BY t2.created_at DESC
+           LIMIT 1
+        ), 0)::numeric AS bal_start,
 
-        -- sum daily_spend may be null for a week with no spends, so coalesce to 0
+        -- average daily spend (0 if no spend)
         COALESCE(
-          ROUND(
-            AVG(d.daily_spend),
-            2
-          )::numeric,
+          ROUND(AVG(d.daily_spend), 2)::numeric,
           0
         ) AS avg_spend
 
       FROM weekly w
+
       LEFT JOIN LATERAL (
         SELECT
           date_trunc('day', t.created_at) AS day,
-          SUM(t.amount)                  AS daily_spend
+          SUM(t.amount) AS daily_spend
         FROM transactions t
         WHERE t.account_id = $1
           AND t.tx_type = 'spend'
@@ -1168,36 +1164,43 @@ export async function getForecastFeatures(accountId) {
           AND t.created_at <  w.week_end + INTERVAL '1 day'
         GROUP BY 1
       ) d ON TRUE
+
       GROUP BY w.week_start
       ORDER BY w.week_start
     )
-    SELECT
-      avg_spend,
-      bal_start
-    FROM metrics;
+    SELECT avg_spend, bal_start
+      FROM metrics;
   `;
 
+  // run SQL query
   const { rows } = await pool.query(sql, [accountId]);
-  console.log("Fetched weeks:", rows.length, rows);
 
-  // If somehow fewer than 5, pad at the front
+  // make front columns 0 if less than 5 weeks
   while (rows.length < 5) {
     rows.unshift({ avg_spend: 0, bal_start: 0 });
   }
 
-  // Now flatten to exactly 10 numbers
-  const features = rows.reduce((arr, r) => {
-    arr.push(Number(r.avg_spend), Number(r.bal_start));
-    return arr;
-  }, []);
+  // extract weekly arrays
+  const avgSpends = rows.map(r => Number(r.avg_spend));
+  const balStarts = rows.map(r => Number(r.bal_start));
 
-  console.log("Final features (length):", features.length, features);
-  return features;  // guaranteed length === 10
+  // build the 12-element feature array
+  const features = [];
+  for (let i = 0; i < 5; i++) {
+    features.push(avgSpends[i], balStarts[i]);
+  }
+
+  // calculate overall means for the 5 weeks
+  const meanSpend   = avgSpends.reduce((a, b) => a + b, 0) / 5;
+  const meanBalance = balStarts.reduce((a, b) => a + b, 0) / 5;
+  features.push(meanSpend, meanBalance);
+
+  return features;
 }
 
 
 
-// Forecasting functions // 
+// Forecasting functions //
 
 export async function getSpendingForecastLabels(features) {
   // features = [avg_spend_wk1, bal_wk1_start, …, avg_spend_wk5, bal_wk5_start]
@@ -1221,6 +1224,7 @@ export async function getWeek6SpendingForecast(featuresWithLabel) {
   }
 }
 
+// function to get label, predicted spending, and predicted overall spending balance
 /**
  *
  * @param {number[]} features – array of length 10:
@@ -1235,7 +1239,7 @@ export async function getForecast(features) {
   // get spending label
   const [label] = await classify(features);
 
-  // append the label to your features for the regressor
+  // append the label to the features for the regressor
   const inputForRegressor = [...features, label];
 
   // get week-6 forecasts

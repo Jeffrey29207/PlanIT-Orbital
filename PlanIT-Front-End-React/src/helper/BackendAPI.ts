@@ -217,3 +217,9 @@ export const deleteRecurringIncome = async (recurId: number) => {
         body: JSON.stringify({ recurId })
     }).then(response => response.json());
 }
+
+export const getAverageDailySpending_7daysSMA = async (accountId: number) => {
+    return await fetch(`${backendAPI}/accounts/${accountId}/getAverageDailySpending_7daysSMA`)
+    .then(response => response.json)
+    .then(data => console.log(data));
+}

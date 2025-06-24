@@ -159,6 +159,7 @@ function SpendingDashboard({ accountId }: Props) {
 
   const handleClickForRecurringTableButton = (recurId: number) => {
     deleteRecurringSpend(recurId);
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
   };
 
   const recurringTable = (
@@ -261,6 +262,7 @@ function SpendingDashboard({ accountId }: Props) {
 
   const handleUndoTransaction = (transactionId: number) => {
     undoOneTimeSpend(accountId, transactionId);
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
   };
 
   const spendingHistoryTable = (

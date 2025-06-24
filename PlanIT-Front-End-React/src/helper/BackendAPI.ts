@@ -1,7 +1,7 @@
 // These are functions to access fetch the backend API
 
-const backendAPI = "https://plan-it-orbital-2025-backend.vercel.app";
-//const backendAPI = "http://localhost:8080";
+//const backendAPI = "https://plan-it-orbital-2025-backend.vercel.app";
+const backendAPI = "http://localhost:8080";
 
 export const testUsers = async () => {
     return await fetch(`${backendAPI}/testUsers`).then(response => response.json());
@@ -220,6 +220,25 @@ export const deleteRecurringIncome = async (recurId: number) => {
 
 export const getAverageDailySpending_7daysSMA = async (accountId: number) => {
     return await fetch(`${backendAPI}/accounts/${accountId}/getAverageDailySpending_7daysSMA`)
-    .then(response => response.json)
-    .then(data => console.log(data));
+    .then(response => response.json());
+}
+
+export const getForecastFeatures = async (accountId: number) => {
+    return await fetch(`${backendAPI}/accounts/${accountId}/getForecastFeatures`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ accountId })
+    }).then(response => response.json());
+}
+
+export const getForecast = async (accountId: number) => {
+    return await fetch(`${backendAPI}/accounts/${accountId}/getForecast`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ accountId })
+    }).then(response => response.json());
 }

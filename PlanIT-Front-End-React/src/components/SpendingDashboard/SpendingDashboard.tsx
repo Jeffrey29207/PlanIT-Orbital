@@ -86,14 +86,14 @@ function SpendingDashboard({ accountId }: Props) {
           }));
         setSpendingHistoryTableContent(formattedSpendingHistory);
       } catch (error) {
-        console.error("Error fetching spending data:", error);
+        console.error("Error fetching data: ", error);
       }
     };
     fetchData();
   }, [stateChange]);
 
-  // Handle realtime update of recurring transactions
   useEffect(() => {
+    // Handle realtime update of recurring transactions
     const trackState = async () => {
       const { isMutated } = await scheduleRecurTransactions();
       isMutated && setStateChange(!stateChange);

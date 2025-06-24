@@ -5,7 +5,8 @@ export async function classify(data) {
     const tensor = new ort.Tensor('float32', Float32Array.from(data), [1, numberOfFeatures]);
 
     // Load the pretrained model
-    const session = await ort.InferenceSession.create("Classifier_Model.onnx");
+    //const session = await ort.InferenceSession.create("Classifier_Model.onnx");
+    const session = await ort.InferenceSession.create("./MLModel/Classifier_Model.onnx");
 
     // Map the model input to the input tensor
     const mapping = {float_input: tensor};
@@ -27,7 +28,9 @@ export async function regression(data) {
     const tensor = new ort.Tensor('float32', Float32Array.from(data), [1, numberOfFeatures]);
 
     // Load the pretrained model
-    const session = await ort.InferenceSession.create("Regressor_Model.onnx");
+    //const session = await ort.InferenceSession.create("Regressor_Model.onnx");
+    const session = await ort.InferenceSession.create("./MLModel/Regressor_Model.onnx");
+
 
     // Map the model input to the input tensor
     const mapping = {float_input: tensor};

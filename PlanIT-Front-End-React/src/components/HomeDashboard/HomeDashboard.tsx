@@ -246,6 +246,7 @@ function HomeDashboard({ accountId }: Props) {
     } else if (type === "save") {
       undoOneTimeIncome(accountId, transactionId);
     }
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
   };
 
   const transactionHistoryTable = (

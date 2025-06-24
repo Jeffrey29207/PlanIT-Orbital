@@ -16,7 +16,7 @@ import { testUsers, testUserAccounts, createUser,
     getRecurringIncome, setRecurringIncome, deleteRecurringIncome,
   scheduleRecurringTransactions, 
   getTransactionHistory, getMonthlyBalances,
-getAverageDailySpending_7daysSMA} from './database.js';
+getAverageDailySpending_7daysSMA, getForecast, getForecastFeatures} from './database.js';
 
 const app = express()
 
@@ -375,6 +375,27 @@ app.get("/accounts/:id/getAverageDailySpending_7daysSMA", async (req, res, next)
       next(err);
     }
   });
+
+app.post("/accounts/:id/getForecastFeatures", async (req, res, next) => {
+  try {
+    const accountId = Number(req.params.id);
+    const result = await getForecastFeatures(accountId);
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post("/accounts/:id/getForecast", async (req, res, next) => {
+  try {
+    const accountId = Number(req.params.id);
+    const features = await getForecastFeatures(accountId);
+    const result = await getForecast(features);
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+});
 
 
 // middleware for error handling

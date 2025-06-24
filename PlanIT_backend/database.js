@@ -1,6 +1,7 @@
 // database.js
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import { classify, regression } from './MLModel/MLAndRecommFunc.js'
 dotenv.config();
 
 // Port Specifications (for local postgresql server, no longer used)
@@ -10,7 +11,7 @@ dotenv.config();
 //   port:     Number(process.env.PGPORT),
 //   database: process.env.PGDATABASE,
 //   user:     process.env.PGUSER,
-//   password: process.env.PGPASSWORD,
+//   password: process.env.PGPASSWORD,`
 //   ssl:      process.env.PGSSLMODE === 'require' ? { rejectUnauthorized: false } : false,
 //   connectionTimeoutMillis: Number(process.env.PGCONNECT_TIMEOUT) * 1000,
 // });
@@ -1107,4 +1108,138 @@ export async function getAverageDailySpending_7daysSMA(accountId) {
   } finally {
     client.release();
   }
+}
+
+// gets the input features for spending forecasts
+/**
+ * Returns the 12-feature array for forecasting:
+ *   [avg_spend_wk1, bal_wk1_start, …, avg_spend_wk5, bal_wk5_start]
+ */
+export async function getForecastFeatures(accountId) {
+  const sql = `
+    WITH range AS (
+      SELECT generate_series(
+               date_trunc('week', now()) - INTERVAL '6 week',
+               date_trunc('week', now()) - INTERVAL '1 week',
+               '1 week'
+             ) AS week_start
+    ),
+    weekly AS (
+      SELECT
+        week_start,
+        week_start + INTERVAL '6 day' AS week_end
+      FROM range
+    ),
+    metrics AS (
+      SELECT
+        w.week_start,
+
+        -- if there is no transaction that day, bal_start becomes 0
+        COALESCE(
+          (SELECT t2.total_balance
+             FROM transactions t2
+            WHERE t2.account_id = $1
+              AND date_trunc('day', t2.created_at) = w.week_start::date
+            ORDER BY t2.created_at
+            LIMIT 1
+          ),
+          0
+        )::numeric AS bal_start,
+
+        -- sum daily_spend may be null for a week with no spends, so coalesce to 0
+        COALESCE(
+          ROUND(
+            AVG(d.daily_spend),
+            2
+          )::numeric,
+          0
+        ) AS avg_spend
+
+      FROM weekly w
+      LEFT JOIN LATERAL (
+        SELECT
+          date_trunc('day', t.created_at) AS day,
+          SUM(t.amount)                  AS daily_spend
+        FROM transactions t
+        WHERE t.account_id = $1
+          AND t.tx_type = 'spend'
+          AND t.subtype = 'modify_spending'
+          AND t.created_at >= w.week_start
+          AND t.created_at <  w.week_end + INTERVAL '1 day'
+        GROUP BY 1
+      ) d ON TRUE
+      GROUP BY w.week_start
+      ORDER BY w.week_start
+    )
+    SELECT
+      avg_spend,
+      bal_start
+    FROM metrics;
+  `;
+
+  const { rows } = await pool.query(sql, [accountId]);
+  console.log("Fetched weeks:", rows.length, rows);
+
+  // If somehow fewer than 5, pad at the front
+  while (rows.length < 5) {
+    rows.unshift({ avg_spend: 0, bal_start: 0 });
+  }
+
+  // Now flatten to exactly 10 numbers
+  const features = rows.reduce((arr, r) => {
+    arr.push(Number(r.avg_spend), Number(r.bal_start));
+    return arr;
+  }, []);
+
+  console.log("Final features (length):", features.length, features);
+  return features;  // guaranteed length === 10
+}
+
+
+
+// Forecasting functions // 
+
+export async function getSpendingForecastLabels(features) {
+  // features = [avg_spend_wk1, bal_wk1_start, …, avg_spend_wk5, bal_wk5_start]
+  try {
+    const [label] = await classify(features);
+    return label;  // 0,1,2
+  } catch (err) {
+    console.error('Classification error:', err);
+    throw err;
+  }
+}
+
+export async function getWeek6SpendingForecast(featuresWithLabel) {
+  // featuresWithLabel = [...features, existingLabel]
+  try {
+    const [predSpend6, predBal6] = await regression(featuresWithLabel);
+    return { predSpend6, predBal6 };
+  } catch (err) {
+    console.error('Regression error:', err);
+    throw err;
+  }
+}
+
+/**
+ *
+ * @param {number[]} features – array of length 10:
+ *   [avg_spend_wk1, bal_wk1_start, …, avg_spend_wk5, bal_wk5_start]
+ * @returns {Promise<{ label: number, predSpend6: number, predBal6: number }>}
+ */
+export async function getForecast(features) {
+  if (!Array.isArray(features) || features.length !== 12) {
+    throw new Error("getForecast expects an array of 12 features.");
+  }
+
+  // get spending label
+  const [label] = await classify(features);
+
+  // append the label to your features for the regressor
+  const inputForRegressor = [...features, label];
+
+  // get week-6 forecasts
+  const [predSpend6, predBal6] = await regression(inputForRegressor);
+
+  return { label, predSpend6, predBal6 };
 }

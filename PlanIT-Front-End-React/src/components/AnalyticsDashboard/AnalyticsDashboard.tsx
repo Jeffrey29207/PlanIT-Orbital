@@ -28,6 +28,9 @@ function AnalyticsDashboard({ accountId }: Props) {
   const [dailySpendingGraphData, setDailySpendingGraphData] = useState<
     number[]
   >([0]);
+  const [dailySpendingGraphLabels, setDailySpendingGraphLabels] = useState<
+    string[]
+  >([""]);
   const [
     averageDailySpending7DaysSMAContent,
     setAverageDailySpending7DaysSMAContent,
@@ -40,9 +43,14 @@ function AnalyticsDashboard({ accountId }: Props) {
         const avg7DaysSMA = await getAverageDailySpending_7daysSMA(accountId);
 
         const dailySpendingGraphContent = avg7DaysSMA
-          .filter((index: number) => index <= 6)
+          .filter((data: any, index: number) => data && index <= 6)
           .map((data: any) => data.total_spent);
-        setDailySpendingGraphData(dailySpendingGraphContent);
+        setDailySpendingGraphData(dailySpendingGraphContent.reverse());
+
+        const dailySpendingGraphXLabels = avg7DaysSMA
+          .filter((data: any, index: number) => data && index <= 6)
+          .map((data: any) => data.day);
+        setDailySpendingGraphLabels(dailySpendingGraphXLabels.reverse());
 
         const avgSpending7DaysSMATable = avg7DaysSMA.map(
           (item: any, index: number) => ({
@@ -112,8 +120,8 @@ function AnalyticsDashboard({ accountId }: Props) {
   // Handle line graph for daily spending
   const dailySpendingLineGraph = (
     <LineChart
-      title="7-Day Spending"
-      labels={["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"]}
+      title="Daily Spending"
+      labels={dailySpendingGraphLabels}
       data={dailySpendingGraphData}
       colors={["#00B432"]}
     />

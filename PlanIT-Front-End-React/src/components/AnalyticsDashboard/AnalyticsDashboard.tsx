@@ -112,8 +112,8 @@ function AnalyticsDashboard({ accountId }: Props) {
   // Handle line graph for daily spending
   const dailySpendingLineGraph = (
     <LineChart
-      title="Daily Spending"
-      labels={["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"]}
+      title="7-Day Spending"
+      labels={["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"]}
       data={dailySpendingGraphData}
       colors={["#00B432"]}
     />
@@ -126,12 +126,12 @@ function AnalyticsDashboard({ accountId }: Props) {
     heading1: "Week",
     heading2: "Date",
     heading3: "Amount Spent",
-    heading4: "7 days spending average",
+    heading4: "7-Day Spending Average",
   };
 
   const avg7DaysSMARecordsTable = (
     <Table
-      title="7-days Average"
+      title="7-Day Average"
       heading={avg7DaysSMARecordsTableHeadings}
       data={averageDailySpending7DaysSMAContent}
     />

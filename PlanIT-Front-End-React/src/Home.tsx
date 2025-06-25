@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import HomeDashboard from "./components/HomeDashboard/HomeDashboard.tsx";
 import SavingDashboard from "./components/SavingDashboard/SavingDashboard.tsx";
 import SpendingDashboard from "./components/SpendingDashboard/SpendingDashboard.tsx";
+import AnalyticsDashboard from "./components/AnalyticsDashboard/AnalyticsDashboard.tsx";
 import { type ReactElement, useState, useEffect } from "react";
 import supabase from "./helper/config.ts";
 import { getAccountId } from "./helper/BackendAPI.ts";
@@ -46,6 +47,10 @@ function Home() {
     {
       name: "SPENDING",
       component: <SpendingDashboard accountId={accountId} />,
+    },
+    {
+      name: "ANALYTICS",
+      component: <AnalyticsDashboard accountId={accountId} />,
     },
   ];
 

@@ -98,15 +98,15 @@ function HomeDashboard({ accountId }: Props) {
           }));
         setTransactionHistoryTableContent(formattedTransactionHistory);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data: ", error);
       }
     };
 
     fetchData();
   }, [stateChange]);
 
-  // Handle realtime update of recurring transactions
   useEffect(() => {
+    // Handle realtime update of recurring transactions
     const trackState = async () => {
       const { isMutated } = await scheduleRecurTransactions();
       isMutated && setStateChange(!stateChange);

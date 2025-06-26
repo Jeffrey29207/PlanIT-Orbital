@@ -19,7 +19,7 @@ export async function classify(data) {
     const outputVar = Object.keys(results)[0];
     const predictionBigInt = results[outputVar].data;
     const prediction = Array.from(predictionBigInt, Number);
-    return prediction[0];
+    return prediction;
 }
 
 export async function regression(data) {

@@ -15,7 +15,8 @@ import { testUsers, testUserAccounts, createUser,
     getRecurringSpending, setRecurringSpending, refreshRecurringSpending, deleteRecurringSpend,
     getRecurringIncome, setRecurringIncome, deleteRecurringIncome,
   scheduleRecurringTransactions, 
-  getTransactionHistory, getMonthlyBalances} from '../database.js';
+  getTransactionHistory, getMonthlyBalances,
+getAverageDailySpending_7daysSMA, getForecast, getForecastFeatures} from './database.js';
 
 const app = express()
 

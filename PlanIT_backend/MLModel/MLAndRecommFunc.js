@@ -40,7 +40,6 @@ export async function regression(data) {
     const outputVar = Object.keys(results)[0];
     const predictionBigInt = results[outputVar].data;
     const prediction = Array.from(predictionBigInt, Number);
-    console.log(prediction)
     return prediction;
 }
 

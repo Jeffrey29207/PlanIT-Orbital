@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import ort from "onnxruntime-web";
+import ort from "onnxruntime-node";
 import {GoogleGenAI} from "@google/genai";
 
 export async function classify(data) {

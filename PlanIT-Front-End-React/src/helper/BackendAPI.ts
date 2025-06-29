@@ -1,6 +1,6 @@
 // These are functions to access fetch the backend API
 
-const backendAPI = "https://plan-it-orbital-2025-backend.vercel.app";
+const backendAPI = "https://planit-orbital-2025.onrender.com";
 //const backendAPI = "http://localhost:8080";
 
 export const testUsers = async () => {

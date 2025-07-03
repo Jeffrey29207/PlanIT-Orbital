@@ -35,10 +35,15 @@
 .chart {
     display: flex;
     justify-content: center;
+    align-items: center;
     height: 90%;
     width: 90%;
     overflow-x: auto;
     overflow-y: auto;
+}
+
+.records .chart {
+    display: block;
 }
 
 .chart canvas {

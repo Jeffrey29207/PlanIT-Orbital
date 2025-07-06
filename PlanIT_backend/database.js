@@ -2,7 +2,7 @@
 // test database js
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
-import { classify, regression } from './MLModel/MLAndRecommFunc.js'
+import { classify, regression, recommendation } from './MLModel/MLAndRecommFunc.js'
 dotenv.config();
 
 // Port Specifications (for local postgresql server, no longer used)
@@ -1200,7 +1200,6 @@ export async function getForecastFeatures(accountId) {
 }
 
 
-
 // Forecasting functions //
 
 export async function getSpendingForecastLabels(features) {
@@ -1249,5 +1248,11 @@ export async function getForecast(features) {
   return { label, predSpend6, predBal6 };
 }
 
-export async function test() {
+// Recommendation functions //
+export async function getRecommendation(spendingCategory, forecastedSpending, forecastedBalance) {
+
+  // get spending label
+  const recommendationText = await recommendation(spendingCategory, forecastedSpending, forecastedBalance);
+
+  return recommendationText;
 }

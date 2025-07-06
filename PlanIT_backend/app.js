@@ -16,7 +16,7 @@ import { testUsers, testUserAccounts, createUser,
     getRecurringIncome, setRecurringIncome, deleteRecurringIncome,
   scheduleRecurringTransactions, 
   getTransactionHistory, getMonthlyBalances,
-getAverageDailySpending_7daysSMA, getForecast, getForecastFeatures} from './database.js';
+getAverageDailySpending_7daysSMA, getForecast, getForecastFeatures, getRecommendation} from './database.js';
 
 const app = express()
 
@@ -389,7 +389,11 @@ app.post("/accounts/:id/getForecast", async (req, res, next) => {
   try {
     const accountId = Number(req.params.id);
     const features = await getForecastFeatures(accountId);
-    const result = await getForecast(features);
+    const {label, predSpend6, predBal6} = await getForecast(features);
+    let recText = await getRecommendation(label, predSpend6, predBal6);
+    recText = recText.replace(/\\n/g, "\n");
+    const result = {label, predSpend6, predBal6, recText};
+
     res.json(result);
   } catch (err) {
     next(err);

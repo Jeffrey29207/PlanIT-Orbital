@@ -1,4 +1,5 @@
 // database.js
+// test database js
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import { classify, regression } from './MLModel/MLAndRecommFunc.js'
@@ -1246,4 +1247,7 @@ export async function getForecast(features) {
   const [predSpend6, predBal6] = await regression(inputForRegressor);
 
   return { label, predSpend6, predBal6 };
+}
+
+export async function test() {
 }

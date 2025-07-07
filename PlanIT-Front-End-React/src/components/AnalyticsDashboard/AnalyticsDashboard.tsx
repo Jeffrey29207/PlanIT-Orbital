@@ -63,8 +63,8 @@ function AnalyticsDashboard({ accountId }: Props) {
         setAverageDailySpending7DaysSMAContent(avgSpending7DaysSMATable);
 
         const forecastFeatures = await getForecastFeatures(accountId);
-        setAverage5WeeksSpending(forecastFeatures[10]);
-        setAverage5WeeksBalance(forecastFeatures[11]);
+        setAverage5WeeksSpending(Math.round(forecastFeatures[10] * 100) / 100);
+        setAverage5WeeksBalance(Math.round(forecastFeatures[11] * 100) / 100);
 
         const forecastedData = await getForecast(accountId);
         setForecastedNextWeekSpending(

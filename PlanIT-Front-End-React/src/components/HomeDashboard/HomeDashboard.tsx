@@ -83,6 +83,7 @@ function HomeDashboard({ accountId }: Props) {
         const formattedTransactionHistory = transactionHistory
           .filter(
             (item: any) =>
+              item.tx_type !== "transfer" &&
               item.description !== "cancellation" &&
               item.description !== "recurring spending" &&
               item.description !== "recurring income" &&
@@ -109,8 +110,10 @@ function HomeDashboard({ accountId }: Props) {
   useEffect(() => {
     // Handle realtime update of recurring transactions
     const trackState = async () => {
-      const { isMutated } = await scheduleRecurTransactions();
-      isMutated && setStateChange(!stateChange);
+      const response = await scheduleRecurTransactions();
+      const { isSpendingUpdated } = response[0];
+      const { isSavingsUpdated } = response[1];
+      (isSpendingUpdated || isSavingsUpdated) && setStateChange(!stateChange);
     };
     trackState();
     const interval = setInterval(trackState, 10000); // Realtime update every 10 seconds

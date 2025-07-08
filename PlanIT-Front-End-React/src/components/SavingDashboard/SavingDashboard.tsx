@@ -97,8 +97,10 @@ function SavingDashboard({ accountId }: Props) {
   useEffect(() => {
     // Handle realtime update of recurring transactions
     const trackState = async () => {
-      const { isMutated } = await scheduleRecurTransactions();
-      isMutated && setStateChange(!stateChange);
+      const response = await scheduleRecurTransactions();
+      const { isSpendingUpdated } = response[0];
+      const { isSavingsUpdated } = response[1];
+      (isSpendingUpdated || isSavingsUpdated) && setStateChange(!stateChange);
     };
     trackState();
     const interval = setInterval(trackState, 10000); // Realtime update every 10 seconds

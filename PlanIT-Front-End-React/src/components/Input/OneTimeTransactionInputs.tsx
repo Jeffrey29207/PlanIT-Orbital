@@ -25,7 +25,14 @@ function OneTimeTransactionInputs({ title, handleSubmit }: Props) {
     <form
       className="oneTimeTransactionForm"
       onSubmit={(e) => {
-        if (category === "main" || category === "side" || category === "misc") {
+        if (amount === "" && category === "" && description === "") {
+          e.preventDefault();
+          toast.error("No input is given to the one time form");
+        } else if (
+          category === "main" ||
+          category === "side" ||
+          category === "misc"
+        ) {
           handleSubmit(e, amount || 0, category, description);
           setAmount("");
           setCategory("");

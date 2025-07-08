@@ -21,8 +21,13 @@ function Input({ title, handleSubmit }: Props) {
     <form
       className="inputForm"
       onSubmit={(e) => {
-        handleSubmit(e, inputValue || 0);
-        setInputValue("");
+        if (inputValue === "") {
+          e.preventDefault();
+          toast.error("No input is given to the form");
+        } else {
+          handleSubmit(e, inputValue || 0);
+          setInputValue("");
+        }
       }}
     >
       <input

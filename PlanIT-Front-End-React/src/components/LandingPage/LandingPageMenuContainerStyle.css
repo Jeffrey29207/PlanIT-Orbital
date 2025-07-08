@@ -1,0 +1,58 @@
+.landingPageMenuContainer {
+    background: linear-gradient(to bottom right, rgb(0, 0, 12), rgb(0, 30, 0));
+    height: 70px;
+    width: 100vw;
+    flex-grow: 0;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.landingPageImageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.landingPagePlanITImage {
+    width: auto;
+    height: 70px;
+    scale: 1.2;
+    margin-left: 20px;
+    object-fit: contain;
+    transition: transform 300ms;
+}
+
+.landingPagePlanITImage:hover {
+    transform: scale(1.2);
+}
+
+.landingPageButtonContainer {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 70px;
+    width: 150px;
+    margin-right: 20px;
+}
+
+.landingPageButton {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 75px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 500ms;
+}
+
+.landingPageButton:hover {
+    background-color: rgb(245, 243, 243, 0.2);
+}

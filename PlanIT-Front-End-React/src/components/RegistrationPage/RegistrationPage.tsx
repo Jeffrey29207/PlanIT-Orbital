@@ -5,6 +5,7 @@ import supabase from "../../helper/config.ts";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { addUserAccount } from "../../helper/BackendAPI.ts";
+import LandingPageMenuContainer from "../LandingPage/LandingPageMenuContainer.tsx";
 
 function RegistrationPage() {
   const [email, setEmail] = useState("");
@@ -76,6 +77,7 @@ function RegistrationPage() {
 
   return (
     <div id="registrationPage">
+      <LandingPageMenuContainer />
       <div id="registrationBox">
         <h2 className="newUserMessage">Create an account</h2>
         <span className="newUserMessage">

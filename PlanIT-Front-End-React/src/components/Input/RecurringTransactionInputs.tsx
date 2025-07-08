@@ -3,6 +3,8 @@
 import "./RecurringTransactionInputsStyle.css";
 import DashboardContent from "../DashboardContent/DashboardContent.tsx";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   title: string;
@@ -17,29 +19,67 @@ interface Props {
 }
 
 function RecurringTransactionInputs({ title, handleSubmit }: Props) {
-  const [amount, setAmount] = useState<number | null>(null);
+  const [amount, setAmount] = useState<number | "">("");
   const [category, setCategory] = useState<string>("");
   const [frequency, setFrequency] = useState<string>("");
-  const [interval, setInterval] = useState<number | null>(null);
+  const [interval, setInterval] = useState<number | "">("");
   const [nextRunAt, setNextRunAt] = useState<string>("");
 
   const inputForm = (
     <form
       className="recurringTransactionForm"
       onSubmit={(e) => {
-        handleSubmit(
-          e,
-          amount || 0,
-          category,
-          frequency,
-          interval || 0,
-          nextRunAt
-        );
-        setAmount(null);
-        setCategory("");
-        setFrequency("");
-        setInterval(null);
-        setNextRunAt("");
+        if (
+          amount === "" &&
+          category === "" &&
+          frequency === "" &&
+          interval === "" &&
+          nextRunAt == ""
+        ) {
+          e.preventDefault();
+          toast.error("No input is given to the recurring form");
+        } else {
+          if (
+            frequency === "min" ||
+            frequency === "hour" ||
+            frequency === "day" ||
+            frequency === "week" ||
+            frequency === "month"
+          ) {
+            const dateTimeFormat = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+            if (dateTimeFormat.test(nextRunAt)) {
+              handleSubmit(
+                e,
+                amount || 0,
+                category,
+                frequency,
+                interval || 0,
+                nextRunAt
+              );
+              setAmount("");
+              setCategory("");
+              setFrequency("");
+              setInterval("");
+              setNextRunAt("");
+            } else {
+              e.preventDefault();
+              toast.error("Invalid argument for recurring next running time");
+              setAmount("");
+              setCategory("");
+              setFrequency("");
+              setInterval("");
+              setNextRunAt("");
+            }
+          } else {
+            e.preventDefault();
+            toast.error("Invalid argument for recurring frequency");
+            setAmount("");
+            setCategory("");
+            setFrequency("");
+            setInterval("");
+            setNextRunAt("");
+          }
+        }
       }}
     >
       <input
@@ -47,9 +87,17 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
         type="text"
         placeholder="Amount"
         value={amount !== null ? amount : ""}
-        onChange={(e) =>
-          setAmount(e.target.value ? parseInt(e.target.value) : null)
-        }
+        onChange={(e) => {
+          const value = e.target.value;
+          if (value === "") {
+            setAmount("");
+          } else if (isNaN(parseInt(e.target.value))) {
+            toast.error("Argument must be a number");
+            setAmount("");
+          } else {
+            setAmount(e.target.value ? parseInt(e.target.value) : "");
+          }
+        }}
         className="inputField"
       />
       <input
@@ -73,9 +121,17 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
         type="text"
         placeholder="Interval"
         value={interval !== null ? interval : ""}
-        onChange={(e) =>
-          setInterval(e.target.value ? parseInt(e.target.value) : null)
-        }
+        onChange={(e) => {
+          const value = e.target.value;
+          if (value === "") {
+            setInterval("");
+          } else if (isNaN(parseInt(e.target.value))) {
+            toast.error("Argument must be a number");
+            setInterval("");
+          } else {
+            setInterval(e.target.value ? parseInt(e.target.value) : "");
+          }
+        }}
         className="inputField"
       />
       <input
@@ -90,6 +146,11 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
     </form>
   );
 
-  return <DashboardContent title={title} value={inputForm} />;
+  return (
+    <>
+      <DashboardContent title={title} value={inputForm} />
+      <ToastContainer position="top-center" />
+    </>
+  );
 }
 export default RecurringTransactionInputs;

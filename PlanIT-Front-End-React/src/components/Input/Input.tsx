@@ -3,6 +3,8 @@
 import "./InputStyle.css";
 import DashboardContent from "../DashboardContent/DashboardContent.tsx";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   title: string;
@@ -13,30 +15,43 @@ interface Props {
 }
 
 function Input({ title, handleSubmit }: Props) {
-  const [inputValue, setInputValue] = useState<number | null>(null);
+  const [inputValue, setInputValue] = useState<number | "">("");
 
   const inputForm = (
     <form
       className="inputForm"
       onSubmit={(e) => {
         handleSubmit(e, inputValue || 0);
-        setInputValue(null);
+        setInputValue("");
       }}
     >
       <input
         type="text"
         placeholder={title}
         value={inputValue !== null ? inputValue : ""}
-        onChange={(e) =>
-          setInputValue(e.target.value ? parseInt(e.target.value) : null)
-        }
+        onChange={(e) => {
+          const value = e.target.value;
+          if (value === "") {
+            setInputValue("");
+          } else if (isNaN(parseInt(e.target.value))) {
+            toast.error("Argument must be a number");
+            setInputValue("");
+          } else {
+            setInputValue(e.target.value ? parseInt(e.target.value) : "");
+          }
+        }}
         className="inputField"
       />
       <button type="submit">Submit</button>
     </form>
   );
 
-  return <DashboardContent title={title} value={inputForm} />;
+  return (
+    <>
+      <DashboardContent title={title} value={inputForm} />
+      <ToastContainer position="top-center" />
+    </>
+  );
 }
 
 export default Input;

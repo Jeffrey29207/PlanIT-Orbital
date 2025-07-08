@@ -124,7 +124,7 @@
         display: grid;
         gap: 1.5rem;
         grid-auto-columns: 1fr;
-        grid-auto-rows: minmax(150px, auto);
+        grid-auto-rows: minmax(170px, auto);
         grid-template-areas:
         'avg5WeeksSpending avg5WeeksSpending avg5WeeksBalance avg5WeeksBalance financialRecommendation financialRecommendation'
         'forecastedNextWeekSpending forecastedNextWeekSpending forecastedNextWeekBalance forecastedNextWeekBalance financialRecommendation financialRecommendation'

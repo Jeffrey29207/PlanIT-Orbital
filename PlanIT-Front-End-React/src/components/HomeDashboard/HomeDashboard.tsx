@@ -87,7 +87,8 @@ function HomeDashboard({ accountId }: Props) {
               item.description !== "recurring spending" &&
               item.description !== "recurring income" &&
               item.description !== "deleted recurring spending" &&
-              item.description !== "deleted recurring income"
+              item.description !== "deleted recurring income" &&
+              item.description !== "set savings"
           )
           .map((item: any) => ({
             content1: item.tx_id,

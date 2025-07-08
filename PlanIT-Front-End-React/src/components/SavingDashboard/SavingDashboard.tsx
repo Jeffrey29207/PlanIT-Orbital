@@ -77,7 +77,8 @@ function SavingDashboard({ accountId }: Props) {
               item.tx_type === "save" &&
               item.description !== "cancellation" &&
               item.description !== "recurring income" &&
-              item.description !== "deleted recurring income"
+              item.description !== "deleted recurring income" &&
+              item.description !== "set savings"
           )
           .map((item: any) => ({
             content1: item.tx_id,

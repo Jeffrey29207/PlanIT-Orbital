@@ -12,6 +12,7 @@ import {
   getForecast,
 } from "../../helper/BackendAPI.ts";
 import { useEffect, useState } from "react";
+import DashboardContent from "../DashboardContent/DashboardContent.tsx";
 
 interface Props {
   accountId: number;
@@ -36,6 +37,7 @@ function AnalyticsDashboard({ accountId }: Props) {
     setAverageDailySpending7DaysSMAContent,
   ] = useState<any[]>([]);
   const [stateChange, setStateChange] = useState<boolean>(false);
+  const [recommendationText, setRecommendationText] = useState<String>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,6 +75,7 @@ function AnalyticsDashboard({ accountId }: Props) {
         setForecastedNextWeekBalance(
           Math.round(forecastedData.predBal6 * 100) / 100
         );
+        setRecommendationText(forecastedData.recText);
       } catch (error) {
         console.log("Error fetching data: ", error);
       }
@@ -167,11 +170,13 @@ function AnalyticsDashboard({ accountId }: Props) {
       <div className="mainDashboardBlocks avg7DaysSMARecords records">
         {avg7DaysSMARecordsTable}
       </div>
-      <div
-        className="mainDashboardBlocks financialRecommendation wordDashboard"
-        style={{ color: "white" }}
-      >
-        Financial recommendation is not available for milestone 2
+      <div className="mainDashboardBlocks financialRecommendation wordDashboard">
+        <DashboardContent
+          title="Financial recommendation"
+          value={
+            recommendationText ? <p>{recommendationText}</p> : "Thinking..."
+          }
+        />
       </div>
     </div>
   );

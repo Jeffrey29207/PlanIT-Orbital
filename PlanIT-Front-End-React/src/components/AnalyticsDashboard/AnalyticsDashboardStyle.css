@@ -73,6 +73,13 @@
     white-space: nowrap;
 }
 
+.wordDashboard {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    overflow-y: auto;
+}
+
 /* Setting things for tablet screens */
 @media screen and (min-width: 900px) {
     /* Setting the dashboard for tablet*/
@@ -98,6 +105,7 @@
         'dailySpendingGraph dailySpendingGraph avg7DaysSMARecords avg7DaysSMARecords'
         'dailySpendingGraph dailySpendingGraph avg7DaysSMARecords avg7DaysSMARecords'
         'financialRecommendation financialRecommendation financialRecommendation financialRecommendation' 
+        'financialRecommendation financialRecommendation financialRecommendation financialRecommendation'
         'financialRecommendation financialRecommendation financialRecommendation financialRecommendation';
     }
 

@@ -265,6 +265,21 @@ function SavingDashboard({ accountId }: Props) {
     );
   };
 
+  const submitAddSaving = async (
+    event: React.FormEvent<HTMLFormElement>,
+    value: number
+  ) => {
+    event.preventDefault();
+
+    await oneTimeIncome(accountId, value, "misc", "Add saving").catch(
+      console.error
+    );
+
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
+
+    console.log(`Adding saving: ${value}`);
+  };
+
   const inputs = [
     <Input
       key={1}
@@ -280,9 +295,9 @@ function SavingDashboard({ accountId }: Props) {
     />,
     <Input
       key={3}
-      title="Transfer saving"
-      information="Transfer to spending account"
-      handleSubmit={submitTransferSaving}
+      title="Add saving"
+      information="Add to saving balance"
+      handleSubmit={submitAddSaving}
     />,
     <RecurringTransactionInputs
       key={4}
@@ -295,6 +310,12 @@ function SavingDashboard({ accountId }: Props) {
       title="Add one time income"
       information=""
       handleSubmit={submitOneTimeTransaction}
+    />,
+    <Input
+      key={6}
+      title="Transfer saving"
+      information="Transfer to spending account"
+      handleSubmit={submitTransferSaving}
     />,
   ];
 

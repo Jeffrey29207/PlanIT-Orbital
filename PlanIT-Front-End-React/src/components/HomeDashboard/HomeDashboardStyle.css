@@ -78,6 +78,7 @@
 .transactionGraph .carousel-inner {
     height: 100%;
     width: 100%;
+    display: flex;
 }
 
 .transactionGraph .carousel-control-prev,
@@ -88,7 +89,7 @@
 
 
 .transactionGraph .carousel-indicators {
-    bottom: -2%;
+    bottom: 88%;
 }
 
 /* Setting things for tablet screens */
@@ -160,6 +161,10 @@
     .mainDashboardBlocks {
         border-radius: 1rem;
         background-color: rgba(250, 254, 255, 0.2);
+    }
+
+    .transactionGraph .carousel-indicators {
+        bottom: -2%;
     }
 
     .transactionGraph .carousel-control-prev,

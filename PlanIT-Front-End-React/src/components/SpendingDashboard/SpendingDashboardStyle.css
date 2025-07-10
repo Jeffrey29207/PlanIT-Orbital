@@ -49,6 +49,8 @@
         'spendingLineGraph'
         'spendingLineGraph'
         'spendingInput'
+        'spendingInput'
+        'spendingInput'
         'spendingRecurringRecords'
         'spendingRecurringRecords'
         'spendingRecords'
@@ -68,6 +70,19 @@
 
 .lineChart {
     overflow-y: auto;
+}
+
+.spendingInput .carousel,
+.spendingInput .carousel-inner {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+
+.spendingInput .carousel-indicators {
+    bottom: -2%;
 }
 
 /* Setting things for tablet screens */
@@ -92,6 +107,8 @@
         'spendingDashboard spendingDashboard spendedDashboard spendedDashboard'
         'spendingGraph spendingGraph spendingLineGraph spendingLineGraph'
         'spendingGraph spendingGraph spendingLineGraph spendingLineGraph'
+        'spendingInput spendingInput spendingInput spendingInput'
+        'spendingInput spendingInput spendingInput spendingInput'
         'spendingInput spendingInput spendingInput spendingInput'
         'spendingInput spendingInput spendingInput spendingInput'
         'spendingRecurringRecords spendingRecurringRecords spendingRecords spendingRecords'
@@ -126,8 +143,8 @@
         grid-auto-rows: minmax(170px, auto);
         grid-template-areas:
         'spendingDashboard spendingDashboard spendedDashboard spendedDashboard spendingInput spendingInput'
-        'spendingGraph spendingGraph spendingRecurringRecords spendingRecurringRecords spendingRecords spendingRecords'
-        'spendingGraph spendingGraph spendingRecurringRecords spendingRecurringRecords spendingRecords spendingRecords'
+        'spendingGraph spendingGraph spendingRecurringRecords spendingRecurringRecords spendingInput spendingInput'
+        'spendingGraph spendingGraph spendingRecurringRecords spendingRecurringRecords spendingInput spendingInput'
         'spendingLineGraph spendingLineGraph spendingRecurringRecords spendingRecurringRecords spendingRecords spendingRecords'
         'spendingLineGraph spendingLineGraph spendingRecurringRecords spendingRecurringRecords spendingRecords spendingRecords';
     }
@@ -135,5 +152,11 @@
     .mainDashboardBlocks {
         border-radius: 1rem;
         background-color: rgba(250, 254, 255, 0.2);
+    }
+
+    .spendingInput .carousel-control-prev,
+    .spendingInput .carousel-control-next {
+        height: fit-content;
+        top: 90%
     }
 }

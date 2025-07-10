@@ -25,6 +25,7 @@ import {
   getTransactionHistory,
   undoOneTimeSpend,
 } from "../../helper/BackendAPI.ts";
+import { Carousel } from "react-bootstrap";
 
 interface Props {
   accountId: number;
@@ -299,7 +300,13 @@ function SpendingDashboard({ accountId }: Props) {
       >
         {actualSpendingMonthlyGraph}
       </div>
-      <div className="mainDashboardBlocks spendingInput input"></div>
+      <div className="mainDashboardBlocks spendingInput input">
+        <Carousel defaultActiveIndex={0} interval={null} touch={true}>
+          {inputs.map((item: any, index: number) => (
+            <Carousel.Item key={index}>{item}</Carousel.Item>
+          ))}
+        </Carousel>
+      </div>
       <div className="mainDashboardBlocks spendingRecurringRecords records">
         {recurringTable}
       </div>

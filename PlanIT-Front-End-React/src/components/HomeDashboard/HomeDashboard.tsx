@@ -18,6 +18,7 @@ import {
   scheduleRecurTransactions,
 } from "../../helper/BackendAPI.ts";
 import { useEffect, useState } from "react";
+import { Carousel } from "react-bootstrap";
 
 interface Props {
   accountId: number;
@@ -283,9 +284,11 @@ function HomeDashboard({ accountId }: Props) {
         className="mainDashboardBlocks transactionGraph lineChart"
         style={{ color: "white" }}
       >
-        {overallBalanceMonthlyGraph}
-        {savingBalanceMonthlyGraph}
-        {actualSpendingMonthlyGraph}
+        <Carousel defaultActiveIndex={0} interval={null} touch={true}>
+          <Carousel.Item key={1}>{overallBalanceMonthlyGraph}</Carousel.Item>
+          <Carousel.Item key={2}>{savingBalanceMonthlyGraph}</Carousel.Item>
+          <Carousel.Item key={3}>{actualSpendingMonthlyGraph}</Carousel.Item>
+        </Carousel>
       </div>
       <div
         className="mainDashboardBlocks transactionRecords records"

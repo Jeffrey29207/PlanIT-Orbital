@@ -285,9 +285,9 @@ function HomeDashboard({ accountId }: Props) {
         style={{ color: "white" }}
       >
         <Carousel defaultActiveIndex={0} interval={null} touch={true}>
-          <Carousel.Item key={1}>{overallBalanceMonthlyGraph}</Carousel.Item>
-          <Carousel.Item key={2}>{savingBalanceMonthlyGraph}</Carousel.Item>
-          <Carousel.Item key={3}>{actualSpendingMonthlyGraph}</Carousel.Item>
+          <Carousel.Item key={171}>{overallBalanceMonthlyGraph}</Carousel.Item>
+          <Carousel.Item key={172}>{savingBalanceMonthlyGraph}</Carousel.Item>
+          <Carousel.Item key={173}>{actualSpendingMonthlyGraph}</Carousel.Item>
         </Carousel>
       </div>
       <div

@@ -49,6 +49,8 @@
         'savingLineGraph'
         'savingLineGraph'
         'savingInput'
+        'savingInput'
+        'savingInput'
         'savingRecurringRecords'
         'savingRecurringRecords'
         'savingRecords'
@@ -64,11 +66,27 @@
 }
 
 .input {
-    overflow-y: auto;
+    overflow-y: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .lineChart {
     overflow-y: auto;
+}
+
+.savingInput .carousel,
+.savingInput .carousel-inner {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+
+.savingInput .carousel-indicators {
+    bottom: -2%;
 }
 
 /* Setting things for tablet screens */
@@ -93,6 +111,8 @@
         'savingDashboard savingDashboard savingTargetDashboard savingTargetDashboard'
         'savingGraph savingGraph savingLineGraph savingLineGraph'
         'savingGraph savingGraph savingLineGraph savingLineGraph'
+        'savingInput savingInput savingInput savingInput'
+        'savingInput savingInput savingInput savingInput'
         'savingInput savingInput savingInput savingInput'
         'savingInput savingInput savingInput savingInput'
         'savingRecurringRecords savingRecurringRecords savingRecords savingRecords'
@@ -127,8 +147,8 @@
         grid-auto-rows: minmax(170px, auto);
         grid-template-areas:
         'savingDashboard savingDashboard savingTargetDashboard savingTargetDashboard savingInput savingInput'
-        'savingGraph savingGraph savingRecurringRecords savingRecurringRecords savingRecords savingRecords'
-        'savingGraph savingGraph savingRecurringRecords savingRecurringRecords savingRecords savingRecords'
+        'savingGraph savingGraph savingRecurringRecords savingRecurringRecords savingInput savingInput'
+        'savingGraph savingGraph savingRecurringRecords savingRecurringRecords savingInput savingInput'
         'savingLineGraph savingLineGraph savingRecurringRecords savingRecurringRecords savingRecords savingRecords'
         'savingLineGraph savingLineGraph savingRecurringRecords savingRecurringRecords savingRecords savingRecords';
     }
@@ -136,5 +156,11 @@
     .mainDashboardBlocks {
         border-radius: 1rem;
         background-color: rgba(250, 254, 255, 0.2);
+    }
+
+    .savingInput .carousel-control-prev,
+    .savingInput .carousel-control-next {
+        height: fit-content;
+        top: 90%
     }
 }

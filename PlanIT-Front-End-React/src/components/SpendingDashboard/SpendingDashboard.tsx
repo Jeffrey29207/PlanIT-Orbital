@@ -239,16 +239,19 @@ function SpendingDashboard({ accountId }: Props) {
     <Input
       key={1}
       title="Transfer spending"
+      information="Transfer to saving account"
       handleSubmit={submitTransferSpending}
     />,
     <RecurringTransactionInputs
       key={2}
       title="Add recurring spending"
+      information=""
       handleSubmit={submitRecurringSpending}
     />,
     <OneTimeTransactionInputs
       key={3}
       title="Input one time spending"
+      information=""
       handleSubmit={submitOTS}
     />,
   ];
@@ -296,7 +299,7 @@ function SpendingDashboard({ accountId }: Props) {
       >
         {actualSpendingMonthlyGraph}
       </div>
-      <div className="mainDashboardBlocks spendingInput input">{inputs}</div>
+      <div className="mainDashboardBlocks spendingInput input"></div>
       <div className="mainDashboardBlocks spendingRecurringRecords records">
         {recurringTable}
       </div>

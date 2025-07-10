@@ -1,13 +1,14 @@
 // An abstraction for savings and spending recurring transactions input
 
 import "./RecurringTransactionInputsStyle.css";
-import DashboardContent from "../DashboardContent/DashboardContent.tsx";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import InputPopUp from "../InputPopUp/InputPopUp.tsx";
 
 interface Props {
   title: string;
+  information: string;
   handleSubmit: (
     event: React.FormEvent<HTMLFormElement>,
     amount: number,
@@ -18,7 +19,11 @@ interface Props {
   ) => void;
 }
 
-function RecurringTransactionInputs({ title, handleSubmit }: Props) {
+function RecurringTransactionInputs({
+  title,
+  information,
+  handleSubmit,
+}: Props) {
   const [amount, setAmount] = useState<number | "">("");
   const [category, setCategory] = useState<string>("");
   const [frequency, setFrequency] = useState<string>("");
@@ -148,7 +153,7 @@ function RecurringTransactionInputs({ title, handleSubmit }: Props) {
 
   return (
     <>
-      <DashboardContent title={title} value={inputForm} />
+      <InputPopUp title={title} message={information} form={inputForm} />
       <ToastContainer position="top-center" />
     </>
   );

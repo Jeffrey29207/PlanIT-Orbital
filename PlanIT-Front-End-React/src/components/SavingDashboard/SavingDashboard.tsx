@@ -27,6 +27,7 @@ import {
   undoOneTimeIncome,
 } from "../../helper/BackendAPI.ts";
 import { useEffect, useState } from "react";
+import { Carousel } from "react-bootstrap";
 
 interface Props {
   accountId: number;
@@ -265,25 +266,34 @@ function SavingDashboard({ accountId }: Props) {
   };
 
   const inputs = [
-    <Input key={1} title="Set saving" handleSubmit={submitSetSaving} />,
+    <Input
+      key={1}
+      title="Set saving"
+      information="Set saving to the inputted value"
+      handleSubmit={submitSetSaving}
+    />,
     <Input
       key={2}
       title="Set saving target"
+      information="Set target to the inputted value"
       handleSubmit={submitSetSavingTarget}
     />,
     <Input
       key={3}
       title="Transfer saving"
+      information="Transfer to spending account"
       handleSubmit={submitTransferSaving}
     />,
     <RecurringTransactionInputs
       key={4}
       title="Add recurring income"
+      information=""
       handleSubmit={submitRecurringTransaction}
     />,
     <OneTimeTransactionInputs
       key={5}
       title="Add one time income"
+      information=""
       handleSubmit={submitOneTimeTransaction}
     />,
   ];
@@ -331,7 +341,13 @@ function SavingDashboard({ accountId }: Props) {
       >
         {savingBalanceMonthlyGraph}
       </div>
-      <div className="mainDashboardBlocks savingInput input">{inputs}</div>
+      <div className="mainDashboardBlocks savingInput input">
+        <Carousel defaultActiveIndex={0} interval={null} touch={true}>
+          {inputs.map((item: any, index: number) => (
+            <Carousel.Item key={index}>{item}</Carousel.Item>
+          ))}
+        </Carousel>
+      </div>
       <div className="mainDashboardBlocks savingRecurringRecords records">
         {recurringTable}
       </div>

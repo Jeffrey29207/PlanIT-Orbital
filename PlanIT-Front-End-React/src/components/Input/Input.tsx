@@ -1,20 +1,21 @@
 // An abstraction for dashboard components that have one input fields
 
 import "./InputStyle.css";
-import DashboardContent from "../DashboardContent/DashboardContent.tsx";
+import InputPopUp from "../InputPopUp/InputPopUp.tsx";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   title: string;
+  information: string;
   handleSubmit: (
     event: React.FormEvent<HTMLFormElement>,
     value: number
   ) => void;
 }
 
-function Input({ title, handleSubmit }: Props) {
+function Input({ title, information, handleSubmit }: Props) {
   const [inputValue, setInputValue] = useState<number | "">("");
 
   const inputForm = (
@@ -53,7 +54,7 @@ function Input({ title, handleSubmit }: Props) {
 
   return (
     <>
-      <DashboardContent title={title} value={inputForm} />
+      <InputPopUp title={title} message={information} form={inputForm} />
       <ToastContainer position="top-center" />
     </>
   );

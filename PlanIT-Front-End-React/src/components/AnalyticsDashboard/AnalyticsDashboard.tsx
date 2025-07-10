@@ -99,23 +99,23 @@ function AnalyticsDashboard({ accountId }: Props) {
   }, []);
 
   const avg5WeeksSpending = (
-    <NumericDashboard title="5-Week Spending" value={average5WeeksSpending} />
+    <NumericDashboard title="5-Week spending" value={average5WeeksSpending} />
   );
 
   const avg5WeeksBalance = (
-    <NumericDashboard title="5-Week Balance" value={average5WeeksBalance} />
+    <NumericDashboard title="5-Week balance" value={average5WeeksBalance} />
   );
 
   const forecastedSpending = (
     <NumericDashboard
-      title="Forecasted Next-Week Spending"
+      title="Forecasted next-week spending"
       value={forecastedNextWeekSpending}
     />
   );
 
   const forecastedBalance = (
     <NumericDashboard
-      title="Forecasted Next-Week Balance"
+      title="Forecasted next-Week balance"
       value={forecastedNextWeekBalance}
     />
   );
@@ -125,7 +125,7 @@ function AnalyticsDashboard({ accountId }: Props) {
   // Handle line graph for daily spending
   const dailySpendingLineGraph = (
     <LineChart
-      title="Daily Spending"
+      title="Daily spending"
       labels={dailySpendingGraphLabels}
       data={dailySpendingGraphData}
       colors={["#00B432"]}
@@ -144,7 +144,7 @@ function AnalyticsDashboard({ accountId }: Props) {
 
   const avg7DaysSMARecordsTable = (
     <Table
-      title="7-Day Average"
+      title="7-Day average"
       heading={avg7DaysSMARecordsTableHeadings}
       data={averageDailySpending7DaysSMAContent}
     />

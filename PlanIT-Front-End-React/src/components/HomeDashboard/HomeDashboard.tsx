@@ -256,7 +256,7 @@ function HomeDashboard({ accountId }: Props) {
 
   const transactionHistoryTable = (
     <Table
-      title="Transaction History"
+      title="Transaction history"
       heading={transactionHistroyTableHeadings}
       data={transactionHistoryTableContent}
       button="Undo"

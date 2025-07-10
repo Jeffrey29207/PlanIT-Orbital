@@ -174,7 +174,11 @@ function AnalyticsDashboard({ accountId }: Props) {
         <DashboardContent
           title="Financial recommendation"
           value={
-            recommendationText ? <p>{recommendationText}</p> : "Thinking..."
+            recommendationText ? (
+              <p className="recText">{recommendationText}</p>
+            ) : (
+              "Thinking..."
+            )
           }
         />
       </div>

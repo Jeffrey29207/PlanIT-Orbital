@@ -80,6 +80,10 @@
     overflow-y: auto;
 }
 
+.recText {
+    white-space: pre-line;
+}
+
 /* Setting things for tablet screens */
 @media screen and (min-width: 900px) {
     /* Setting the dashboard for tablet*/

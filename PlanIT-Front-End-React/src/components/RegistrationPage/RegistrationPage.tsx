@@ -5,13 +5,12 @@ import supabase from "../../helper/config.ts";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { addUserAccount } from "../../helper/BackendAPI.ts";
+import LandingPageMenuContainer from "../LandingPage/LandingPageMenuContainer.tsx";
 
 function RegistrationPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [message, setMessage] = useState("");
 
   const navigate = useNavigate();
@@ -34,13 +33,6 @@ function RegistrationPage() {
       // Supabase function to register a new user
       email: email,
       password: password,
-      options: {
-        data: {
-          // Set the display name as a concatenation of first and last name
-          firstName: firstName,
-          lastName: lastName,
-        },
-      },
     });
 
     if (error) {
@@ -49,8 +41,6 @@ function RegistrationPage() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setFirstName("");
-      setLastName("");
       return;
     }
     if (data) {
@@ -59,8 +49,6 @@ function RegistrationPage() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setFirstName("");
-      setLastName("");
 
       const { user } = data;
 
@@ -76,6 +64,7 @@ function RegistrationPage() {
 
   return (
     <div id="registrationPage">
+      <LandingPageMenuContainer />
       <div id="registrationBox">
         <h2 className="newUserMessage">Create an account</h2>
         <span className="newUserMessage">
@@ -100,18 +89,6 @@ function RegistrationPage() {
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value.toUpperCase())}
-          />
-          <input
-            type="text"
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value.toUpperCase())}
           />
           <button type="submit">Register</button>
         </form>

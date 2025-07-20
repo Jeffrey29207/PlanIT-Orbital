@@ -25,6 +25,7 @@ import {
   getTransactionHistory,
   undoOneTimeSpend,
 } from "../../helper/BackendAPI.ts";
+import { Carousel } from "react-bootstrap";
 
 interface Props {
   accountId: number;
@@ -95,8 +96,10 @@ function SpendingDashboard({ accountId }: Props) {
   useEffect(() => {
     // Handle realtime update of recurring transactions
     const trackState = async () => {
-      const { isMutated } = await scheduleRecurTransactions();
-      isMutated && setStateChange(!stateChange);
+      const response = await scheduleRecurTransactions();
+      const { isSpendingUpdated } = response[0];
+      const { isSavingsUpdated } = response[1];
+      (isSpendingUpdated || isSavingsUpdated) && setStateChange(!stateChange);
     };
     trackState();
     const interval = setInterval(trackState, 10000); // Realtime update every 10 seconds
@@ -237,16 +240,19 @@ function SpendingDashboard({ accountId }: Props) {
     <Input
       key={1}
       title="Transfer spending"
+      information="Transfer to saving account"
       handleSubmit={submitTransferSpending}
     />,
     <RecurringTransactionInputs
       key={2}
       title="Add recurring spending"
+      information=""
       handleSubmit={submitRecurringSpending}
     />,
     <OneTimeTransactionInputs
       key={3}
       title="Input one time spending"
+      information=""
       handleSubmit={submitOTS}
     />,
   ];
@@ -294,7 +300,13 @@ function SpendingDashboard({ accountId }: Props) {
       >
         {actualSpendingMonthlyGraph}
       </div>
-      <div className="mainDashboardBlocks spendingInput input">{inputs}</div>
+      <div className="mainDashboardBlocks spendingInput input">
+        <Carousel defaultActiveIndex={0} interval={null} touch={true}>
+          {inputs.map((item: any, index: number) => (
+            <Carousel.Item key={index}>{item}</Carousel.Item>
+          ))}
+        </Carousel>
+      </div>
       <div className="mainDashboardBlocks spendingRecurringRecords records">
         {recurringTable}
       </div>

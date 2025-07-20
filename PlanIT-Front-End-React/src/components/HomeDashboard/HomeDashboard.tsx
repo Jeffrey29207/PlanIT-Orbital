@@ -18,6 +18,7 @@ import {
   scheduleRecurTransactions,
 } from "../../helper/BackendAPI.ts";
 import { useEffect, useState } from "react";
+import { Carousel } from "react-bootstrap";
 
 interface Props {
   accountId: number;
@@ -83,11 +84,13 @@ function HomeDashboard({ accountId }: Props) {
         const formattedTransactionHistory = transactionHistory
           .filter(
             (item: any) =>
+              item.tx_type !== "transfer" &&
               item.description !== "cancellation" &&
               item.description !== "recurring spending" &&
               item.description !== "recurring income" &&
               item.description !== "deleted recurring spending" &&
-              item.description !== "deleted recurring income"
+              item.description !== "deleted recurring income" &&
+              item.description !== "set savings"
           )
           .map((item: any) => ({
             content1: item.tx_id,
@@ -108,8 +111,10 @@ function HomeDashboard({ accountId }: Props) {
   useEffect(() => {
     // Handle realtime update of recurring transactions
     const trackState = async () => {
-      const { isMutated } = await scheduleRecurTransactions();
-      isMutated && setStateChange(!stateChange);
+      const response = await scheduleRecurTransactions();
+      const { isSpendingUpdated } = response[0];
+      const { isSavingsUpdated } = response[1];
+      (isSpendingUpdated || isSavingsUpdated) && setStateChange(!stateChange);
     };
     trackState();
     const interval = setInterval(trackState, 10000); // Realtime update every 10 seconds
@@ -251,7 +256,7 @@ function HomeDashboard({ accountId }: Props) {
 
   const transactionHistoryTable = (
     <Table
-      title="Transaction History"
+      title="Transaction history"
       heading={transactionHistroyTableHeadings}
       data={transactionHistoryTableContent}
       button="Undo"
@@ -279,9 +284,11 @@ function HomeDashboard({ accountId }: Props) {
         className="mainDashboardBlocks transactionGraph lineChart"
         style={{ color: "white" }}
       >
-        {overallBalanceMonthlyGraph}
-        {savingBalanceMonthlyGraph}
-        {actualSpendingMonthlyGraph}
+        <Carousel defaultActiveIndex={0} interval={null} touch={true}>
+          <Carousel.Item key={171}>{overallBalanceMonthlyGraph}</Carousel.Item>
+          <Carousel.Item key={172}>{savingBalanceMonthlyGraph}</Carousel.Item>
+          <Carousel.Item key={173}>{actualSpendingMonthlyGraph}</Carousel.Item>
+        </Carousel>
       </div>
       <div
         className="mainDashboardBlocks transactionRecords records"

@@ -4,6 +4,7 @@ import "./LoginPageStyle.css";
 import supabase from "../../helper/config.ts";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import LandingPageMenuContainer from "../LandingPage/LandingPageMenuContainer.tsx";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -41,6 +42,7 @@ function LoginPage() {
   };
   return (
     <div id="loginPage">
+      <LandingPageMenuContainer />
       <div id="loginBox">
         <h2 className="currentUserMessage">Welcome back!</h2>
         <span className="currentUserMessage">Let's plan together!</span>

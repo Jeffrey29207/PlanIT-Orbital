@@ -12,6 +12,7 @@ import {
   getForecast,
 } from "../../helper/BackendAPI.ts";
 import { useEffect, useState } from "react";
+import DashboardContent from "../DashboardContent/DashboardContent.tsx";
 
 interface Props {
   accountId: number;
@@ -36,6 +37,7 @@ function AnalyticsDashboard({ accountId }: Props) {
     setAverageDailySpending7DaysSMAContent,
   ] = useState<any[]>([]);
   const [stateChange, setStateChange] = useState<boolean>(false);
+  const [recommendationText, setRecommendationText] = useState<String>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,8 +65,8 @@ function AnalyticsDashboard({ accountId }: Props) {
         setAverageDailySpending7DaysSMAContent(avgSpending7DaysSMATable);
 
         const forecastFeatures = await getForecastFeatures(accountId);
-        setAverage5WeeksSpending(forecastFeatures[10]);
-        setAverage5WeeksBalance(forecastFeatures[11]);
+        setAverage5WeeksSpending(Math.round(forecastFeatures[10] * 100) / 100);
+        setAverage5WeeksBalance(Math.round(forecastFeatures[11] * 100) / 100);
 
         const forecastedData = await getForecast(accountId);
         setForecastedNextWeekSpending(
@@ -73,6 +75,7 @@ function AnalyticsDashboard({ accountId }: Props) {
         setForecastedNextWeekBalance(
           Math.round(forecastedData.predBal6 * 100) / 100
         );
+        setRecommendationText(forecastedData.recText);
       } catch (error) {
         console.log("Error fetching data: ", error);
       }
@@ -83,8 +86,10 @@ function AnalyticsDashboard({ accountId }: Props) {
   useEffect(() => {
     // Handle realtime update of recurring transactions
     const trackState = async () => {
-      const { isMutated } = await scheduleRecurTransactions();
-      isMutated && setStateChange(!stateChange);
+      const response = await scheduleRecurTransactions();
+      const { isSpendingUpdated } = response[0];
+      const { isSavingsUpdated } = response[1];
+      (isSpendingUpdated || isSavingsUpdated) && setStateChange(!stateChange);
     };
     trackState();
     const interval = setInterval(trackState, 10000); // Realtime update every 10 seconds
@@ -94,23 +99,23 @@ function AnalyticsDashboard({ accountId }: Props) {
   }, []);
 
   const avg5WeeksSpending = (
-    <NumericDashboard title="5-Week Spending" value={average5WeeksSpending} />
+    <NumericDashboard title="5-Week spending" value={average5WeeksSpending} />
   );
 
   const avg5WeeksBalance = (
-    <NumericDashboard title="5-Week Balance" value={average5WeeksBalance} />
+    <NumericDashboard title="5-Week balance" value={average5WeeksBalance} />
   );
 
   const forecastedSpending = (
     <NumericDashboard
-      title="Forecasted Next-Week Spending"
+      title="Forecasted next-week spending"
       value={forecastedNextWeekSpending}
     />
   );
 
   const forecastedBalance = (
     <NumericDashboard
-      title="Forecasted Next-Week Balance"
+      title="Forecasted next-Week balance"
       value={forecastedNextWeekBalance}
     />
   );
@@ -120,7 +125,7 @@ function AnalyticsDashboard({ accountId }: Props) {
   // Handle line graph for daily spending
   const dailySpendingLineGraph = (
     <LineChart
-      title="Daily Spending"
+      title="Daily spending"
       labels={dailySpendingGraphLabels}
       data={dailySpendingGraphData}
       colors={["#00B432"]}
@@ -139,7 +144,7 @@ function AnalyticsDashboard({ accountId }: Props) {
 
   const avg7DaysSMARecordsTable = (
     <Table
-      title="7-Day Average"
+      title="7-Day average"
       heading={avg7DaysSMARecordsTableHeadings}
       data={averageDailySpending7DaysSMAContent}
     />
@@ -165,11 +170,17 @@ function AnalyticsDashboard({ accountId }: Props) {
       <div className="mainDashboardBlocks avg7DaysSMARecords records">
         {avg7DaysSMARecordsTable}
       </div>
-      <div
-        className="mainDashboardBlocks financialRecommendation wordDashboard"
-        style={{ color: "white" }}
-      >
-        Financial recommendation is not available for milestone 2
+      <div className="mainDashboardBlocks financialRecommendation wordDashboard">
+        <DashboardContent
+          title="Financial recommendation"
+          value={
+            recommendationText ? (
+              <p className="recText">{recommendationText}</p>
+            ) : (
+              "Thinking..."
+            )
+          }
+        />
       </div>
     </div>
   );

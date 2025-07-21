@@ -27,6 +27,7 @@ import {
   undoOneTimeIncome,
 } from "../../helper/BackendAPI.ts";
 import { useEffect, useState } from "react";
+import { Carousel } from "react-bootstrap";
 
 interface Props {
   accountId: number;
@@ -77,7 +78,8 @@ function SavingDashboard({ accountId }: Props) {
               item.tx_type === "save" &&
               item.description !== "cancellation" &&
               item.description !== "recurring income" &&
-              item.description !== "deleted recurring income"
+              item.description !== "deleted recurring income" &&
+              item.description !== "set savings"
           )
           .map((item: any) => ({
             content1: item.tx_id,
@@ -96,8 +98,10 @@ function SavingDashboard({ accountId }: Props) {
   useEffect(() => {
     // Handle realtime update of recurring transactions
     const trackState = async () => {
-      const { isMutated } = await scheduleRecurTransactions();
-      isMutated && setStateChange(!stateChange);
+      const response = await scheduleRecurTransactions();
+      const { isSpendingUpdated } = response[0];
+      const { isSavingsUpdated } = response[1];
+      (isSpendingUpdated || isSavingsUpdated) && setStateChange(!stateChange);
     };
     trackState();
     const interval = setInterval(trackState, 10000); // Realtime update every 10 seconds
@@ -261,27 +265,57 @@ function SavingDashboard({ accountId }: Props) {
     );
   };
 
+  const submitAddSaving = async (
+    event: React.FormEvent<HTMLFormElement>,
+    value: number
+  ) => {
+    event.preventDefault();
+
+    await oneTimeIncome(accountId, value, "misc", "Add saving").catch(
+      console.error
+    );
+
+    setStateChange(!stateChange); // Trigger state change to update the dashboard
+
+    console.log(`Adding saving: ${value}`);
+  };
+
   const inputs = [
-    <Input key={1} title="Set saving" handleSubmit={submitSetSaving} />,
+    <Input
+      key={1}
+      title="Set saving"
+      information="Set saving to the inputted value"
+      handleSubmit={submitSetSaving}
+    />,
     <Input
       key={2}
       title="Set saving target"
+      information="Set target to the inputted value"
       handleSubmit={submitSetSavingTarget}
     />,
     <Input
       key={3}
-      title="Transfer saving"
-      handleSubmit={submitTransferSaving}
+      title="Add saving"
+      information="Add to saving balance"
+      handleSubmit={submitAddSaving}
     />,
     <RecurringTransactionInputs
       key={4}
       title="Add recurring income"
+      information=""
       handleSubmit={submitRecurringTransaction}
     />,
     <OneTimeTransactionInputs
       key={5}
       title="Add one time income"
+      information=""
       handleSubmit={submitOneTimeTransaction}
+    />,
+    <Input
+      key={6}
+      title="Transfer saving"
+      information="Transfer to spending account"
+      handleSubmit={submitTransferSaving}
     />,
   ];
 
@@ -328,7 +362,13 @@ function SavingDashboard({ accountId }: Props) {
       >
         {savingBalanceMonthlyGraph}
       </div>
-      <div className="mainDashboardBlocks savingInput input">{inputs}</div>
+      <div className="mainDashboardBlocks savingInput input">
+        <Carousel defaultActiveIndex={0} interval={null} touch={true}>
+          {inputs.map((item: any, index: number) => (
+            <Carousel.Item key={index}>{item}</Carousel.Item>
+          ))}
+        </Carousel>
+      </div>
       <div className="mainDashboardBlocks savingRecurringRecords records">
         {recurringTable}
       </div>

@@ -13,11 +13,22 @@
     height: 90%;
 }
 
+.wordDashboard .valueContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .chartContainer {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 80%;
+}
+
+.wordDashboard .chartContainer,
+.wordDashboard .chart {
+    height: auto;
 }
 
 .lineChart .chartContainer {

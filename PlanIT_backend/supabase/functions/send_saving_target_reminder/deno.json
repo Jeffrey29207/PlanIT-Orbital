@@ -1,0 +1,18 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-env --allow-net functions/send-half-spent-reminder/index.ts"
+  },
+  "compilerOptions": {
+    "lib": [
+      "deno.ns",
+      "dom",
+      "esnext"
+    ],
+    "types": [
+      "https://deno.land/x/sift@0.5.0/types/mod.d.ts"
+    ],
+    "strict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  }
+}

@@ -1135,24 +1135,20 @@ export async function getForecastFeatures(accountId) {
       SELECT
         w.week_start,
 
-        -- carry-forward last known balance
-        COALESCE((
+        -- last known balance as of start of week (NULL if none)
+        (
           SELECT t2.total_balance
-            FROM transactions t2
-           WHERE t2.account_id = $1
-             AND t2.created_at <= w.week_start + INTERVAL '1 day'
-           ORDER BY t2.created_at DESC
-           LIMIT 1
-        ), 0)::numeric AS bal_start,
+          FROM transactions t2
+          WHERE t2.account_id = $1
+            AND t2.created_at <= w.week_start + INTERVAL '1 day'
+          ORDER BY t2.created_at DESC
+          LIMIT 1
+        )::numeric AS bal_start,
 
-        -- average daily spend (0 if no spend)
-        COALESCE(
-          ROUND(AVG(d.daily_spend), 2)::numeric,
-          0
-        ) AS avg_spend
+        -- average daily spend (NULL if no spend)
+        ROUND(AVG(d.daily_spend), 2)::numeric AS avg_spend
 
       FROM weekly w
-
       LEFT JOIN LATERAL (
         SELECT
           date_trunc('day', t.created_at) AS day,
@@ -1165,20 +1161,24 @@ export async function getForecastFeatures(accountId) {
           AND t.created_at <  w.week_end + INTERVAL '1 day'
         GROUP BY 1
       ) d ON TRUE
-
       GROUP BY w.week_start
-      ORDER BY w.week_start
     )
-    SELECT avg_spend, bal_start
-      FROM metrics;
+    SELECT
+      avg_spend,
+      bal_start
+    FROM metrics
+    -- only keep weeks with some real data
+    WHERE avg_spend IS NOT NULL
+       OR bal_start IS NOT NULL
+    ORDER BY week_start;
   `;
 
   // run SQL query
   const { rows } = await pool.query(sql, [accountId]);
 
-  // make front columns 0 if less than 5 weeks
-  while (rows.length < 5) {
-    rows.unshift({ avg_spend: 0, bal_start: 0 });
+  // throw an error if less than 5 weeks
+  if (rows.length < 5) {
+    throw new Error("Financial recommendation is only available after at least 5 week of using the service");
   }
 
   // extract weekly arrays

@@ -48,7 +48,7 @@ serve(async (req) => {
     return new Response(null, { status: 200 });
   }
 
-  // 4) Build the form body for Mailgun
+  // email body for mailgun
   const form = new URLSearchParams();
   form.append("from",  `PlanIT Sandbox <postmaster@${MAILGUN_SANDBOX_DOMAIN}>`);
   form.append("to",    user.email);
@@ -62,7 +62,7 @@ serve(async (req) => {
     </ul>
   `);
 
-  // 5) Send via Mailgun sandbox API
+  // Send via Mailgun sandbox API
   const resp = await fetch(
     `https://api.mailgun.net/v3/${MAILGUN_SANDBOX_DOMAIN}/messages`,
     {

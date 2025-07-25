@@ -65,17 +65,25 @@ function AnalyticsDashboard({ accountId }: Props) {
         setAverageDailySpending7DaysSMAContent(avgSpending7DaysSMATable);
 
         const forecastFeatures = await getForecastFeatures(accountId);
-        setAverage5WeeksSpending(Math.round(forecastFeatures[10] * 100) / 100);
-        setAverage5WeeksBalance(Math.round(forecastFeatures[11] * 100) / 100);
+        if (forecastFeatures[10] && forecastFeatures[11]) {
+          setAverage5WeeksSpending(
+            Math.round(forecastFeatures[10] * 100) / 100
+          );
+          setAverage5WeeksBalance(Math.round(forecastFeatures[11] * 100) / 100);
+        }
 
         const forecastedData = await getForecast(accountId);
-        setForecastedNextWeekSpending(
-          Math.round(forecastedData.predSpend6 * 100) / 100
-        );
-        setForecastedNextWeekBalance(
-          Math.round(forecastedData.predBal6 * 100) / 100
-        );
-        setRecommendationText(forecastedData.recText);
+        if (forecastedData.error) {
+          setRecommendationText(forecastedData.error);
+        } else {
+          setForecastedNextWeekSpending(
+            Math.round(forecastedData.predSpend6 * 100) / 100
+          );
+          setForecastedNextWeekBalance(
+            Math.round(forecastedData.predBal6 * 100) / 100
+          );
+          setRecommendationText(forecastedData.recText);
+        }
       } catch (error) {
         console.log("Error fetching data: ", error);
       }

@@ -3,6 +3,7 @@ import matplotlib.pylab as plt
 from IPython.display import display
 
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import Ridge
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import RobustScaler
 from sklearn.model_selection import GridSearchCV, cross_val_score
@@ -28,12 +29,12 @@ y_test2 = df_test2[["avg_spend_week6", "balance_week6_start"]]
 
 pipe = Pipeline([
     ('scaler', RobustScaler()),
-    ('model', MultiOutputRegressor(GradientBoostingRegressor()))
+    ('model', MultiOutputRegressor(Ridge()))
 ])
 
 model = GridSearchCV(
     estimator=pipe,
-    param_grid={"model__estimator__n_estimators": [number for number in range(73, 74)]},
+    param_grid={"model__estimator__alpha": [number for number in range(0, 10)]},
     cv=10,
     return_train_score=False,
     n_jobs=-1
@@ -42,12 +43,12 @@ model = GridSearchCV(
 
 model.fit(X_train, y_train)
 display(pd.DataFrame(model.cv_results_))
-best_params = model.best_params_["model__estimator__n_estimators"]
+best_params = model.best_params_["model__estimator__alpha"]
 print("Best params: ", best_params)
 
 good_model = Pipeline([
     ('scaler', RobustScaler()),
-    ('model', MultiOutputRegressor(GradientBoostingRegressor(n_estimators=best_params)))
+    ('model', MultiOutputRegressor(Ridge(alpha=best_params)))
 ])
 
 good_model.fit(X_train, y_train)
@@ -63,6 +64,6 @@ test_model(good_model, X_test2, y_test2)
 
 type = [('float_input', FloatTensorType([None, good_model.n_features_in_]))]
 onnx_model = convert_sklearn(good_model, initial_types=type)
-with open('Regressor_Model.onnx', 'wb') as f:
+with open('Regressor_Model_Ext.onnx', 'wb') as f:
     f.write(onnx_model.SerializeToString())
 

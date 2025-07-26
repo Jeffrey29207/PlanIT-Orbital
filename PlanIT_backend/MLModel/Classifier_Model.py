@@ -11,9 +11,13 @@ from sklearn.metrics import accuracy_score, precision_score
 from skl2onnx import convert_sklearn
 from skl2onnx.common.data_types import FloatTensorType
 
-df_train = pd.read_csv("./Datasets/enhanced_train_spending_data.csv")
+df_train1 = pd.read_csv("./Datasets/enhanced_train_spending_data.csv")
+df_train2 = pd.read_csv("./Datasets/new_training_dataset.csv")
+df_train = pd.concat([df_train1, df_train2], ignore_index=True)
+
 df_test = pd.read_csv("./Datasets/rl_test_spending_data.csv")
 df_test2 = pd.read_csv("./Datasets/train_spending_data_10000.csv")
+df_test3 = pd.read_csv("./Datasets/new_testing_dataset.csv")
 
 X_train = df_train.drop(columns=["avg_spend_week6", "balance_week6_start", "label"])
 y_train = df_train["label"]
@@ -23,6 +27,9 @@ y_test = df_test["label"]
 
 X_test2 = df_test2.drop(columns=["avg_spend_week6", "balance_week6_start", "label"])
 y_test2 = df_test2["label"]
+
+X_test3 = df_test3.drop(columns=["avg_spend_week6", "balance_week6_start", "label"])
+y_test3 = df_test3["label"]
 
 
 pipe = Pipeline([
@@ -58,10 +65,11 @@ def test_model(est, test_x, test_y):
 
 test_model(good_model, X_test, y_test)
 test_model(good_model, X_test2, y_test2)
+test_model(good_model, X_test3, y_test3)
 
 init_type = [('float_input', FloatTensorType([None, good_model.n_features_in_]))]
 options = {type(good_model): {'output_class_labels': True, 'zipmap': False}}
 onnx_model = convert_sklearn(good_model, initial_types=init_type, options=options)
-with open('Classifier_Model.onnx', 'wb') as f:
+with open('Classifier_Model_v2.onnx', 'wb') as f:
     f.write(onnx_model.SerializeToString())
 

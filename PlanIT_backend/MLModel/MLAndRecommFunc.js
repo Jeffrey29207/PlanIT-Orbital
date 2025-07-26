@@ -8,7 +8,7 @@ export async function classify(data) {
 
     // Load the pretrained model
     //const session = await ort.InferenceSession.create("Classifier_Model.onnx");
-    const session = await ort.InferenceSession.create("./MLModel/Classifier_Model.onnx");
+    const session = await ort.InferenceSession.create("./MLModel/Classifier_Model_v2.onnx");
 
     // Map the model input to the input tensor
     const mapping = {float_input: tensor};
@@ -81,14 +81,11 @@ export async function recommendation(spendingCategory, forecastedSpending, forec
     return recommendationText.text;
 }
 
-const testInputClassify = [1533.63179194, 7554.03309488, 1435.69327901, 7170.55039617, 1303.13457716,
- 7529.14483264, 1917.45378146, 9090.08344807, 1888.29391892, 5531.27976711,
- 1615.6414697,  7375.01830777];
+const testInputClassify = [4321467.899009733, 4837161.762665274, 4766163.801229304, 9497440.163834916, 
+    764882.3451000333, 6615576.566129001, 1599391.2227362914, 3855569.3363828883, 2203201.3555526724, 8796782.420950294, 
+    2731021.324725607, 6720506.049992475];
 
 const testInputRegression = [4321467.899009733, 4837161.762665274, 4766163.801229304, 9497440.163834916, 
     764882.3451000333, 6615576.566129001, 1599391.2227362914, 3855569.3363828883, 2203201.3555526724, 8796782.420950294, 
     2731021.324725607, 6720506.049992475, 1];
 
-
-
- 
